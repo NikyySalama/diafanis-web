@@ -2,16 +2,18 @@ import React, { useState, useEffect } from 'react';
 import electionsData from '../elections';
 import './UserElections.css'
 import ElectionInList from './ElectionInList';
+import { useNavigate } from 'react-router-dom';
 
 const UserElections = () => {
   const [elections, setElections] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     setElections(electionsData);
   }, []);
 
   const addElection = () => {
-    const newElection = {
+    /*const newElection = {
         id: elections.length + 1,
         name: prompt('Ingrese el nombre de la elección:'),
         description: prompt('Ingrese la descripción de la elección:'),
@@ -24,7 +26,8 @@ const UserElections = () => {
     }
     else{
         //TODO: msj de completar campos faltantes
-    }
+    }*/
+    navigate('/election-registration');
   };
 
   return (
