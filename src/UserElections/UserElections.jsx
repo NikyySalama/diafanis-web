@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import electionsData from './elections';
+import electionsData from '../elections';
 import './UserElections.css'
+import ElectionInList from './ElectionInList';
 
 const UserElections = () => {
   const [elections, setElections] = useState([]);
@@ -27,16 +28,23 @@ const UserElections = () => {
   };
 
   return (
-    <div>
+    <div className='my-elections'>
       <h1 className='my-elections-title'>Sus Elecciones</h1>
       <button className='add-election-button' onClick={addElection}>Crear Eleccion</button>
-      <ul className='election-list'>
-        {elections.map((election, index) => (
-          <li key={index}>
-            {election.name}
+      <div style={{padding: '10px'}}>
+        <div className="election-data">
+          <span className="election-name">Nombre</span>
+          <span className="election-date">Fecha de Inicio</span>
+          <span className="election-date">Fecha de Fin</span>
+        </div>
+        <ul className='election-list'>
+          {elections.map((election, index) => (
+            <li key={index}>
+              <ElectionInList name={election.name} startDate={election.startDate} endDate={election.endDate}/>
             </li>
-        ))}
-      </ul>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 };
