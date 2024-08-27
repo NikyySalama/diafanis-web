@@ -1,0 +1,38 @@
+.position-registration {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.input-position {
+    width: 100%;
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #ccc; 
+    box-sizing: border-box;
+}
+
+.add-position-button {
+    margin-bottom: 10px;
+    padding: 10px;
+    background-color: #64abf8;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer
+}
+
+.add-position-button:hover {
+    background-color: #3697ff;
+}
+
+.register-button {
+    padding: 10px;
+    background-color: #697bca;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer
+}
+
+.register-button:hover {
+    background-color: #465fce;
+}

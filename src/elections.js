@@ -15,4 +15,10 @@ const electionsData = [
     }
   ];
   
-  export default electionsData;  
+export const addElection = (newElection) => {
+    electionsData.push(newElection);
+};
+  
+export const getElections = () => {
+    return electionsData;
+};

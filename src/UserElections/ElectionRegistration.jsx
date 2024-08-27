@@ -1,7 +1,7 @@
 import React, {useState} from "react"
 import './ElectionRegistration.css'
 
-const ElectionRegistration = () => {
+const ElectionRegistration = ({onAddElection, handleContinue}) => {
     const [formData, setFormData] = useState({
         name: '',
         description: '',
@@ -19,7 +19,12 @@ const ElectionRegistration = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log('Form data submitted:', formData);
+        const newElection = {
+            id: Date.now(),
+            ...formData,
+        };
+        onAddElection(newElection);
+        handleContinue();
     };
 
     return(
@@ -69,7 +74,7 @@ const ElectionRegistration = () => {
                         required
                     />
                 </div>
-                <button type="submit">Registrar</button>
+                <button type="submit">Continuar</button>
             </form>
         </div>
     )
