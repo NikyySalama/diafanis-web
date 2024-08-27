@@ -1,5 +1,5 @@
 import './App.css';
-import UserElections from './UserElections';
+import UserElections from './UserElections/UserElections';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 function App() {
