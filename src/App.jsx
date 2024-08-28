@@ -1,6 +1,6 @@
-import './App.css';
+//import './App.css';
 import UserElections from './UserElections/UserElections';
-import UserLists from './UserElections/UserLists'
+import Election from './UserElections/Election/Election';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 function App() {
@@ -8,7 +8,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<UserElections/> } />
-        <Route path="/lists" element={<UserLists />} />
+        <Route path="/election" element={<Election />} />
       </Routes>
     </Router>
   );

@@ -1,0 +1,34 @@
+.navbar {
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #60a5ff;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.navbar-title {
+    margin: 0;
+    color: rgb(227, 230, 238);
+    font-weight: 100;
+    font-size: 1em;
+}
+  
+.nav-items {
+    list-style: none;
+    display: flex;
+    justify-content: space-around;
+    margin: 0;
+    padding: 0;
+}
+  
+.nav-item {
+    color: white;
+    text-decoration: none;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1.3em;
+}
+  
+.nav-item:hover {
+    color: #e2f3fa;
+}
+  

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { getLists, addList } from './lists';
-import List from './List';
+import { getLists, addList } from '../lists';
+import List from '../List';
 import './UserLists.css'
 
-const UserElections = () => {
+const UserLists = () => {
   const [lists, setLists] = useState([]);
 
   useEffect(() => {
@@ -35,4 +35,4 @@ const UserElections = () => {
   );
 };
 
-export default UserElections;
+export default UserLists;

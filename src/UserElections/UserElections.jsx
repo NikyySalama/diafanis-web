@@ -1,18 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { getElections, addElection } from '../elections';
+import { useNavigate } from 'react-router-dom';
 import './UserElections.css'
 import ElectionInList from './ElectionInList';
 import ElectionRegistration from './ElectionRegistration';
 import PositionRegistration from './PositionRegistration';
-import PollingStationOrLists from './PollingStationOrLists'
 
 const UserElections = () => {
   const [elections, setElections] = useState([]);
   const [isElectionRegistrationModalOpen, setIsElectionRegistrationModalOpen] = useState(false);
   const [isPositionModalOpen, setIsPositionModalOpen] = useState(false);
-  const [isElectionModalOpen, setIsElectionModalOpen] = useState(false);
-  const [electionClicked, setElectionClicked] = useState("");
-
+  const navigate = useNavigate();
 
   useEffect(() => {
     setElections(getElections());
@@ -29,14 +27,12 @@ const UserElections = () => {
   };
 
   const handleElectionClicked = (title) => {
-    setElectionClicked(title)
-    setIsElectionModalOpen(true);
+    navigate('/election', { state: {title}});
   }
 
   const openElectionRegistrationModal = () => setIsElectionRegistrationModalOpen(true);
   const closeElectionRegistrationModal = () => setIsElectionRegistrationModalOpen(false);
   const closePositionModal = () => setIsPositionModalOpen(false);
-  const closeElectionModal = () => setIsElectionModalOpen(false);
 
   return (
     <div className='my-elections'>
@@ -72,12 +68,6 @@ const UserElections = () => {
             <button className='modal-close-button' onClick={closePositionModal}>×</button>
             <PositionRegistration onClose={closePositionModal}/>
           </div>
-        </div>
-      )}
-
-      {isElectionModalOpen && (
-        <div className="modal-overlay">
-            <PollingStationOrLists election={electionClicked} onClose={closeElectionModal}/>
         </div>
       )}
     </div>
