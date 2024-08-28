@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getLists, addList } from '../lists';
-import List from '../List';
+import List from './List';
 import './UserLists.css'
 
 const UserLists = () => {
