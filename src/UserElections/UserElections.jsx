@@ -30,13 +30,12 @@ const UserElections = () => {
 
   const handleElectionClicked = (title) => {
     setElectionClicked(title)
-    openElectionModal();
+    setIsElectionModalOpen(true);
   }
 
   const openElectionRegistrationModal = () => setIsElectionRegistrationModalOpen(true);
   const closeElectionRegistrationModal = () => setIsElectionRegistrationModalOpen(false);
   const closePositionModal = () => setIsPositionModalOpen(false);
-  const openElectionModal = () => setIsElectionModalOpen(true);
   const closeElectionModal = () => setIsElectionModalOpen(false);
 
   return (
@@ -71,7 +70,7 @@ const UserElections = () => {
         <div className="modal-overlay">
           <div className="modal-content">
             <button className='modal-close-button' onClick={closePositionModal}>×</button>
-            <PositionRegistration handleRegistrationEnd={closePositionModal}/>
+            <PositionRegistration onClose={closePositionModal}/>
           </div>
         </div>
       )}

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './PositionRegistration.css'
 
-const PositionRegistration = ({handleRegistrationEnd}) => {
+const PositionRegistration = ({onClose}) => {
   const [positions, setPositions] = useState([{ title: '' }]);
 
   const handlePositionChange = (index, event) => {
@@ -38,7 +38,7 @@ const PositionRegistration = ({handleRegistrationEnd}) => {
         <button className='add-position-button' type="button" onClick={addPosition}>
           + Nueva Posición
         </button>
-        <button className='register-button' onClick={handleRegistrationEnd} type="submit">
+        <button className='register-button' onClick={onClose} type="submit">
           Registrar
         </button>
       </form>
