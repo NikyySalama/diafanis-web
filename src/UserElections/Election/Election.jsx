@@ -25,7 +25,7 @@ const Election = () => {
     return (
         <div>
             <Navbar setActiveSection={setActiveSection} title={title}/>
-            <div>
+            <div style={{marginTop:'5%'}}>
                 {renderSection()}
             </div>
         </div>

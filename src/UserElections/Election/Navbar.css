@@ -6,6 +6,12 @@
     background-color: #60a5ff;
     padding: 0px;
     box-sizing: border-box;
+
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 30;
 }
 
 .navbar-title-section {
