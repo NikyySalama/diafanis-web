@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getElections, addElection } from '../elections';
 import { useNavigate } from 'react-router-dom';
+import { Modal } from 'react-bootstrap';
 import './UserElections.css'
 import ElectionInList from './ElectionInList';
 import ElectionRegistration from './ElectionRegistration';
@@ -53,23 +54,24 @@ const UserElections = () => {
         </ul>
       </div>
 
-      {isElectionRegistrationModalOpen && (
-        <div className="modal-overlay">
-          <div className="modal-content">
-            <button className='modal-close-button' onClick={closeElectionRegistrationModal}>×</button>
-            <ElectionRegistration onAddElection={handleAddElection} handleContinue={handleElectionContinue}/>
-          </div>
-        </div>
-      )}
+      <Modal show={isElectionRegistrationModalOpen} onHide={closeElectionRegistrationModal}>
+        <Modal.Header closeButton>
+          <Modal.Title>Registrar Elección</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <ElectionRegistration onAddElection={handleAddElection} handleContinue={handleElectionContinue} />
+        </Modal.Body>
+      </Modal>
 
-      {isPositionModalOpen && (
-        <div className="modal-overlay">
-          <div className="modal-content">
-            <button className='modal-close-button' onClick={closePositionModal}>×</button>
-            <PositionRegistration onClose={closePositionModal}/>
-          </div>
-        </div>
-      )}
+      <Modal show={isPositionModalOpen} onHide={closePositionModal}>
+        <Modal.Header closeButton>
+          <Modal.Title>Registro de Posición</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <PositionRegistration onClose={closePositionModal} />
+        </Modal.Body>
+      </Modal>
+
     </div>
   );
 };

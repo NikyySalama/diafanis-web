@@ -29,7 +29,6 @@ const ElectionRegistration = ({onAddElection, handleContinue}) => {
 
     return(
         <div className="election-registration">
-            <h1>Registrar Elección</h1>
             <form onSubmit={handleSubmit}>
                 <div>
                     <label htmlFor="name">Nombre:</label>

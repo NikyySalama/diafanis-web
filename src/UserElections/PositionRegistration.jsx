@@ -21,7 +21,6 @@ const PositionRegistration = ({onClose}) => {
 
   return (
     <div className="position-registration">
-      <h1>Registro de Posición</h1>
       <p>Título de la Posición:</p>
       <form onSubmit={handleSubmit}>
         {positions.map((position, index) => (
