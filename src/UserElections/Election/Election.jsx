@@ -1,9 +1,9 @@
 import React, {useState} from 'react';
 import Navbar from './Navbar';
 import { useLocation } from 'react-router-dom';
-import UserLists from './UserLists';
+import UserLists from './Lists/UserLists';
 import ElectionInfo from './ElectionInfo';
-import Tables from './Tables';
+import Tables from './Tables/UserTables';
 
 const Election = () => {
     const location = useLocation();
