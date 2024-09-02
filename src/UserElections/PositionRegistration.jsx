@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './PositionRegistration.css'
 
-const PositionRegistration = ({onClose}) => {
+const PositionRegistration = ({onClose, handleAddPositions}) => {
   const [positions, setPositions] = useState([{ title: '' }]);
 
   const handlePositionChange = (index, event) => {
@@ -17,6 +17,7 @@ const PositionRegistration = ({onClose}) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log('Positions registered:', positions);
+    handleAddPositions();
   };
 
   return (

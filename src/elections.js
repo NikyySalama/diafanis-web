@@ -3,15 +3,17 @@ const electionsData = [
       id: 1,
       name: 'Elección Presidencial',
       description: 'Elección para presidente de la nación.',
-      startDate: '2024-09-01',
-      endDate: '2024-09-30'
-    },
-    {
-      id: 2,
-      name: 'Elección Legislativa',
-      description: 'Elección para representantes legislativos.',
-      startDate: '2024-10-01',
-      endDate: '2024-10-31'
+      startsAt: '2024-09-01T08:00:00Z',
+      endsAt: '2024-09-30T18:00:00Z',
+      "electionPositions": [
+        {
+          "title": "Presidencia"
+        },
+        {
+          "title": "Senado"
+        }
+      ],
+    "image": "base64 encode"
     }
   ];
   
