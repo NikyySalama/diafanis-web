@@ -5,18 +5,14 @@ import PositionRegistration from './PositionRegistration';
 
 const ElectionModal = ({ show, onClose, onAddElection }) => {
   const [modalContent, setModalContent] = useState('election');
-  const [positions, setPositions] = useState([]);
-
+  const [addedElection, setAddedElection] = useState(null);
 
   const handleContinue = () => setModalContent('position');
-
-  const handleAddPositions = (newPositions) => {
-    setPositions(newPositions);
-  };
 
   const handleClose = () => {
     onClose();
     setModalContent('election');
+    setAddedElection(null);
   }
 
   const handleAddElection = async (newElection) => {
@@ -25,11 +21,10 @@ const ElectionModal = ({ show, onClose, onAddElection }) => {
         description: newElection.description,
         startsAt: newElection.startsAt,
         endsAt: newElection.endsAt,
-        positions: positions,
         image: "base 64"
     };
     try {
-      const response = await fetch('http://diafanis.com.ar/api/elections', {
+        const response = await fetch('http://diafanis.com.ar/api/elections', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -41,6 +36,8 @@ const ElectionModal = ({ show, onClose, onAddElection }) => {
         const savedElection = await response.json();
         console.log('Elección guardada:', savedElection);
         onAddElection(); 
+
+        setAddedElection(savedElection);
       } else {
         console.error('Error al guardar la elección:', response.statusText);
       }
@@ -58,9 +55,13 @@ const ElectionModal = ({ show, onClose, onAddElection }) => {
       </Modal.Header>
       <Modal.Body>
         {modalContent === 'election' ? (
-          <ElectionRegistration onAddElection={handleAddElection} handleContinue={handleContinue} />
+            <ElectionRegistration handleAddElection={handleAddElection} handleContinue={handleContinue} />
         ) : (
-          <PositionRegistration onClose={handleClose} handleAddPositions={handleAddPositions} />
+            addedElection ? (
+                <PositionRegistration onClose={handleClose} electionId={addedElection.id} />
+            ) : (
+                <p>Cargando...</p>
+            )
         )}
       </Modal.Body>
     </Modal>

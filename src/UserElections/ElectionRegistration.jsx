@@ -1,7 +1,7 @@
 import React, {useState} from "react"
 import './ElectionRegistration.css'
 
-const ElectionRegistration = ({onAddElection, handleContinue}) => {
+const ElectionRegistration = ({handleAddElection, handleContinue}) => {
     const [formData, setFormData] = useState({
         title: '',
         description: '',
@@ -23,7 +23,7 @@ const ElectionRegistration = ({onAddElection, handleContinue}) => {
             id: Date.now(),
             ...formData,
         };
-        onAddElection(newElection);
+        handleAddElection(newElection);
         handleContinue();
     };
 
