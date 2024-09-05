@@ -14,10 +14,6 @@ const Tables = () => {
     setTables(getTables());
   }, []);
 
-  /*const handleListClicked = (title) => {
-    setListClicked(title)
-    openListModal();
-  }*/
   const handleCreateTableClick = () => {
     setShowUploadModal(true);
   };

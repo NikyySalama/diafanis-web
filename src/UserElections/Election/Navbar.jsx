@@ -9,7 +9,8 @@ const Navbar = ({ setActiveSection, title }) => {
         </div>
         <ul className="nav-items">
             <li className="nav-item" onClick={() => setActiveSection('info')}>Info</li>
-            <li className="nav-item" onClick={() => setActiveSection('lists')}>Listas</li>
+            <li className="nav-item" onClick={() => setActiveSection('parties')}>Partidos</li>
+            <li className="nav-item" onClick={() => setActiveSection('lists')}>Formulas</li>
             <li className="nav-item" onClick={() => setActiveSection('tables')}>Mesas</li>
         </ul>
     </nav>

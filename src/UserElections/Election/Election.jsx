@@ -1,9 +1,10 @@
 import React, {useState} from 'react';
 import Navbar from './Navbar';
 import { useLocation } from 'react-router-dom';
-import UserLists from './Lists/UserLists';
+import UserLists from './Formula/UserLists';
 import ElectionInfo from './ElectionInfo';
 import Tables from './Tables/UserTables';
+import UserParties from './Parties/UserParties';
 
 const Election = () => {
     const location = useLocation();
@@ -12,6 +13,8 @@ const Election = () => {
     
     const renderSection = () => {
         switch (activeSection) {
+            case 'parties':
+                return <UserParties />
             case 'lists':
                 return <UserLists />;
             case 'tables':

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { getLists } from '../../lists';
 import { getPositions } from './positions';
 import List from './List';
-import { Modal, Button } from 'react-bootstrap';
+import { Modal } from 'react-bootstrap';
 import * as XLSX from 'xlsx';
 import './UserLists.css';
 
@@ -12,8 +12,6 @@ const UserLists = () => {
   const [showPositionsModal, setShowPositionsModal] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [formData, setFormData] = useState({
-    color: '',
-    name: '',
     id: ''
   });
 
@@ -25,7 +23,7 @@ const UserLists = () => {
   }, []);
 
   const handleCreateListClick = () => {
-    setFormData({ color: '', name: '', id: '' });
+    setFormData({ id: '' });
     setShowModal(true);
   };
 
@@ -75,9 +73,9 @@ const UserLists = () => {
 
   return (
     <div className="user-lists">
-      <h1 className="user-lists-title">Sus Listas</h1>
+      <h1 className="user-lists-title">Sus Formulas</h1>
       <button className="add-list-button" onClick={handleCreateListClick}>
-        Crear Lista
+        Crear Formula
       </button>
       <div className="lists-content">
         <div className="list-data">
@@ -122,18 +120,6 @@ const UserLists = () => {
                 required
               />
             </div>
-            <div className="form-group">
-              <label htmlFor="id">ID:</label>
-              <input
-                type="text"
-                id="id"
-                name="id"
-                value={formData.id}
-                onChange={handleChange}
-                placeholder="Ingrese ID"
-                required
-              />
-            </div>
             <button type="submit" className="modal-button">
               Siguiente
             </button>
@@ -163,7 +149,6 @@ const UserLists = () => {
           </button>
         </Modal.Body>
       </Modal>
-
     </div>
   );
 };
