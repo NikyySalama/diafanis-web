@@ -5,6 +5,7 @@ import UserLists from './Formula/UserLists';
 import ElectionInfo from './ElectionInfo';
 import Tables from './Tables/UserTables';
 import UserParties from './Parties/UserParties';
+import { ElectionProvider } from './ElectionContext';
 
 const Election = () => {
     const location = useLocation();
