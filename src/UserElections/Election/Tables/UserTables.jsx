@@ -1,18 +1,69 @@
 import React, { useState, useEffect } from 'react';
-import { getTables, addTable } from '../../tables';
+import { useElection } from '../ElectionContext';
 import Table from './Table';
 import { Modal, Button } from 'react-bootstrap';
 import * as XLSX from 'xlsx';
 import './UserTables.css'
+import { tab } from '@testing-library/user-event/dist/tab';
 
 const Tables = () => {
+  const electionId = useElection();
   const [tables, setTables] = useState([]);
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [tablesData, setTablesData] = useState([]);
 
   useEffect(() => {
-    setTables(getTables());
+    fetchTables();
   }, []);
+
+  const fetchTables = async () => {
+    try {
+      const response = await fetch(`http://diafanis.com.ar/api/elections/${electionId}/tables`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setTables(data);
+      } else {
+        console.error('error al obtener las mesas', response.statusText);
+      }
+    } catch (error) {
+      console.error('error en la solicitud de partidos', error);
+    }
+  };
+
+  const postTable = async (table) => {
+    const location = {
+      country : table.country,
+      state : table.state,
+      city : table.city,
+      address : table.address
+    }
+    const tableToSend = {
+        name : table.id,
+        location : location
+    }
+    try {
+      const response = await fetch(`http://diafanis.com.ar/api/elections/${electionId}/tables`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(tableToSend)
+      });
+      if (response.ok) {
+        const savedTable = await response.json();
+        console.log('Elección guardada:', savedTable);
+      } else {
+        console.error('Error al guardar la posicion:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error en la solicitud:', error);
+    }
+  };
 
   const handleCreateTableClick = () => {
     setShowUploadModal(true);
@@ -40,6 +91,8 @@ const Tables = () => {
     e.preventDefault();
     console.log('Datos de las mesas cargados:', tablesData);
     handleCloseUploadModal();
+    tablesData.forEach(tableData => postTable(tableData));
+    fetchTables();
   };
 
   return (
@@ -49,12 +102,13 @@ const Tables = () => {
       <div style={{padding: '10px'}}>
         <div className="table-data">
             <span className="table-id">Numero</span>
-            <span className="table-location">Locacion</span>
+            <span className="table-location">Ciudad</span>
+            <span className="table-location">Direccion</span>
         </div>
         <ul className='tables-container'>
           {tables.map((table, index) => (
             <li key={index}>
-              <Table location={table.location} id={table.id}/>
+              <Table locationUuid={table.locationUuid} id={table.id}/>
             </li>
           ))}
         </ul>
