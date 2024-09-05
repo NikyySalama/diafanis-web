@@ -101,7 +101,7 @@ const UserLists = () => {
             <div className="form-group">
               <label htmlFor="color">Color:</label>
               <input
-                type="text"
+                type="color"
                 id="color"
                 name="color"
                 value={formData.color}
@@ -137,9 +137,6 @@ const UserLists = () => {
             <button type="submit" className="modal-button">
               Siguiente
             </button>
-            <Button variant="secondary" onClick={handleClose}>
-              Cancelar
-            </Button>
           </form>
         </Modal.Body>
       </Modal>
@@ -164,9 +161,6 @@ const UserLists = () => {
           <button type="submit" className="modal-button" onClick={handlePositionsSubmit}>
             Guardar
           </button>
-          <Button variant="secondary" onClick={handleClosePositionsModal}>
-            Cancelar
-          </Button>
         </Modal.Body>
       </Modal>
 
