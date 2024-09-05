@@ -3,10 +3,10 @@ import './ElectionRegistration.css'
 
 const ElectionRegistration = ({onAddElection, handleContinue}) => {
     const [formData, setFormData] = useState({
-        name: '',
+        title: '',
         description: '',
-        startDate: '',
-        endDate: '',
+        startsAt: '',
+        endsAt: '',
     });
 
     const handleChange = (e) => {
@@ -31,44 +31,44 @@ const ElectionRegistration = ({onAddElection, handleContinue}) => {
         <div className="election-registration">
             <form onSubmit={handleSubmit}>
                 <div>
-                    <label htmlFor="name">Nombre:</label>
+                    <label htmlFor="title">Nombre:</label>
                     <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    required
+                        type="text"
+                        id="title"
+                        name="title"
+                        value={formData.title}
+                        onChange={handleChange}
+                        required
                     />
                 </div>
                 <div>
                     <label htmlFor="description">Descripción:</label>
                     <textarea
-                    id="description"
-                    name="description"
-                    value={formData.description}
-                    onChange={handleChange}
-                    required
+                        id="description"
+                        name="description"
+                        value={formData.description}
+                        onChange={handleChange}
+                        required
                     />
                 </div>
                 <div>
-                    <label htmlFor="startDate">Fecha de Inicio:</label>
+                    <label htmlFor="startDate">Fecha y Hora de Inicio:</label>
                     <input
-                    type="date"
-                    id="startDate"
-                    name="startDate"
-                    value={formData.startDate}
-                    onChange={handleChange}
-                    required
+                        type="datetime-local"
+                        id="startsAt"
+                        name="startsAt"
+                        value={formData.startsAt}
+                        onChange={handleChange}
+                        required
                     />
                 </div>
                 <div>
-                    <label htmlFor="endDate">Fecha de Fin:</label>
+                    <label htmlFor="endDate">Fecha y Hora de Fin:</label>
                     <input
-                        type="date"
-                        id="endDate"
-                        name="endDate"
-                        value={formData.endDate}
+                        type="datetime-local"
+                        id="endsAt"
+                        name="endsAt"
+                        value={formData.endsAt}
                         onChange={handleChange}
                         required
                     />

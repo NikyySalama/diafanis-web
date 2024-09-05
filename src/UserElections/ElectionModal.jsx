@@ -23,8 +23,8 @@ const ElectionModal = ({ show, onClose, onAddElection }) => {
     const electionData = {
         title: newElection.title,
         description: newElection.description,
-        startsAt: newElection.startDate,
-        endsAt: newElection.endDate,
+        startsAt: newElection.startsAt,
+        endsAt: newElection.endsAt,
         positions: positions,
         image: "base 64"
     };

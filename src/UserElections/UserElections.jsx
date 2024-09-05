@@ -58,8 +58,8 @@ const UserElections = () => {
         </div>
         <ul className='election-list'>
           {elections.map((election, index) => (
-            <li onClick={() => handleElectionClicked(election.name)} key={index}>
-              <ElectionInList name={election.name} startDate={election.startDate} endDate={election.endDate}/>
+            <li onClick={() => handleElectionClicked(election.title)} key={index}>
+              <ElectionInList title={election.title} startsAt={election.startsAt} endsAt={election.endsAt}/>
             </li>
           ))}
         </ul>
