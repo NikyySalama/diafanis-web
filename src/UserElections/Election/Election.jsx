@@ -8,7 +8,7 @@ import UserParties from './Parties/UserParties';
 
 const Election = () => {
     const location = useLocation();
-    const { title } = location.state || { title: 'Título no disponible' };
+    const { title, electionId } = location.state || { title: 'Título no disponible', electionId: null };
     const [activeSection, setActiveSection] = useState('info');
     
     const renderSection = () => {
@@ -26,12 +26,12 @@ const Election = () => {
     };
 
     return (
-        <div>
-            <Navbar setActiveSection={setActiveSection} title={title}/>
-            <div style={{marginTop:'5%'}}>
+        <ElectionProvider electionId={electionId}>
+            <Navbar setActiveSection={setActiveSection} title={title} />
+            <div style={{ marginTop: '5%' }}>
                 {renderSection()}
             </div>
-        </div>
+        </ElectionProvider>
     );
 };
 

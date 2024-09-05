@@ -1,10 +1,50 @@
 import React, { useState, useEffect } from 'react';
-import { getLists } from '../../lists';
-import { getPositions } from './positions';
 import List from './List';
 import { Modal } from 'react-bootstrap';
 import * as XLSX from 'xlsx';
 import './UserLists.css';
+
+const fetchParties = async () => {
+  try {
+    const response = await fetch('http://diafanis.com.ar/api/parties', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+    if (response.ok) {
+      return await response.json();
+    } else {
+      throw new Error('Error al obtener los partidos');
+    }
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+};
+
+const getPositions = async () => {
+  try {
+    const response = await fetch('http://diafanis.com.ar/api/electionPositions', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+    if (response.ok) {
+      return await response.json();
+    } else {
+      throw new Error('Error al obtener los partidos');
+    }
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+}
+
+const getParties = () => {
+
+}
 
 const UserLists = () => {
   const [lists, setLists] = useState([]);
@@ -12,18 +52,21 @@ const UserLists = () => {
   const [showPositionsModal, setShowPositionsModal] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [formData, setFormData] = useState({
+    partyId: '',
     id: ''
   });
 
   const [positionsData, setPositionsData] = useState([]);
+  const [parties, setParties] = useState([]);
 
   useEffect(() => {
-    setLists(getLists());
+    setLists(getParties());
     setPositions(getPositions());
+    fetchParties().then(setParties);
   }, []);
 
   const handleCreateListClick = () => {
-    setFormData({ id: '' });
+    setFormData({ partyId: '', id: '' });
     setShowModal(true);
   };
 
@@ -97,28 +140,33 @@ const UserLists = () => {
         <Modal.Body>
           <form onSubmit={handleSubmit}>
             <div className="form-group">
-              <label htmlFor="color">Color:</label>
+              <label htmlFor="id">ID de formula:</label>
               <input
-                type="color"
-                id="color"
-                name="color"
-                value={formData.color}
+                type="text"
+                id="id"
+                name="id"
+                value={formData.id}
                 onChange={handleChange}
-                placeholder="Ingrese color"
+                placeholder="Ingrese ID de formula"
                 required
               />
             </div>
             <div className="form-group">
-              <label htmlFor="name">Nombre:</label>
-              <input
-                type="text"
-                id="name"
-                name="name"
-                value={formData.name}
+              <label htmlFor="partyId">Elegir partido:</label>
+              <select
+                id="partyId"
+                name="partyId"
+                value={formData.partyId}
                 onChange={handleChange}
-                placeholder="Ingrese nombre"
                 required
-              />
+              >
+              <option value="">Seleccione un partido</option>
+              {parties.map((party) => (
+                <option key={party.id} value={party.id}>
+                  {party.name}
+                </option>
+              ))}
+              </select>
             </div>
             <button type="submit" className="modal-button">
               Siguiente

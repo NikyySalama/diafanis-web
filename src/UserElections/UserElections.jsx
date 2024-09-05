@@ -28,7 +28,8 @@ const UserElections = () => {
           title: election.title,
           description: election.description,
           startsAt: election.startsAt,
-          endsAt: election.endsAt
+          endsAt: election.endsAt,
+          uuid: election.uuid
         }));
         setElections(filteredElections);
       } else{
@@ -39,8 +40,8 @@ const UserElections = () => {
     }
   }
   
-  const handleElectionClicked = (title) => {
-    navigate('/election', { state: {title}});
+  const handleElectionClicked = (title, electionId) => {
+    navigate('/election', { state: {title, electionId}});
   }
 
   const openModal = () => setIsModalOpen(true);
@@ -58,7 +59,7 @@ const UserElections = () => {
         </div>
         <ul className='election-list'>
           {elections.map((election, index) => (
-            <li onClick={() => handleElectionClicked(election.title)} key={index}>
+            <li onClick={() => handleElectionClicked(election.title, election.uuid)} key={index}>
               <ElectionInList title={election.title} startsAt={election.startsAt} endsAt={election.endsAt}/>
             </li>
           ))}
