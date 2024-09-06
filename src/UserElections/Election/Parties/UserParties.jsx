@@ -16,7 +16,7 @@ const UserLists = () => {
 
     const fetchParties = async () => {
         try{
-        const response = await fetch('http://diafanis.com.ar/api/parties', {
+        const response = await fetch(`http://diafanis.com.ar/api/parties/${electionId}`, {
             method: 'GET',
             headers: {
             'Content-Type': 'application/json'
@@ -61,7 +61,7 @@ const UserLists = () => {
             electionUuid: electionId
         };
         try {
-        const response = await fetch('http://diafanis.com.ar/api/parties', {
+        const response = await fetch(`http://diafanis.com.ar/api/parties/${electionId}`, {
             method: 'POST',
             headers: {
             'Content-Type': 'application/json'

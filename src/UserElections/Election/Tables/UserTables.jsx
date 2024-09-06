@@ -4,7 +4,6 @@ import Table from './Table';
 import { Modal, Button } from 'react-bootstrap';
 import * as XLSX from 'xlsx';
 import './UserTables.css'
-import { tab } from '@testing-library/user-event/dist/tab';
 
 const Tables = () => {
   const electionId = useElection();
@@ -47,7 +46,7 @@ const Tables = () => {
         location : location
     }
     try {
-      const response = await fetch(`http://diafanis.com.ar/api/elections/${electionId}/tables`, {
+      const response = await fetch(`http://diafanis.com.ar/api/tables/${electionId}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

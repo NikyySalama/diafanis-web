@@ -12,6 +12,8 @@ const Election = () => {
     const { title, electionId } = location.state || { title: 'Título no disponible', electionId: null };
     const [activeSection, setActiveSection] = useState('info');
     
+    console.log(electionId);
+    
     const renderSection = () => {
         switch (activeSection) {
             case 'parties':
