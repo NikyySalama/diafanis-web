@@ -21,7 +21,7 @@ const UserLists = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const fetchedLists = await getParties();
+      const fetchedLists = await fetchParties();
       const fetchedPositions = await getPositions();
       const fetchedParties = await fetchParties();
   
@@ -35,7 +35,7 @@ const UserLists = () => {
 
   const getPositions = async () => {
     try {
-      const response = await fetch(`http://diafanis.com.ar/api/positions/${electionId}`, {
+      const response = await fetch(`http://localhost:8080/api/elections/${electionId}/positions`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'
@@ -54,7 +54,7 @@ const UserLists = () => {
 
   const fetchParties = async () => {
     try {
-      const response = await fetch(`http://diafanis.com.ar/api/parties/${electionId}`, {
+      const response = await fetch(`http://localhost:8080/api/elections/${electionId}/parties`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'
@@ -70,25 +70,6 @@ const UserLists = () => {
       return [];
     }
   };
-  
-  const getParties = async () => {
-    try {
-      const response = await fetch(`http://diafanis.com.ar/api/parties/${electionId}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
-      if (response.ok) {
-        return await response.json();
-      } else {
-        throw new Error('Error al obtener los partidos');
-      }
-    } catch (error) {
-      console.error(error);
-      return [];
-    }
-  }
 
   const handleCreateListClick = () => {
     setFormData({ partyId: '', id: '' });

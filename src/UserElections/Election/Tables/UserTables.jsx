@@ -17,7 +17,7 @@ const Tables = () => {
 
   const fetchTables = async () => {
     try {
-      const response = await fetch(`http://diafanis.com.ar/api/elections/${electionId}/tables`, {
+      const response = await fetch(`http://localhost:8080/api/elections/${electionId}/tables`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'
@@ -46,7 +46,7 @@ const Tables = () => {
         location : location
     }
     try {
-      const response = await fetch(`http://diafanis.com.ar/api/tables/${electionId}`, {
+      const response = await fetch(`http://localhost:8080/api/tables/${electionId}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

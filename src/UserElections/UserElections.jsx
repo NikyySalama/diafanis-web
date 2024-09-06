@@ -15,7 +15,7 @@ const UserElections = () => {
 
   const fetchElections = async () => {
     try{
-      const response = await fetch('http://diafanis.com.ar/api/elections', {
+      const response = await fetch('http://localhost:8080/api/elections', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'

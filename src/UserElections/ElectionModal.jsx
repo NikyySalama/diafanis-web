@@ -24,7 +24,7 @@ const ElectionModal = ({ show, onClose, onAddElection }) => {
         image: "base 64"
     };
     try {
-        const response = await fetch('http://diafanis.com.ar/api/elections', {
+        const response = await fetch('http://localhost:8080/api/elections', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
