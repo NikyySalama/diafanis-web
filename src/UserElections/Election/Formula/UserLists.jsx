@@ -35,7 +35,7 @@ const UserLists = () => {
 
   const getPositions = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/api/elections/${electionId}/positions`, {
+      const response = await fetch(`http://localhost:8080/api/elections/${electionId}/electionPositions`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'
