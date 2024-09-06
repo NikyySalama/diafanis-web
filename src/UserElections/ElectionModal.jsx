@@ -38,6 +38,9 @@ const ElectionModal = ({ show, onClose, onAddElection }) => {
         onAddElection(); 
 
         setAddedElection(savedElection);
+        if (addedElection) {
+          console.log("uuid elec:", addedElection.uuid);
+        }
       } else {
         console.error('Error al guardar la elección:', response.statusText);
       }
@@ -58,7 +61,7 @@ const ElectionModal = ({ show, onClose, onAddElection }) => {
             <ElectionRegistration handleAddElection={handleAddElection} handleContinue={handleContinue} />
         ) : (
             addedElection ? (
-                <PositionRegistration onClose={handleClose} electionId={addedElection.id} />
+                <PositionRegistration onClose={handleClose} electionId={addedElection.uuid} />
             ) : (
                 <p>Cargando...</p>
             )

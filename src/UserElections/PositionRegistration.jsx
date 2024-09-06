@@ -30,7 +30,7 @@ const PositionRegistration = ({onClose, electionId}) => {
 
       if (response.ok) {
         const savedPosition = await response.json();
-        console.log('Elección guardada:', savedPosition);
+        console.log('Posicion guardada:', savedPosition);
       } else {
         console.error('Error al guardar la posicion:', response.statusText);
       }

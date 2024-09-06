@@ -16,7 +16,7 @@ const UserLists = () => {
 
     const fetchParties = async () => {
         try{
-        const response = await fetch(`http://diafanis.com.ar/api/parties/${electionId}`, {
+        const response = await fetch(`http://diafanis.com.ar/api/election/${electionId}/parties`, {
             method: 'GET',
             headers: {
             'Content-Type': 'application/json'
