@@ -55,9 +55,9 @@ const Tables = () => {
       });
       if (response.ok) {
         const savedTable = await response.json();
-        console.log('Elección guardada:', savedTable);
+        console.log('Mesa guardada:', savedTable);
       } else {
-        console.error('Error al guardar la posicion:', response.statusText);
+        console.error('Error al guardar la mesa:', response.statusText);
       }
     } catch (error) {
       console.error('Error en la solicitud:', error);
@@ -107,7 +107,7 @@ const Tables = () => {
         <ul className='tables-container'>
           {tables.map((table, index) => (
             <li key={index}>
-              <Table locationUuid={table.locationUuid} id={table.id}/>
+              <Table id={index+1} address={table.location.address} city={table.location.city}/>
             </li>
           ))}
         </ul>

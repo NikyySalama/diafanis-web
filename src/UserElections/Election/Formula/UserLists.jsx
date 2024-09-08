@@ -7,33 +7,91 @@ import './UserLists.css';
 
 const UserLists = () => {
   const electionId = useElection();
-  const [lists, setLists] = useState([]);
+  const [parties, setParties] = useState([]);
   const [positions, setPositions] = useState([]);
   const [showPositionsModal, setShowPositionsModal] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [formData, setFormData] = useState({
     partyId: '',
+    partyName: '',
     id: ''
   });
 
   const [positionsData, setPositionsData] = useState([]);
-  const [parties, setParties] = useState([]);
+  const [formulas, setFormulas] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
-      const fetchedLists = await fetchParties();
-      const fetchedPositions = await getPositions();
-      const fetchedParties = await fetchParties();
+      const fetchedFormulas = await fetchFormulas();
+      const fetchedPositions = await fetchPositions();
   
-      setLists(fetchedLists);
+      setFormulas(fetchedFormulas);
       setPositions(fetchedPositions);
-      setParties(fetchedParties);
+
+      console.log('Formulas fetched:', fetchedFormulas);
     };
   
     fetchData();
+    fetchParties();
   }, []);
 
-  const getPositions = async () => {
+  const fetchParties = async () => {
+    try{
+    const response = await fetch(`http://localhost:8080/api/elections/${electionId}/parties`, {
+        method: 'GET',
+        headers: {
+        'Content-Type': 'application/json'
+        }
+    });
+
+    if(response.ok) {
+        const data = await response.json();
+        console.log('Fetched parties:', data);
+        setParties(data);
+    } else{
+        console.error('error al obtener los partidos', response.statusText);
+    }
+    } catch(error){
+        console.error('error en la solicitud de partidos', error);
+    }
+  }
+
+  const fetchFormulas = async () => {
+    try {
+      const responsePositions = await fetch(`http://localhost:8080/api/elections/${electionId}/electionPositions`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+  
+      if (!responsePositions.ok) {
+        throw new Error('Error al obtener las posiciones');
+      }
+  
+      const positions = await responsePositions.json();
+
+      positions.forEach(position => {
+        console.log('Position:', position);
+      });
+  
+      const formulas = positions.flatMap((position) => 
+        position.formulas.map((formula) => ({
+          title: position.title,
+          formulaNumber: formula.formulaNumber,
+          partyName: formula.partyName 
+        }))
+      );
+      
+      console.log(formulas);
+      return formulas;
+    } catch (error) {
+      console.error(error);
+      return [];
+    }
+  };
+
+  const fetchPositions = async () => {
     try {
       const response = await fetch(`http://localhost:8080/api/elections/${electionId}/electionPositions`, {
         method: 'GET',
@@ -52,27 +110,8 @@ const UserLists = () => {
     }
   }
 
-  const fetchParties = async () => {
-    try {
-      const response = await fetch(`http://localhost:8080/api/elections/${electionId}/parties`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
-      if (response.ok) {
-        return await response.json();
-      } else {
-        throw new Error('Error al obtener los partidos');
-      }
-    } catch (error) {
-      console.error(error);
-      return [];
-    }
-  };
-
   const handleCreateListClick = () => {
-    setFormData({ partyId: '', id: '' });
+    setFormData({ partyId: '', partyName: '', id: '' });
     setShowModal(true);
   };
 
@@ -80,15 +119,31 @@ const UserLists = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value
-    });
+  
+    if (name === 'partyId') {
+      console.log('Party ID selected:', value); // Verifica el ID seleccionado
+      const selectedParty = parties.find(party => party.uuid === value); // Cambiar a buscar por 'uuid'
+      console.log('Selected Party Object:', selectedParty); // Verifica el objeto del partido seleccionado
+  
+      const newPartyName = selectedParty ? selectedParty.name : '';
+      console.log('Selected Party Name:', newPartyName); // Verifica el nombre del partido seleccionado
+      
+      setFormData({
+        ...formData,
+        [name]: value,
+        partyName: newPartyName
+      });
+    } else {
+      setFormData({
+        ...formData,
+        [name]: value
+      });
+    }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Form data submitted:', formData);
+    console.log('Form data saved:', formData);
     handleClose();
     setShowPositionsModal(true);
   };
@@ -98,27 +153,96 @@ const UserLists = () => {
   const handleFileUpload = (e, positionId) => {
     const file = e.target.files[0];
     const reader = new FileReader();
-
+  
     reader.onload = (event) => {
       const binaryStr = event.target.result;
       const workbook = XLSX.read(binaryStr, { type: 'array' });
       const sheetName = workbook.SheetNames[0];
       const sheet = workbook.Sheets[sheetName];
       const data = XLSX.utils.sheet_to_json(sheet);
-
-      const updatedPositionsData = [...positionsData];
-      updatedPositionsData[positionId] = data;
-      setPositionsData(updatedPositionsData);
+  
+      const candidates = data.map(row => ({
+        role: row.role || 'Desconocido', // Proporciona un valor predeterminado en caso de que falte
+        docNumber: parseInt(row.DNI, 10) || 0,
+        docType: 'DNI',
+        name: row.name || 'Nombre Desconocido',
+        surname: row.lastName || 'Apellido Desconocido',
+        image: row.imageUrl || ''
+      }));
+  
+      setPositionsData(prevData => {
+        const updatedPositionsData = [...prevData];
+        updatedPositionsData[positionId] = candidates;
+        return updatedPositionsData;
+      });
     };
-
+  
     reader.readAsArrayBuffer(file);
-  };
-
-  const handlePositionsSubmit = (e) => {
+  };  
+  
+  const handlePositionsSubmit = async (e) => {
     e.preventDefault();
-    console.log('Positions data submitted:', positionsData);
+  
+    try {
+      // Prepara los datos para enviar, pero ahora enviando solo el contenido de `formulaData` sin el contenedor "formulaData"
+      const postPromises = positions.map(async (position, index) => {
+        if (!Array.isArray(positionsData[index])) {
+          console.error(`Error: La entrada para la posición ${index} no es un array.`);
+          return;
+        }
+  
+        const candidates = positionsData[index].map((candidate, candidateIndex) => ({
+          role: candidate.role,
+          imageUrl: candidate.image,
+          zindex: candidateIndex,
+          data: {
+            docNumber: candidate.docNumber,
+            docType: candidate.docType,
+            name: candidate.name,
+            lastName: candidate.surname,
+            imageUrl: candidate.image,
+          },
+        }));
+  
+        // Preparar el contenido de formulaData directamente
+        const formulaDataContent = {
+          partyUuid: formData.partyId,
+          idNumber: formData.id,
+          candidates,
+        };
+
+        console.log(`Datos que se enviarán para la posición ${position.title}:`, formulaDataContent);
+  
+        // Enviar los datos al endpoint correspondiente sin el contenedor "formulaData"
+        const response = await fetch(`http://localhost:8080/api/electiveFormulas/${position.uuid}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formulaDataContent), // Ahora enviamos el contenido directamente
+        });
+  
+        if (!response.ok) {
+          throw new Error(`Error al enviar la fórmula para la posición ${position.title}`);
+        }
+  
+        return response.json();
+      });
+  
+      const results = await Promise.all(postPromises);
+  
+      results.forEach((result, index) => {
+        console.log(`Fórmula subida para la posición ${positions[index].title}:`, result);
+      });
+  
+      console.log('Todas las fórmulas han sido enviadas con éxito.');
+    } catch (error) {
+      console.error('Error en el envío de fórmulas:', error);
+    }
+  
     handleClosePositionsModal();
-  };
+  };  
+  
 
   return (
     <div className="user-lists">
@@ -131,9 +255,9 @@ const UserLists = () => {
           <span className="list-name">Nombre</span>
         </div>
         <ul className="lists-container">
-          {lists.map((list, index) => (
+          {formulas.map((formula, index) => (
             <li key={index}>
-              <List name={list.name} />
+              <List position={formula.title} partyName={formula.partyName} formulaNumber ={formula.formulaNumber} />
             </li>
           ))}
         </ul>
@@ -167,8 +291,8 @@ const UserLists = () => {
                 required
               >
               <option value="">Seleccione un partido</option>
-              {parties.map((party) => (
-                <option key={party.id} value={party.id}>
+              {parties.length>0 && parties.map((party) => (
+                <option key={party.uuid} value={party.uuid}>
                   {party.name}
                 </option>
               ))}
