@@ -162,7 +162,7 @@ const UserLists = () => {
       const data = XLSX.utils.sheet_to_json(sheet);
   
       const candidates = data.map(row => ({
-        role: row.role || 'Desconocido', // Proporciona un valor predeterminado en caso de que falte
+        role: row.role || 'Desconocido',
         docNumber: parseInt(row.DNI, 10) || 0,
         docType: 'DNI',
         name: row.name || 'Nombre Desconocido',
@@ -206,6 +206,7 @@ const UserLists = () => {
   
         // Preparar el contenido de formulaData directamente
         const formulaDataContent = {
+          title: "title",
           partyUuid: formData.partyId,
           idNumber: formData.id,
           candidates,
