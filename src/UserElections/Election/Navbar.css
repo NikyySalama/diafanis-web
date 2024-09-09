@@ -4,12 +4,16 @@
     background-color: #60a5ff;
     padding: 0 !important;
     box-sizing: border-box;
+    height: 45px;
 
     position: fixed !important;
     top: 0;
     left: 0;
     right: 0;
     z-index: 30;
+}
+:root {
+    --navbar-height: 45px;
 }
 
 .navbar-title-section {

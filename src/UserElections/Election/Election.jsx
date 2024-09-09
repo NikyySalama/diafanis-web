@@ -13,7 +13,7 @@ const Election = () => {
     const [activeSection, setActiveSection] = useState('info');
     
     console.log(electionId);
-    
+
     const renderSection = () => {
         switch (activeSection) {
             case 'parties':
@@ -31,7 +31,7 @@ const Election = () => {
     return (
         <ElectionProvider electionId={electionId}>
             <Navbar setActiveSection={setActiveSection} title={title} />
-            <div style={{ marginTop: '5%' }}>
+            <div style={{ marginTop: 'var(--navbar-height)' }}>
                 {renderSection()}
             </div>
         </ElectionProvider>
