@@ -41,7 +41,7 @@ const UserElections = () => {
   }
   
   const handleElectionClicked = (title, electionId) => {
-    navigate('/election', { state: {title, electionId}});
+    navigate('/userElections/election', { state: {title, electionId}});
   }
 
   const openModal = () => setIsModalOpen(true);
