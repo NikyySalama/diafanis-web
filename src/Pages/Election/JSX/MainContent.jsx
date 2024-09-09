@@ -10,31 +10,40 @@ import { MantineProvider } from '@mantine/core';
 
 import '@mantine/carousel/styles.css';
 const MainContent = ( ) => {
-  const [table, setTable] = useState([]);
+  const [tableUuid, setTableUuid] = useState(null);
+  const [table, setTable] = useState({});
+  const [formulaMap, setFormulaMap] = useState({});
+
+  // Fetch election from localStorage once
   const savedElection = localStorage.getItem('election');
-  
   const election = savedElection ? JSON.parse(savedElection) : null;
-  const tableUuid = localStorage.getItem('tableUuid');
+
+  // Create positions and parties maps
   const positions = election?.electionPositions?.reduce((acc, position) => {
     acc[position.uuid] = position;
     return acc;
   }, {}) || {};
-  
+
   const parties = election?.parties?.reduce((acc, party) => {
     acc[party.uuid] = party;
     return acc;
   }, {}) || {};
 
-  
-  const [formulaMap, setFormulaMap] = useState({});
-
+  // Set the table UUID after the election data is available
   useEffect(() => {
-    const savedElection = localStorage.getItem('election');
-    const election = savedElection ? JSON.parse(savedElection) : null;
-
+    if (election && election.votingTables && election.votingTables.length > 0) {
+      const uuid = election.votingTables[0].uuid;
+      if (tableUuid !== uuid) { // Check if the UUID is different
+        setTableUuid(uuid);
+        console.log('Table UUID:', uuid);
+      }
+    }
+  }, [election, tableUuid]); // Add tableUuid to dependencies to handle changes
+  // Create formulaMap after the election data is available
+  useEffect(() => {
     if (election && Array.isArray(election.electionPositions)) {
       const newFormulaMap = {};
-
+  
       election.electionPositions.forEach((position) => {
         if (Array.isArray(position.formulas)) {
           position.formulas.forEach((formula) => {
@@ -44,42 +53,46 @@ const MainContent = ( ) => {
           });
         }
       });
-
-      setFormulaMap(newFormulaMap);
-      console.log(newFormulaMap);
-      localStorage.setItem('formulas', JSON.stringify(newFormulaMap));
+  
+      // Check if the new formulaMap is different from the current one
+      if (JSON.stringify(newFormulaMap) !== JSON.stringify(formulaMap)) {
+        setFormulaMap(newFormulaMap);
+        console.log(newFormulaMap);
+        localStorage.setItem('formulas', JSON.stringify(newFormulaMap));
+      }
     } else {
       console.warn('No election positions available or election data is missing.');
     }
-  }, []);
+  }, [election, formulaMap]); // Include formulaMap in dependencies
+
+  // Fetch table data after the tableUuid is set
   useEffect(() => {
-  
-    const fetchData = async () => {
+    if (tableUuid) {
+      const fetchData = async () => {
         try {
           const response = await fetch(`http://localhost:8080/api/tables/${tableUuid}`, {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json'
             },
-            
           });
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
 
-            const data = await response.json(); 
-            setTable(data); 
-          
-            localStorage.setItem('positions', JSON.stringify(positions));
-      
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
 
+          const data = await response.json();
+          setTable(data);
+          localStorage.setItem('positions', JSON.stringify(positions));
         } catch (error) {
-            console.error('Error fetching data:', error); 
+          console.error('Error fetching data:', error);
         }
-    };
+      };
 
-    fetchData();
-},  []); 
+      fetchData();
+    }
+  }, [tableUuid]); // Correctly depends on `tableUuid`
+
 
 
 

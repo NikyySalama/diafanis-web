@@ -7,51 +7,64 @@ import Menu from "../../../Common/Menu";
 import { useState, useEffect } from 'react';
 
 const Election = () => {
-  const  elecctionUuid = localStorage.getItem('electionId')
-  const [election, setElection] = useState([]);
+  const [election, setElection] = useState(null); // Initialize with null to handle loading states
+  const [elecctionUuid, setElecctionUuid] = useState(null); // Initialize with null for the UUID
+  const [loading, setLoading] = useState(true); // Add a loading state
 
   useEffect(() => {
-  
-    const fetchData = async () => {
+    const savedElectionId = localStorage.getItem('electionId');
+    if (savedElectionId) {
+      setElecctionUuid(savedElectionId);
+      setLoading(false);
+    }
+  }, []); // Only run this effect once on mount
+
+  useEffect(() => {
+    if (elecctionUuid) {
+      const fetchData = async () => {
         try {
           const response = await fetch(`http://localhost:8080/api/elections/${elecctionUuid}`, {
             method: 'GET',
             headers: {
-              'Content-Type': 'application/json'
-            }
+              'Content-Type': 'application/json',
+            },
           });
-    
-            // Ensure the response is ok before converting to JSON
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
 
-            const data = await response.json(); // Convert the response to JSON
-            setElection(data); // Set the fetched data to the state
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+
+          const data = await response.json();
+          setElection(data);
+          localStorage.setItem('election', JSON.stringify(data)); // Save election to localStorage
         } catch (error) {
-            console.error('Error fetching data:', error); // Handle any errors
+          console.error('Error fetching data:', error);
         }
-    };
+      };
 
-    fetchData(); // Call the asynchronous fetch function
-},  [elecctionUuid]); 
+      fetchData();
+    }
+  }, [elecctionUuid]); // Fetch data only when elecctionUuid changes
 
-useEffect(() => {
-  if (election) {
-    localStorage.setItem('election', JSON.stringify(election));
-   
-  }
-}, [election]); // This effect will run every time `election` changes
-
-    return (
-      
+  // Render based on the availability of `elecctionUuid` and `election`
+  return (
     <div className="election">
-        <Menu/>
-        <Title content={election.title}/>
-        <MainContent/>
-        <Footer/>
+      {loading ? (
+        <p>Loading...</p> // Loading message while fetching UUID
+      ) : !elecctionUuid ? (
+        <p>No election ID found.</p> // Message if no UUID is found
+      ) : !election ? (
+        <p>Loading election data...</p> // Message while fetching election data
+      ) : (
+        <>
+          <Menu />
+          <Title content={election.title} />
+          <MainContent />
+          <Footer />
+        </>
+      )}
     </div>
-    );
-  };
+  );
+};
 
 export default Election

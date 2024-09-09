@@ -6,55 +6,63 @@ import Menu from "../../../Common/Menu";
 import MainContent from "./MainContent";
 import { useState, useEffect } from 'react';
 
-
-
-
-
 const PageTableInfo = () => {
 
+  const [table, setTable] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-    const  tableUuid = localStorage.getItem('tableUuid')
-    const [table, setTable] = useState([]);
+  // Retrieve tableUuid from localStorage
+  const tableUuid = localStorage.getItem('tableUuid');
 
   useEffect(() => {
-  
+    // Define the fetchData function to get table data
     const fetchData = async () => {
-        try {
-          const response = await fetch(`http://localhost:8080/api/tables/${tableUuid}`, {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json'
-            }
-          });
-    
-            // Ensure the response is ok before converting to JSON
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            const data = await response.json(); // Convert the response to JSON
-            setTable(data); // Set the fetched data to the state
-            const form = localStorage.getItem('formulas') ? JSON.parse(localStorage.getItem('formulas')) : null;
-            localStorage.setItem('forms',JSON.stringify(form));
-        } catch (error) {
-            console.error('Error fetching data:', error); // Handle any errors
+      try {
+        if (!tableUuid) {
+          console.warn('No table UUID found in localStorage.');
+          setLoading(false);
+          return;
         }
+
+        const response = await fetch(`http://localhost:8080/api/tables/${tableUuid}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+
+        // Ensure the response is okay
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        // Convert the response to JSON
+        const data = await response.json();
+        setTable(data); // Set the fetched data to the state
+
+        // Store the table data in localStorage
+        localStorage.setItem('tableInfo', JSON.stringify(data));
+      } catch (error) {
+        console.error('Error fetching data:', error); // Handle any errors
+      } finally {
+        setLoading(false);
+      }
     };
 
     fetchData(); // Call the asynchronous fetch function
-}, [tableUuid]); 
- 
+  }, [tableUuid]); // Run when tableUuid changes
 
+  if (loading) {
+    return <p>Loading...</p>; // Show a loading message while data is being fetched
+  }
 
-
-    return (
+  return (
     <div className="PageTableInfo">
-        <Menu/>
-        <Title content={`Mesa ${tableUuid}`}/>
-        <MainContent forms/>
-       <Footer/>
+      <Menu />
+      <Title content={`Mesa ${tableUuid}`} />
+      <MainContent  /> {/* Pass formulas as a prop */}
+      <Footer />
     </div>
-    );
-  };
-
+  );
+};
 export default PageTableInfo
