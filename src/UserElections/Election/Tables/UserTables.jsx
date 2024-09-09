@@ -131,9 +131,6 @@ const Tables = () => {
             <button type="submit" className="modal-button">
               Guardar
             </button>
-            <Button variant="secondary" onClick={handleCloseUploadModal}>
-              Cancelar
-            </Button>
           </form>
         </Modal.Body>
       </Modal>

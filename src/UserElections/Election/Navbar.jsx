@@ -2,9 +2,15 @@ import React from 'react';
 import './Navbar.css';
 
 const Navbar = ({ setActiveSection, title }) => {
+
+  const handleGoBack = () => {
+    window.history.back();
+  };
+
   return (
     <nav className="navbar">
         <div className='navbar-title-section'>
+          <button className="go-back-button" onClick={handleGoBack}>Volver</button>
             <p className="navbar-title">{title}</p>
         </div>
         <ul className="nav-items">

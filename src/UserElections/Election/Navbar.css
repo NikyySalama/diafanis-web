@@ -18,8 +18,12 @@
 
 .navbar-title-section {
     background-color: rgb(221, 236, 250);
-    padding: 10px 15px;
+    padding: 7px 10px;
     border-right: 2px solid #243f68;
+
+    display: flex; 
+    align-items: center; 
+    gap: 10px; 
 }
 
 .navbar-title {
@@ -50,4 +54,17 @@
 .nav-item:hover {
     color: #e2f3fa;
 }
+
+.go-back-button {
+    background-color: #cfd9e2; 
+    border: 0px; 
+    border-radius: 5px; 
+    padding: 5px 10px; 
+    font-size: 14px; 
+    cursor: pointer; 
+    transition: background-color 0.3s; 
+  }
   
+.go-back-button:hover {
+    background-color: rgb(206, 203, 203); 
+}

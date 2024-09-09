@@ -92,7 +92,7 @@ const UserLists = () => {
 
     return (
         <div className="user-lists">
-            <h1 className="user-lists-title">Sus Partidos</h1>
+            <h1 className="my-tables-title">Sus Partidos</h1>
             <button className="add-list-button" onClick={handleCreatePartyClick}>
                 Crear Partido
             </button>
