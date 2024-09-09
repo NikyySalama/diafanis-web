@@ -6,14 +6,10 @@ import { useNavigate } from 'react-router-dom';
 const Menu = () => {
   const navigate = useNavigate();
   const handleClick = () => {
-    navigate(`/`, {
-     
-    });
+    navigate(`/`);
   };
   const handleClickUser = () => {
-    navigate(`/`, {
-     
-    });
+    navigate(`/userElections`);
   };
 
 
