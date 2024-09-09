@@ -97,3 +97,10 @@ textarea {
 .modal-button:hover {
     background-color: #0056b3;
 }
+
+.list-item {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 20px;
+    align-items: center;
+}

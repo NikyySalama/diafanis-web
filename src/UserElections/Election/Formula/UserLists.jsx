@@ -78,8 +78,8 @@ const UserLists = () => {
       const formulas = positions.flatMap((position) => 
         position.formulas.map((formula) => ({
           title: position.title,
-          formulaNumber: formula.formulaNumber,
-          partyName: formula.partyName 
+          formulaNumber: formula.idNumber,
+          partyName: formula.party.name 
         }))
       );
       
@@ -250,7 +250,9 @@ const UserLists = () => {
       </button>
       <div className="lists-content">
         <div className="list-data">
-          <span className="list-name">Nombre</span>
+          <span className="list-data" style={{fontWeight:'700'}}>Posicion</span>
+          <span className="list-data" style={{fontWeight:'700'}}>Partido</span>
+          <span className="list-data" style={{fontWeight:'700'}}>Id</span>
         </div>
         <ul className="lists-container">
           {formulas.map((formula, index) => (
