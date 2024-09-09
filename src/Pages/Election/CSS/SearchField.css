@@ -1,0 +1,29 @@
+.search-container{
+    min-width: 70%;
+    max-width: 70%;
+    min-height: 10%;
+    max-height: 10%;
+    height: 10px;
+    display: flex;
+    flex-direction: row;
+    border-radius: 1%;
+    border: 1px solid #ccc;
+    align-items: center; 
+    background-color: #FFFFFF;
+    visibility: hidden;
+}
+
+.hint{
+    color: #020246;
+    opacity: 30%;
+    width: 90%;
+    margin-left: 4%;
+    font-size:calc(1vh + 1.25vw);
+}
+
+.search-icon{
+    width: 10%;
+    margin-right: 4%;
+    opacity: 30%;
+ 
+}

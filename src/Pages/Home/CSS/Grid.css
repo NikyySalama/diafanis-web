@@ -1,0 +1,32 @@
+.grid{
+    display: grid;
+    grid-template-columns: repeat(3,30%);
+    height: fit-content;
+    gap: 7%;
+    width: 80%;
+    margin-left: 10%;
+    margin-right: 10%;
+}
+ .grid-container{
+    width: 100%;
+    min-height: 80%;
+    height: 80%;
+    overflow-y: auto; /* Allows vertical scrolling if content overflows */
+ }
+
+.electionsEmpty{
+    width: 100%;
+    min-height: 60%;
+    height: 80%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.text-empty{
+    font-size: calc(1.5vh + 3vw);
+    width: 70%;
+    max-width: 70%;
+    margin: 0;
+    padding: 0;
+}

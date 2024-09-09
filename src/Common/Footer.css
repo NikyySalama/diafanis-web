@@ -1,0 +1,23 @@
+.footer-text{
+    margin: 0 auto;
+    width: fit-content;
+    color: #020246;
+    font-size: calc(1vh + 1.5vw);
+    opacity: 100%;
+}
+
+.footer{
+    background-color: #D3D3D3;
+    
+    opacity: 70%;
+    display: block;;
+    display: flex;
+    text-align: center;
+    flex-direction: column;
+    justify-content: center;
+    align-self: flex-center;
+    justify-self: center;
+    min-height: 8%;
+ 
+   
+}
