@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import './UserElections.css'
 import ElectionInList from './ElectionInList';
 import ElectionModal from './ElectionModal';
+import NavbarUserElection from './NavbarUserElection';
 
 const UserElections = () => {
   const [elections, setElections] = useState([]);
@@ -48,29 +49,32 @@ const UserElections = () => {
   const closeModal = () => setIsModalOpen(false);
 
   return (
-    <div className='my-elections'>
-      <h1 className='my-elections-title'>Sus Elecciones</h1>
-      <button className='add-election-button' onClick={openModal}>Crear Eleccion</button>
-      <div style={{padding: '10px'}}>
-        <div className="election-data">
-          <span className="election-name">Nombre</span>
-          <span className="election-date">Fecha de Inicio</span>
-          <span className="election-date">Fecha de Fin</span>
+    <div>
+      <NavbarUserElection/>
+      <div className='my-elections'>
+        <h1 className='my-elections-title'>Sus Elecciones</h1>
+        <button className='add-election-button' onClick={openModal}>Crear Eleccion</button>
+        <div style={{padding: '10px'}}>
+          <div className="election-data">
+            <span className="election-name">Nombre</span>
+            <span className="election-date">Fecha de Inicio</span>
+            <span className="election-date">Fecha de Fin</span>
+          </div>
+          <ul className='election-list'>
+            {elections.map((election, index) => (
+              <li onClick={() => handleElectionClicked(election.title, election.uuid)} key={index}>
+                <ElectionInList title={election.title} startsAt={election.startsAt} endsAt={election.endsAt}/>
+              </li>
+            ))}
+          </ul>
         </div>
-        <ul className='election-list'>
-          {elections.map((election, index) => (
-            <li onClick={() => handleElectionClicked(election.title, election.uuid)} key={index}>
-              <ElectionInList title={election.title} startsAt={election.startsAt} endsAt={election.endsAt}/>
-            </li>
-          ))}
-        </ul>
-      </div>
 
-      <ElectionModal
-        show={isModalOpen}
-        onClose={closeModal}
-        onAddElection={fetchElections}
-      />
+        <ElectionModal
+          show={isModalOpen}
+          onClose={closeModal}
+          onAddElection={fetchElections}
+        />
+      </div>
     </div>
   );
 };
