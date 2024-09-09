@@ -1,0 +1,28 @@
+
+.HeadContent {
+    display: flex;
+    flex-direction: column; 
+    justify-content: center; 
+    align-items: center; 
+    min-height: 50%;
+    height: 50%;
+    max-height: 50%;
+    width: 100%; 
+    background-color: #020246;
+  }
+  
+  .HeadContent-title, .HeadContent-text {
+    margin: 0; /* Remove default margins to avoid unexpected spacing */
+    color: #EFF0F7;
+  }
+
+  h1 {
+    font-size: calc(1.5rem + 3vw + 0.25vh);
+    height: fit-content;
+  }
+  
+  h4 {
+    font-size: calc(0.5rem + 0.5vw + 0.25vh);
+    height: fit-content;
+  }
+ 
