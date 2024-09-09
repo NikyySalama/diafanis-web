@@ -1,6 +1,5 @@
 import React from 'react';
 import '../CSS/Grid.css';
-import cardsData from '../../../elections';
 import Card from './Card';
 import { useState, useEffect } from 'react';
 const GridCard = () => {
