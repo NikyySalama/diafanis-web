@@ -184,7 +184,6 @@ const UserLists = () => {
     e.preventDefault();
   
     try {
-      // Prepara los datos para enviar, pero ahora enviando solo el contenido de `formulaData` sin el contenedor "formulaData"
       const postPromises = positions.map(async (position, index) => {
         if (!Array.isArray(positionsData[index])) {
           console.error(`Error: La entrada para la posición ${index} no es un array.`);
@@ -204,23 +203,21 @@ const UserLists = () => {
           },
         }));
   
-        // Preparar el contenido de formulaData directamente
         const formulaDataContent = {
-          title: "title",
+          title : "title", 
           partyUuid: formData.partyId,
           idNumber: formData.id,
-          candidates,
+          candidates
         };
 
-        console.log(`Datos que se enviarán para la posición ${position.title}:`, formulaDataContent);
+        console.log(`Datos que se enviarán para la posición ${position.uuid}:`, JSON.stringify(formulaDataContent, null, 2));
   
-        // Enviar los datos al endpoint correspondiente sin el contenedor "formulaData"
         const response = await fetch(`http://localhost:8080/api/electiveFormulas/${position.uuid}`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(formulaDataContent), // Ahora enviamos el contenido directamente
+          body: JSON.stringify(formulaDataContent), 
         });
   
         if (!response.ok) {
