@@ -1,52 +1,79 @@
 import React, { useState, useEffect } from 'react';
-import electionsData from '../elections';
+import { useNavigate } from 'react-router-dom';
 import './UserElections.css'
 import ElectionInList from './ElectionInList';
-import { useNavigate } from 'react-router-dom';
+import ElectionModal from './ElectionModal';
+import NavbarUserElection from './NavbarUserElection';
 
 const UserElections = () => {
   const [elections, setElections] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    setElections(electionsData);
+    fetchElections();
   }, []);
 
-  const addElection = () => {
-    /*const newElection = {
-        id: elections.length + 1,
-        name: prompt('Ingrese el nombre de la elección:'),
-        description: prompt('Ingrese la descripción de la elección:'),
-        startDate: prompt('Ingrese la fecha de inicio (YYYY-MM-DD):'),
-        endDate: prompt('Ingrese la fecha de cierre (YYYY-MM-DD):'),
-      };
+  const fetchElections = async () => {
+    try{
+      const response = await fetch('http://localhost:8080/api/elections', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
 
-    if (newElection.name && newElection.description && newElection.startDate && newElection.endDate) {
-        setElections([...elections, newElection]);
+      if(response.ok) {
+        const data = await response.json();
+        const filteredElections = data.map(election => ({ //filtro los campos que necesito
+          title: election.title,
+          description: election.description,
+          startsAt: election.startsAt,
+          endsAt: election.endsAt,
+          uuid: election.uuid
+        }));
+        setElections(filteredElections);
+      } else{
+        console.error('error al obtener las elecciones', response.statusText);
+      }
+    } catch(error){
+        console.error('error en la solicitud de elecciones', error);
     }
-    else{
-        //TODO: msj de completar campos faltantes
-    }*/
-    navigate('/election-registration');
-  };
+  }
+  
+  const handleElectionClicked = (title, electionId) => {
+    navigate('/userElections/election', { state: {title, electionId}});
+  }
+
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
 
   return (
-    <div className='my-elections'>
-      <h1 className='my-elections-title'>Sus Elecciones</h1>
-      <button className='add-election-button' onClick={addElection}>Crear Eleccion</button>
-      <div style={{padding: '10px'}}>
-        <div className="election-data">
-          <span className="election-name">Nombre</span>
-          <span className="election-date">Fecha de Inicio</span>
-          <span className="election-date">Fecha de Fin</span>
+    <div>
+      <NavbarUserElection/>
+      <div className='my-elections'>
+        <h1 className='my-elections-title'>Sus Elecciones</h1>
+        <button className='add-election-button' onClick={openModal}>Crear Eleccion</button>
+        <div style={{padding: '10px'}}>
+          <div className="election-data">
+            <span className="election-name">Nombre</span>
+            <span className="election-date">Fecha de Inicio</span>
+            <span className="election-date">Fecha de Fin</span>
+          </div>
+          <ul className='election-list'>
+            {elections.map((election, index) => (
+              <li onClick={() => handleElectionClicked(election.title, election.uuid)} key={index}>
+                <ElectionInList title={election.title} startsAt={election.startsAt} endsAt={election.endsAt}/>
+              </li>
+            ))}
+          </ul>
         </div>
-        <ul className='election-list'>
-          {elections.map((election, index) => (
-            <li key={index}>
-              <ElectionInList name={election.name} startDate={election.startDate} endDate={election.endDate}/>
-            </li>
-          ))}
-        </ul>
+
+        <ElectionModal
+          show={isModalOpen}
+          onClose={closeModal}
+          onAddElection={fetchElections}
+        />
       </div>
     </div>
   );

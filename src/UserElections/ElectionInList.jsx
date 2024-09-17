@@ -1,12 +1,12 @@
 import React from "react"
 import './ElectionInList.css';
 
-const ElectionInList = ({name, startDate, endDate}) => {
+const ElectionInList = ({title, startsAt, endsAt}) => {
     return(
         <div className="election-item">
-            <span className="election-name">{name}</span>
-            <span className="election-date">{startDate}</span>
-            <span className="election-date">{endDate}</span>
+            <span className="election-name">{title}</span>
+            <span className="election-date">{startsAt}</span>
+            <span className="election-date">{endsAt}</span>
         </div>
     )
 }
