@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useElection } from '../ElectionContext';
-import Party from './Party';
 import { Modal } from 'react-bootstrap';
+import CustomTable from '../../CustomTable';
 import '../Formula/UserLists.css';
 
-const UserLists = () => {
+const UserParties = () => {
     const electionId = useElection();
     const [parties, setParties] = useState([]);
     const [showModal, setShowModal] = useState(false);
@@ -61,7 +61,6 @@ const UserLists = () => {
             electionUuid: electionId
         };
 
-        console.log(partyData);
         try {
             const response = await fetch(`http://localhost:8080/api/parties/${electionId}`, {
                 method: 'POST',
@@ -73,7 +72,6 @@ const UserLists = () => {
 
             if (response.ok) {
                 const savedParty = await response.json();
-                console.log('Partido guardado:', savedParty);
                 fetchParties(); 
             } else {
                 console.error('Error al guardar el partido:', response.statusText);
@@ -85,10 +83,19 @@ const UserLists = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log('Datos del formulario enviados:', formData);
         handleAddParty(formData);
         handleClose();
     };
+
+    // Definir las columnas para CustomTable
+    const columns = [
+        { label: 'Nombre', field: 'name', align: 'left' },
+    ];
+
+    // Transformar los partidos para filas de CustomTable
+    const rows = parties.map(party => ({
+        name: party.name
+    }));
 
     return (
         <div className="user-lists">
@@ -96,18 +103,13 @@ const UserLists = () => {
             <button className="add-list-button" onClick={handleCreatePartyClick}>
                 Crear Partido
             </button>
-            <div className="lists-content">
-                <div className="list-data">
-                    <span className="list-name">Nombre</span>
-                </div>
-                <ul className="lists-container">
-                    {parties.map((party, index) => (
-                        <li key={index}>
-                            <Party name={party.name} />
-                        </li>
-                    ))}
-                </ul>
-            </div>
+            
+            {/* Reemplazar el contenido de lists-content por CustomTable */}
+            <CustomTable 
+                columns={columns}
+                rows={rows}
+                onRowClick={(row) => console.log('Partido seleccionado:', row)}
+            />
 
             <Modal show={showModal} onHide={handleClose}>
                 <Modal.Header closeButton>
@@ -161,4 +163,4 @@ const UserLists = () => {
     );
 };
 
-export default UserLists;
+export default UserParties;

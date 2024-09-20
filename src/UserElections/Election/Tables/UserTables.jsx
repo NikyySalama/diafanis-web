@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useElection } from '../ElectionContext';
-import Table from './Table';
-import { Modal, Button } from 'react-bootstrap';
+import CustomTable from '../../CustomTable';
+import { Modal } from 'react-bootstrap';
 import * as XLSX from 'xlsx';
-import './UserTables.css'
+import './UserTables.css';
 
 const Tables = () => {
   const electionId = useElection();
@@ -36,15 +36,15 @@ const Tables = () => {
 
   const postTable = async (table) => {
     const location = {
-      country : table.country,
-      state : table.state,
-      city : table.city,
-      address : table.address
-    }
+      country: table.country,
+      state: table.state,
+      city: table.city,
+      address: table.address
+    };
     const tableToSend = {
-        name : table.id,
-        location : location
-    }
+      name: table.id,
+      location: location
+    };
     try {
       const response = await fetch(`http://localhost:8080/api/tables/${electionId}`, {
         method: 'POST',
@@ -94,24 +94,27 @@ const Tables = () => {
     fetchTables();
   };
 
+  // Definir las columnas para CustomTable
+  const columns = [
+    { label: 'Numero', field: 'id', align: 'left' },
+    { label: 'Ciudad', field: 'city', align: 'left' },
+    { label: 'Direccion', field: 'address', align: 'left' },
+  ];
+
+  // Mapeo de datos para CustomTable
+  const rows = tables.map((table, index) => ({
+    id: index + 1,
+    city: table.location.city,
+    address: table.location.address,
+  }));
+
   return (
     <div className='my-tables'>
       <h1 className='my-tables-title'>Sus Mesas</h1>
       <button className='add-table-button' onClick={handleCreateTableClick}>Crear Mesa</button>
-      <div style={{padding: '10px'}}>
-        <div className="table-data">
-            <span className="table-id">Numero</span>
-            <span className="table-location">Ciudad</span>
-            <span className="table-location">Direccion</span>
-        </div>
-        <ul className='tables-container'>
-          {tables.map((table, index) => (
-            <li key={index}>
-              <Table id={index+1} address={table.location.address} city={table.location.city}/>
-            </li>
-          ))}
-        </ul>
-      </div>
+
+      {/* Reutilizar CustomTable */}
+      <CustomTable columns={columns} rows={rows} onRowClick={(row) => console.log('Fila clickeada', row)} />
 
       <Modal show={showUploadModal} onHide={handleCloseUploadModal}>
         <Modal.Header closeButton>

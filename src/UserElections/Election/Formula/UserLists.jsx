@@ -9,188 +9,130 @@ const UserLists = () => {
   const electionId = useElection();
   const [parties, setParties] = useState([]);
   const [positions, setPositions] = useState([]);
-  const [showPositionsModal, setShowPositionsModal] = useState(false);
-  const [showModal, setShowModal] = useState(false);
-  const [formData, setFormData] = useState({
-    partyId: '',
-    partyName: '',
-    id: ''
-  });
-
-  const [positionsData, setPositionsData] = useState([]);
   const [formulas, setFormulas] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [showPositionsModal, setShowPositionsModal] = useState(false);
+  const [formData, setFormData] = useState({ partyId: '', partyName: '', id: '' });
+  const [positionsData, setPositionsData] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       const fetchedFormulas = await fetchFormulas();
       const fetchedPositions = await fetchPositions();
-  
+
       setFormulas(fetchedFormulas);
       setPositions(fetchedPositions);
-
-      console.log('Formulas fetched:', fetchedFormulas);
     };
-  
     fetchData();
     fetchParties();
   }, []);
 
   const fetchParties = async () => {
-    try{
-    const response = await fetch(`http://localhost:8080/api/elections/${electionId}/parties`, {
-        method: 'GET',
-        headers: {
-        'Content-Type': 'application/json'
-        }
-    });
-
-    if(response.ok) {
+    try {
+      const response = await fetch(`http://localhost:8080/api/elections/${electionId}/parties`);
+      if (response.ok) {
         const data = await response.json();
-        console.log('Fetched parties:', data);
         setParties(data);
-    } else{
-        console.error('error al obtener los partidos', response.statusText);
+      } else {
+        console.error('Error al obtener los partidos');
+      }
+    } catch (error) {
+      console.error('Error en la solicitud de partidos', error);
     }
-    } catch(error){
-        console.error('error en la solicitud de partidos', error);
-    }
-  }
+  };
 
   const fetchFormulas = async () => {
     try {
-      const responsePositions = await fetch(`http://localhost:8080/api/elections/${electionId}/electionPositions`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
-  
-      if (!responsePositions.ok) {
+      const response = await fetch(`http://localhost:8080/api/elections/${electionId}/electionPositions`);
+      if (response.ok) {
+        const positions = await response.json();
+        const formulas = positions.flatMap(position =>
+          position.formulas.map(formula => ({
+            title: position.title,
+            formulaNumber: formula.idNumber,
+            partyName: formula.party.name,
+          }))
+        );
+        return formulas;
+      } else {
         throw new Error('Error al obtener las posiciones');
       }
-  
-      const positions = await responsePositions.json();
-
-      positions.forEach(position => {
-        console.log('Position:', position);
-      });
-  
-      const formulas = positions.flatMap((position) => 
-        position.formulas.map((formula) => ({
-          title: position.title,
-          formulaNumber: formula.idNumber,
-          partyName: formula.party.name 
-        }))
-      );
-      
-      console.log(formulas);
-      return formulas;
     } catch (error) {
-      console.error(error);
+      console.error('Error en fetchFormulas:', error);
       return [];
     }
   };
 
   const fetchPositions = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/api/elections/${electionId}/electionPositions`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
+      const response = await fetch(`http://localhost:8080/api/elections/${electionId}/electionPositions`);
       if (response.ok) {
         return await response.json();
       } else {
-        throw new Error('Error al obtener los posiciones');
+        throw new Error('Error al obtener las posiciones');
       }
     } catch (error) {
-      console.error(error);
+      console.error('Error en fetchPositions:', error);
       return [];
     }
-  }
+  };
 
   const handleCreateListClick = () => {
     setFormData({ partyId: '', partyName: '', id: '' });
     setShowModal(true);
   };
 
-  const handleClose = () => setShowModal(false);
-
   const handleChange = (e) => {
     const { name, value } = e.target;
-  
     if (name === 'partyId') {
-      console.log('Party ID selected:', value); // Verifica el ID seleccionado
-      const selectedParty = parties.find(party => party.uuid === value); // Cambiar a buscar por 'uuid'
-      console.log('Selected Party Object:', selectedParty); // Verifica el objeto del partido seleccionado
-  
-      const newPartyName = selectedParty ? selectedParty.name : '';
-      console.log('Selected Party Name:', newPartyName); // Verifica el nombre del partido seleccionado
-      
-      setFormData({
-        ...formData,
-        [name]: value,
-        partyName: newPartyName
-      });
+      const selectedParty = parties.find(party => party.uuid === value);
+      setFormData({ ...formData, partyId: value, partyName: selectedParty ? selectedParty.name : '' });
     } else {
-      setFormData({
-        ...formData,
-        [name]: value
-      });
+      setFormData({ ...formData, [name]: value });
     }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Form data saved:', formData);
-    handleClose();
+    setShowModal(false);
     setShowPositionsModal(true);
   };
 
-  const handleClosePositionsModal = () => setShowPositionsModal(false);
-  
   const handleFileUpload = (e, positionId) => {
     const file = e.target.files[0];
     const reader = new FileReader();
-  
+
     reader.onload = (event) => {
       const binaryStr = event.target.result;
       const workbook = XLSX.read(binaryStr, { type: 'array' });
-      const sheetName = workbook.SheetNames[0];
-      const sheet = workbook.Sheets[sheetName];
+      const sheet = workbook.Sheets[workbook.SheetNames[0]];
       const data = XLSX.utils.sheet_to_json(sheet);
-  
+
       const candidates = data.map(row => ({
         role: row.role || 'Desconocido',
         docNumber: parseInt(row.DNI, 10) || 0,
         docType: 'DNI',
         name: row.name || 'Nombre Desconocido',
         surname: row.lastName || 'Apellido Desconocido',
-        image: row.imageUrl || ''
+        image: row.imageUrl || '',
       }));
-  
+
       setPositionsData(prevData => {
-        const updatedPositionsData = [...prevData];
-        updatedPositionsData[positionId] = candidates;
-        return updatedPositionsData;
+        const updatedData = [...prevData];
+        updatedData[positionId] = candidates;
+        return updatedData;
       });
     };
-  
+
     reader.readAsArrayBuffer(file);
-  };  
-  
+  };
+
   const handlePositionsSubmit = async (e) => {
     e.preventDefault();
-  
+
     try {
       const postPromises = positions.map(async (position, index) => {
-        if (!Array.isArray(positionsData[index])) {
-          console.error(`Error: La entrada para la posición ${index} no es un array.`);
-          return;
-        }
-  
-        const candidates = positionsData[index].map((candidate, candidateIndex) => ({
+        const candidates = positionsData[index]?.map((candidate, candidateIndex) => ({
           role: candidate.role,
           imageUrl: candidate.image,
           zindex: candidateIndex,
@@ -199,85 +141,70 @@ const UserLists = () => {
             docType: candidate.docType,
             name: candidate.name,
             lastName: candidate.surname,
-            imageUrl: candidate.image,
           },
-        }));
-  
-        const formulaDataContent = {
-          title : "title", 
+        })) || [];
+
+        const formulaData = {
+          title: 'title',
           partyUuid: formData.partyId,
           idNumber: formData.id,
-          candidates
+          candidates,
         };
 
-        console.log(`Datos que se enviarán para la posición ${position.uuid}:`, JSON.stringify(formulaDataContent, null, 2));
-  
         const response = await fetch(`http://localhost:8080/api/electiveFormulas/${position.uuid}`, {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(formulaDataContent), 
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formulaData),
         });
-  
-        if (!response.ok) {
-          throw new Error(`Error al enviar la fórmula para la posición ${position.title}`);
-        }
-  
+
+        if (!response.ok) throw new Error(`Error al enviar la fórmula para ${position.title}`);
         return response.json();
       });
-  
+
       const results = await Promise.all(postPromises);
-  
-      results.forEach((result, index) => {
-        console.log(`Fórmula subida para la posición ${positions[index].title}:`, result);
-      });
-  
-      console.log('Todas las fórmulas han sido enviadas con éxito.');
+      results.forEach((result, index) => console.log(`Fórmula subida para ${positions[index].title}:`, result));
     } catch (error) {
       console.error('Error en el envío de fórmulas:', error);
     }
-  
-    handleClosePositionsModal();
-  };  
-  
+
+    setShowPositionsModal(false);
+  };
 
   return (
     <div className="user-lists">
-      <h1 className="my-tables-title">Sus Formulas</h1>
-      <button className="add-list-button" onClick={handleCreateListClick}>
-        Crear Formula
-      </button>
+      <h1 className="my-tables-title">Sus Fórmulas</h1>
+      <button className="add-list-button" onClick={handleCreateListClick}>Crear Fórmula</button>
+      
       <div className="lists-content">
         <div className="list-data">
-          <span className="list-data" style={{fontWeight:'700'}}>Posicion</span>
-          <span className="list-data" style={{fontWeight:'700'}}>Partido</span>
-          <span className="list-data" style={{fontWeight:'700'}}>Id</span>
+          <span className="list-data">Posición</span>
+          <span className="list-data">Partido</span>
+          <span className="list-data">ID</span>
         </div>
         <ul className="lists-container">
           {formulas.map((formula, index) => (
             <li key={index}>
-              <List position={formula.title} partyName={formula.partyName} formulaNumber ={formula.formulaNumber} />
+              <List position={formula.title} partyName={formula.partyName} formulaNumber={formula.formulaNumber} />
             </li>
           ))}
         </ul>
       </div>
 
-      <Modal show={showModal} onHide={handleClose}>
+      <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>Lista Datos</Modal.Title>
+          <Modal.Title>Datos de la Lista</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <form onSubmit={handleSubmit}>
             <div className="form-group">
-              <label htmlFor="id">ID de formula:</label>
+              <label htmlFor="id">ID de fórmula:</label>
               <input
                 type="text"
                 id="id"
                 name="id"
                 value={formData.id}
                 onChange={handleChange}
-                placeholder="Ingrese ID de formula"
+                placeholder="Ingrese ID de fórmula"
                 required
               />
             </div>
@@ -290,24 +217,20 @@ const UserLists = () => {
                 onChange={handleChange}
                 required
               >
-              <option value="">Seleccione un partido</option>
-              {parties.length>0 && parties.map((party) => (
-                <option key={party.uuid} value={party.uuid}>
-                  {party.name}
-                </option>
-              ))}
+                <option value="">Seleccione un partido</option>
+                {parties.map(party => (
+                  <option key={party.uuid} value={party.uuid}>{party.name}</option>
+                ))}
               </select>
             </div>
-            <button type="submit" className="modal-button">
-              Siguiente
-            </button>
+            <button type="submit" className="modal-button">Siguiente</button>
           </form>
         </Modal.Body>
       </Modal>
-        
-      <Modal show={showPositionsModal} onHide={handleClosePositionsModal}>
+
+      <Modal show={showPositionsModal} onHide={() => setShowPositionsModal(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>Ingrese los Candidatos de Posiciones</Modal.Title>
+          <Modal.Title>Ingrese los Candidatos de las Posiciones</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {positions.map((position, index) => (
@@ -317,14 +240,12 @@ const UserLists = () => {
               <input
                 type="file"
                 accept=".xlsx, .xls"
-                onChange={(e) => handleFileUpload(e, index)}
+                onChange={e => handleFileUpload(e, index)}
                 required
               />
             </div>
           ))}
-          <button type="submit" className="modal-button" onClick={handlePositionsSubmit}>
-            Guardar
-          </button>
+          <button type="submit" className="modal-button" onClick={handlePositionsSubmit}>Guardar</button>
         </Modal.Body>
       </Modal>
     </div>
