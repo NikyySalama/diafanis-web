@@ -113,7 +113,6 @@ const Tables = () => {
       <h1 className='my-tables-title'>Sus Mesas</h1>
       <button className='add-table-button' onClick={handleCreateTableClick}>Crear Mesa</button>
 
-      {/* Reutilizar CustomTable */}
       <CustomTable columns={columns} rows={rows} onRowClick={(row) => console.log('Fila clickeada', row)} />
 
       <Modal show={showUploadModal} onHide={handleCloseUploadModal}>

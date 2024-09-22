@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useElection } from '../ElectionContext';
-import List from './List';
 import { Modal } from 'react-bootstrap';
 import * as XLSX from 'xlsx';
 import './UserLists.css';
+import CustomTable from '../../CustomTable';
 
 const UserLists = () => {
   const electionId = useElection();
@@ -170,25 +170,18 @@ const UserLists = () => {
     setShowPositionsModal(false);
   };
 
+  const columns = [
+    { label: 'Posición', field: 'title' },
+    { label: 'Partido', field: 'partyName' },
+    { label: 'ID', field: 'formulaNumber' }
+  ];
+
   return (
     <div className="user-lists">
       <h1 className="my-tables-title">Sus Fórmulas</h1>
       <button className="add-list-button" onClick={handleCreateListClick}>Crear Fórmula</button>
       
-      <div className="lists-content">
-        <div className="list-data">
-          <span className="list-data">Posición</span>
-          <span className="list-data">Partido</span>
-          <span className="list-data">ID</span>
-        </div>
-        <ul className="lists-container">
-          {formulas.map((formula, index) => (
-            <li key={index}>
-              <List position={formula.title} partyName={formula.partyName} formulaNumber={formula.formulaNumber} />
-            </li>
-          ))}
-        </ul>
-      </div>
+      <CustomTable columns={columns} rows={formulas} />
 
       <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>
