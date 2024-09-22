@@ -18,8 +18,9 @@ const theme = createTheme({
       styleOverrides: {
         ':root': {
           '--primary-color': '#7A86FF',
+          '--secondary-color' : '#30B3E1',
           '--navbar-height' : '45px',
-          '--button-main-color' : '#5F8BC7',
+          '--button-main-color' : '#A086FF',
         },
       },
     },

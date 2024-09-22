@@ -10,7 +10,6 @@
   justify-content: center;
   align-items: center;    
   flex-direction: column;
-  
 }
 
 .card-img {
@@ -33,31 +32,24 @@
   color: #ccc;
 }
 
-
-h3 {
-  margin: 0; /* Removes all margins */
-  padding: 0; /* Removes any padding (usually none by default, but just in case) */
-}
 .container-title{
   height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
   text-align: center;
-
-
 }
+
 .card-title {
-  
   color: #360269;
-  font-size: calc(1vh + 2vw);
+  font-size: 2em;
   height: 100%;
 }
 
 .card-titleAlone{
   height: max-content;
   color: #360269;
-  font-size: calc(1.5vh + 3vw);
-  margin-top: 20%;
-  margin-bottom: 20%;
+  font-size: 2.5em;
+  margin-top: 1em;
+  margin-bottom: 1em;
 }

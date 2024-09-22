@@ -8,11 +8,11 @@ import Menu from "../../../Common/Menu";
 const Home = () => {
     return (
     <div className="home">
-        <Menu/>
-       <HeadContent/>
-       <SubTitle/>
-       <GridCard/>
-       <Footer/>
+      <Menu/>
+      <HeadContent/>
+      <SubTitle/>
+      <GridCard/>
+      <Footer/>
     </div>
     );
   };

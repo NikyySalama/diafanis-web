@@ -17,7 +17,7 @@ const Election = () => {
       setElecctionUuid(savedElectionId);
       setLoading(false);
     }
-  }, []); // Only run this effect once on mount
+  }, []);
 
   useEffect(() => {
     if (elecctionUuid) {
