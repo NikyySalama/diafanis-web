@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useElection } from '../ElectionContext';
 import { Modal } from 'react-bootstrap';
 import * as XLSX from 'xlsx';
-import './UserLists.css';
+import '../ModalSection.css';
 import CustomTable from '../../CustomTable';
 
 const UserLists = () => {
@@ -177,9 +177,11 @@ const UserLists = () => {
   ];
 
   return (
-    <div className="user-lists">
-      <h1 className="my-tables-title">Sus Fórmulas</h1>
-      <button className="add-list-button" onClick={handleCreateListClick}>Crear Fórmula</button>
+    <div className="my-section">
+      <div className="my-section-header">
+        <h2 className="my-section-title">Sus Fórmulas</h2>
+        <button className="add-section-button" onClick={handleCreateListClick}>Crear Fórmula</button>
+      </div>
       
       <CustomTable columns={columns} rows={formulas} />
 

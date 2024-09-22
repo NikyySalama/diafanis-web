@@ -1,0 +1,29 @@
+.my-section {
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+.my-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.my-section-title{
+    font-weight: 600;
+    color: #020246;
+}
+
+.add-section-button{
+    padding: 0.5em;
+    font-weight: 600;
+    background-color: #7aafff;
+    border-radius: 0.7em;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.add-section-button:hover {
+    box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.2);
+}

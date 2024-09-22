@@ -1,15 +1,14 @@
 .navbar-user-election{
-    background-color: #EFF0F7;
+    background-color: var(--primary-color);
     display: flex;
     flex-direction: row;
     
     height: 2.6em;
 
     font-family: Arial, Helvetica, sans-serif;
-    padding: 0 !important;
     box-sizing: border-box;
 
-    position: fixed !important;
+    position: fixed;
     top: 0;
     left: 0;
     right: 0;
