@@ -9,7 +9,7 @@ import ItemFormulaResult from './ItemFormulaResult';
 import { MantineProvider } from '@mantine/core';
 
 import '@mantine/carousel/styles.css';
-const MainContent = ( ) => {
+const MainContent = () => {
   const [tableUuid, setTableUuid] = useState(null);
   const [table, setTable] = useState({});
   const [formulaMap, setFormulaMap] = useState({});
@@ -43,7 +43,7 @@ const MainContent = ( ) => {
   useEffect(() => {
     if (election && Array.isArray(election.electionPositions)) {
       const newFormulaMap = {};
-  
+
       election.electionPositions.forEach((position) => {
         if (Array.isArray(position.formulas)) {
           position.formulas.forEach((formula) => {
@@ -53,7 +53,7 @@ const MainContent = ( ) => {
           });
         }
       });
-  
+
       // Check if the new formulaMap is different from the current one
       if (JSON.stringify(newFormulaMap) !== JSON.stringify(formulaMap)) {
         setFormulaMap(newFormulaMap);
@@ -93,58 +93,51 @@ const MainContent = ( ) => {
     }
   }, [tableUuid]); // Correctly depends on `tableUuid`
 
-
-
-
-    return (
-        <MantineProvider withGlobalStyles withNormalizeCSS>
-        <div className='main-container'>
-            {election ? 
-            (
-             
-                <>
-                <div className='left-container'>
-                <SearchField/>
+  return (
+    <MantineProvider withGlobalStyles withNormalizeCSS>
+      <div className='main-container'>
+        {election ?
+          (
+            <>
+              <div className='left-container'>
+                <SearchField />
                 <div className='list-tables'>
-                {election.votingTables && election.votingTables[0] && ( 
-                  <ItemMesa key={election.votingTables[0].uuid} uuid={election.votingTables[0].uuid}/>
-                )}
+                  {election.votingTables && election.votingTables[0] && (
+                    <ItemMesa key={election.votingTables[0].uuid} uuid={election.votingTables[0].uuid} />
+                  )}
                 </div>
-                </div>
-                <div className='right-container'>
-                    <h1 className='result'>Resultados</h1>
-                    <Carousel  className="carousel" slideSize="70%" slideGap="md" withControls withIndicators >
-  {table?.results && Object.entries(table.results).map(([positionId, formulas], index) => (
-    <Carousel.Slide key={index} className="carouselSlide">
-      <>
-        <h2 className="slideTitulo">
-          {positions[positionId]?.title || 'Unknown Position'}
-        </h2>
-        {Object.entries(formulas).map(([formulaId, votes]) => (
-          <ItemFormulaResult
-            key={formulaId}
-            votes={votes}
-            
-            imgUrl={formulaMap[formulaId]?.party?.logoUrl}
-          />
-        ))}
-      </>
-    </Carousel.Slide>
-  ))}
-</Carousel>
+              </div>
+              <div className='right-container'>
+                <h1 className='result'>Resultados</h1>
+                <Carousel className="carousel" slideSize="70%" slideGap="md" withControls withIndicators >
+                  {table?.results && Object.entries(table.results).map(([positionId, formulas], index) => (
+                    <Carousel.Slide key={index} className="carouselSlide">
+                      <>
+                        <h2 className="slideTitulo">
+                          {positions[positionId]?.title || 'Unknown Position'}
+                        </h2>
+                        {Object.entries(formulas).map(([formulaId, votes]) => (
+                          <ItemFormulaResult
+                            key={formulaId}
+                            votes={votes}
 
-                    
-                </div>
-                </>
-            ) : 
-            (
+                            imgUrl={formulaMap[formulaId]?.party?.logoUrl}
+                          />
+                        ))}
+                      </>
+                    </Carousel.Slide>
+                  ))}
+                </Carousel>
+              </div>
+            </>
+          ) :
+          (
             <h1 className='error'>Lo sentimos, la eleccion aun no ha terminado</h1>
-            )
-            }
-            
-        </div>
-         </MantineProvider>
-    );
+          )
+        }
+      </div>
+    </MantineProvider>
+  );
 };
 
 export default MainContent

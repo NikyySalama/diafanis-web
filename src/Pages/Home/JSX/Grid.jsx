@@ -30,10 +30,6 @@ const GridCard = () => {
     fetchData();
   }, []);
 
-  const addCard = (newCard) => {
-    setCards((prevCards) => [...prevCards, newCard]);
-  };
-
   return cards.length > 0 ? (
     <div className="grid-container">
       <div className="grid">
