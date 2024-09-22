@@ -114,7 +114,7 @@ const UserLists = () => {
         docType: 'DNI',
         name: row.name || 'Nombre Desconocido',
         surname: row.lastName || 'Apellido Desconocido',
-        image: row.imageUrl || '',
+        image: row.imageUrl || ''
       }));
 
       setPositionsData(prevData => {
@@ -141,6 +141,7 @@ const UserLists = () => {
             docType: candidate.docType,
             name: candidate.name,
             lastName: candidate.surname,
+            imageUrl: candidate.image
           },
         })) || [];
 
