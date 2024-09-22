@@ -10,6 +10,7 @@ const Tables = () => {
   const [tables, setTables] = useState([]);
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [tablesData, setTablesData] = useState([]);
+  const [isFileValid, setIsFileValid] = useState(false);
 
   useEffect(() => {
     fetchTables();
@@ -68,27 +69,44 @@ const Tables = () => {
     setShowUploadModal(true);
   };
 
-  const handleCloseUploadModal = () => setShowUploadModal(false);
+  const handleCloseUploadModal = () => {
+    setShowUploadModal(false);
+    setIsFileValid(false);
+  };
+  
   const handleFileUpload = (e) => {
     const file = e.target.files[0];
     const reader = new FileReader();
-
+  
     reader.onload = (event) => {
       const binaryStr = event.target.result;
       const workbook = XLSX.read(binaryStr, { type: 'array' });
       const sheetName = workbook.SheetNames[0];
       const sheet = workbook.Sheets[sheetName];
-      const data = XLSX.utils.sheet_to_json(sheet);
-
-      setTablesData(data);
+      const data = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+  
+      const requiredColumns = ['id', 'country', 'state', 'city', 'address'];
+      const fileColumns = data[0]; 
+  
+      const isValid = requiredColumns.every(col => fileColumns.includes(col));
+  
+      if (!isValid) {
+        alert('El archivo Excel no tiene la estructura correcta. Asegúrate de que contenga las columnas: id, country, state, city, address.');
+        setIsFileValid(false);
+        e.target.value = '';
+        return;
+      }
+      const tablesData = XLSX.utils.sheet_to_json(sheet);
+      setTablesData(tablesData);
+      setIsFileValid(true);
     };
-
+  
     reader.readAsArrayBuffer(file);
   };
+  
 
   const handleTablesSubmit = (e) => {
     e.preventDefault();
-    console.log('Datos de las mesas cargados:', tablesData);
     handleCloseUploadModal();
     tablesData.forEach(tableData => postTable(tableData));
     fetchTables();
@@ -130,7 +148,7 @@ const Tables = () => {
                 required
               />
             </div>
-            <button type="submit" className="modal-button">
+            <button type="submit" className="modal-button" disabled={!isFileValid}>
               Guardar
             </button>
           </form>
