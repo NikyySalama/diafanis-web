@@ -2,13 +2,8 @@
   font-family: Arial, Helvetica, sans-serif;
 }
 
-.election-registration h1 {
-  text-align: center;
-  margin-bottom: 20px;
-}
-
 .election-registration form{
-    padding: 3%;
+  padding: 3%;
 }
 
 .election-registration div {

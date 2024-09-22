@@ -1,34 +1,33 @@
 .grid{
     display: grid;
-    grid-template-columns: repeat(3,30%);
+    grid-template-columns: repeat(auto-fit, minmax(10em, 1fr));
     height: fit-content;
-  
-    width: 80%;
-    margin-left: 10%;
-    margin-right: 10%;
-    gap: 8%;
-   
+    gap: 2em;
+    width: calc(100% - 10em);
+    margin-left: 5em;
+    margin-right: 5em;
 }
- .grid-container{
-    width: 100%;
-    min-height: 80%;
-    height: 80%;
-    overflow-y: auto; /* Allows vertical scrolling if content overflows */
- }
 
-.electionsEmpty{
+.grid-container {
     width: 100%;
-    min-height: 60%;
-    height: 80%;
+    min-height: 40em; 
+    height: auto;
+    margin-bottom: 2em;
+}
+
+.elections-empty {
+    width: 100%;
+    min-height: 30em;
+    height: 40em;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-.text-empty{
-    font-size: calc(1.5vh + 3vw);
-    width: 70%;
-    max-width: 70%;
+.text-empty {
+    font-size: calc(1.5em + 1.5vw);
+    width: 35em;
+    max-width: 35em;
     margin: 0;
     padding: 0;
 }

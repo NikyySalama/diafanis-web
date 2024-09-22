@@ -3,7 +3,7 @@ import { useElection } from '../ElectionContext';
 import CustomTable from '../../CustomTable';
 import { Modal } from 'react-bootstrap';
 import * as XLSX from 'xlsx';
-import './UserTables.css';
+import '../ElectionSection.css';
 
 const Tables = () => {
   const electionId = useElection();
@@ -94,14 +94,12 @@ const Tables = () => {
     fetchTables();
   };
 
-  // Definir las columnas para CustomTable
   const columns = [
     { label: 'Numero', field: 'id', align: 'left' },
     { label: 'Ciudad', field: 'city', align: 'left' },
     { label: 'Direccion', field: 'address', align: 'left' },
   ];
 
-  // Mapeo de datos para CustomTable
   const rows = tables.map((table, index) => ({
     id: index + 1,
     city: table.location.city,
@@ -109,11 +107,12 @@ const Tables = () => {
   }));
 
   return (
-    <div className='my-tables'>
-      <h1 className='my-tables-title'>Sus Mesas</h1>
-      <button className='add-table-button' onClick={handleCreateTableClick}>Crear Mesa</button>
+    <div className='my-section'>
+      <div className="my-section-header">
+        <h2 className='my-section-title'>Sus Mesas</h2>
+        <button className='add-section-button' onClick={handleCreateTableClick}>Crear Mesa</button>
+      </div>
 
-      {/* Reutilizar CustomTable */}
       <CustomTable columns={columns} rows={rows} onRowClick={(row) => console.log('Fila clickeada', row)} />
 
       <Modal show={showUploadModal} onHide={handleCloseUploadModal}>

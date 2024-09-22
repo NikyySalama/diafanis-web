@@ -4,16 +4,13 @@
     background-color: var(--primary-color);
     padding: 0 !important;
     box-sizing: border-box;
-    height: 45px;
+    height: var(--navbar-height);
 
     position: fixed !important;
     top: 0;
     left: 0;
     right: 0;
     z-index: 30;
-}
-:root {
-    --navbar-height: 45px;
 }
 
 .navbar-title-section {
@@ -29,7 +26,7 @@
 .navbar-title {
     margin: 0;
     color: rgb(137, 144, 170);
-    font-weight: 600;
+    font-weight: 500;
     font-size: 1em;
 }
   
@@ -56,15 +53,16 @@
 }
 
 .go-back-button {
-    background-color: #cfd9e2; 
+    background-color: var(--button-main-color); 
     border: 0px; 
     border-radius: 5px; 
     padding: 5px 10px; 
     font-size: 14px; 
     cursor: pointer; 
+    color: white;
     transition: background-color 0.3s; 
-  }
+}
   
 .go-back-button:hover {
-    background-color: rgb(206, 203, 203); 
+    filter: brightness(85%);
 }

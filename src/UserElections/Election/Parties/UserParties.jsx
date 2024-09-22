@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useElection } from '../ElectionContext';
 import { Modal } from 'react-bootstrap';
 import CustomTable from '../../CustomTable';
-import '../Formula/UserLists.css';
+import '../ModalSection.css';
 
 const UserParties = () => {
     const electionId = useElection();
@@ -87,24 +87,23 @@ const UserParties = () => {
         handleClose();
     };
 
-    // Definir las columnas para CustomTable
     const columns = [
         { label: 'Nombre', field: 'name', align: 'left' },
     ];
 
-    // Transformar los partidos para filas de CustomTable
     const rows = parties.map(party => ({
         name: party.name
     }));
 
     return (
         <div className="user-lists">
-            <h1 className="my-tables-title">Sus Partidos</h1>
-            <button className="add-list-button" onClick={handleCreatePartyClick}>
-                Crear Partido
-            </button>
+            <div className="my-section-header">
+                <h2 className="my-section-title">Sus Partidos</h2>
+                <button className="add-section-button" onClick={handleCreatePartyClick}>
+                    Crear Partido
+                </button>
+            </div>
             
-            {/* Reemplazar el contenido de lists-content por CustomTable */}
             <CustomTable 
                 columns={columns}
                 rows={rows}

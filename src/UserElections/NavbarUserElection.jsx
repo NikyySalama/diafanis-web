@@ -1,5 +1,4 @@
 import React from 'react';
-//import '../Common/Menu.css';
 import './NavbarUserElection.css'
 import isotipo from '../Common//Isotipo.png' 
 import { useNavigate } from 'react-router-dom';

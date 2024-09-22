@@ -3,15 +3,15 @@ import ReactDOM from 'react-dom/client';
 import App from './App';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import '@fontsource/inter'; 
-import CssBaseline from '@mui/material/CssBaseline';
+import { CssBaseline } from '@mui/material';
 
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#0047E0',
+      main: '#3079E1',
     },
     secondary: {
-      main: '#30B3E1',
+      main: '#4E54B5',
     },
     primary2: {
       main: '#020246',
@@ -27,13 +27,16 @@ const theme = createTheme({
     MuiCssBaseline: {
       styleOverrides: {
         ':root': {
-          '--primary-color': '#0047E0',
+          '--primary-color': '#020246',
+          '--secondary-color' : '#360269',
+          '--navbar-height' : '45px',
+          '--button-main-color' : '#7aafff',
         },
       },
     },
   },
   typography: {
-    fontFamily: '"Inter", "Helvetica", "Arial", sans-serif',
+    fontFamily: '"Inter"',
     h1: {
       fontWeight: 400, 
     },
@@ -50,6 +53,7 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
+      <CssBaseline />
       <App />
     </ThemeProvider>
   </React.StrictMode>

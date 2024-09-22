@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import '../CSS/Grid.css';
 import Card from './Card';
 import { useState, useEffect } from 'react';
@@ -7,25 +7,22 @@ import Box from '@mui/material/Box';
 import { makeStyles } from '@mui/styles';
 
 const GridCard = () => {
-    const [cards, setCards] = useState([]);
+  const [cards, setCards] = useState([]);
 
-    useEffect(() => {
-        // Define an asynchronous function to fetch data
-        const fetchData = async () => {
-            try {
-                const response = await fetch('http://localhost:8080/api/elections', {
-                    method: 'GET', // Specify the method
-                    headers: {
-                        'Content-Type': 'application/json',
-                        // Any other headers required for CORS
-                    },
-                    mode: 'cors', // Set mode to 'cors'
-                });
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch('http://localhost:8080/api/elections', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          mode: 'cors',
+        });
 
-                // Ensure the response is ok before converting to JSON
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
 
                 const data = await response.json(); // Convert the response to JSON
                 setCards(data); // Set the fetched data to the state
@@ -52,11 +49,9 @@ const GridCard = () => {
         </div>
       ) : (
         <div className='electionsEmpty'>
-           <Typography variant="h1">Lo sentimos, de momento no hay ninguna eleccion creada</Typography>
+           <Typography variant="h4">Lo sentimos, de momento no hay ninguna eleccion creada</Typography>
         </div>
-      );
-    };
+      )
+};
 
-export default GridCard
-
-
+export default GridCard;

@@ -7,6 +7,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import { lighten } from '@mui/material/styles';
 
 const CustomTable = ({ columns = [], rows = [], onRowClick }) => {
   const theme = useTheme();
@@ -17,10 +18,10 @@ const CustomTable = ({ columns = [], rows = [], onRowClick }) => {
         <TableHead>
           <TableRow
             sx={{
-              backgroundColor: theme.palette.secondary.main, // Color de fondo para el header
+              backgroundColor: theme.palette.secondary.main,
               '& th': {
-                color: theme.palette.common.white, // Color de texto blanco
-                fontWeight: 'bold', // Texto en negrita
+                color: theme.palette.common.white,
+                fontWeight: 'bold',
               },
             }}
           >
@@ -48,13 +49,16 @@ const CustomTable = ({ columns = [], rows = [], onRowClick }) => {
                     rowIndex % 2 === 0
                       ? theme.palette.action.hover
                       : theme.palette.background.paper,
+                  '&:hover': {
+                    backgroundColor: lighten(theme.palette.secondary.main, 0.8),
+                  },
                   '&:last-child td, &:last-child th': { border: 0 },
                   cursor: onRowClick ? 'pointer' : 'default',
                 }}
               >
                 {columns.map((column, colIndex) => (
                   <TableCell key={colIndex} align={column.align || 'left'}>
-                    {row[column.field] || 'N/A'} {/* Manejo de datos no disponibles */}
+                    {row[column.field] || 'N/A'}
                   </TableCell>
                 ))}
               </TableRow>

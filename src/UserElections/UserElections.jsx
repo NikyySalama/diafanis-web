@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './UserElections.css';
-import ElectionModal from './ElectionModal';
+import ElectionModal from './ModalElectionRegistration/ElectionModal';
 import NavbarUserElection from './NavbarUserElection';
-import CustomTable from './CustomTable';  // Importa el componente CustomTable
+import CustomTable from './CustomTable';
 
 const UserElections = () => {
   const [elections, setElections] = useState([]);
@@ -48,7 +48,6 @@ const UserElections = () => {
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
-  // Define las columnas que pasaremos a CustomTable
   const columns = [
     { field: 'title', label: 'Nombre' },
     { field: 'startsAt', label: 'Fecha de Inicio', align: 'right' },
@@ -59,10 +58,12 @@ const UserElections = () => {
     <div>
       <NavbarUserElection />
       <div className="my-elections">
+      <div className="my-elections-header">
         <h1 className="my-elections-title">Sus Elecciones</h1>
         <button className="add-election-button" onClick={openModal}>
           Crear Elección
         </button>
+      </div>
 
         <CustomTable
           columns={columns}
