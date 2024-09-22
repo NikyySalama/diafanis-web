@@ -2,10 +2,12 @@
     display: grid;
     grid-template-columns: repeat(3,30%);
     height: fit-content;
-    gap: 7%;
+  
     width: 80%;
     margin-left: 10%;
     margin-right: 10%;
+    gap: 8%;
+   
 }
  .grid-container{
     width: 100%;

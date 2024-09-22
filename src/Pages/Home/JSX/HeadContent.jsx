@@ -32,10 +32,10 @@ const useStyles = makeStyles({
 const HeadContent = () => {
   const classes = useStyles();
     return (
-      <Box color="primary2" className={classes.HeadContent} style={{  backgroundColor: '#020246' }} >
-        <Typography  className={classes.headContentTitle}  color="back" variant="h1">Bienvenido a Diafanis</Typography>
-        <Typography  className={classes.headContentText}  color="back" variant="h4">Su sistema de votacion de confianza</Typography>
-      </Box>
+      <div color="primary2" className="HeadContent" style={{  backgroundColor: '#020246' }} >
+        <Typography   className={'HeadContent-title h1'} color="back" variant="h3">Bienvenido a Diafanis</Typography>
+        <Typography  className={'HeadContent-text h4'}  color="back" variant="h6">Su sistema de votacion de confianza</Typography>
+      </div>
     );
   };
 export default HeadContent

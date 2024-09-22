@@ -72,16 +72,16 @@ const Card = ({ id, title, imageUrl }) => {
   return (
     <>
       {imageUrl ? (
-        <Box className={classes.card} onClick={handleClick} style={{ cursor: 'pointer' }}>
-          <img src={imageUrl} alt='' className={classes.cardImg}/>
-          <Box className={classes.containerTitle}>
-            <Typography variant="h3" sx={{ margin: 0, padding: 0 }}>{title}</Typography>
-          </Box>
-        </Box>
+        <div className="card" onClick={handleClick} style={{ cursor: 'pointer' }}>
+          <img src={imageUrl} alt='' className="card-img"/>
+          <div className="container-title">
+            <Typography className='card-title' variant="h6" sx={{ margin: 0, padding: 0 }}>{title}</Typography>
+          </div>
+        </div>
       ) : (
-        <Box className={classes.card} onClick={handleClick} style={{ cursor: 'pointer' }}>
-          <Typography variant="h3" sx={{ margin: 0, padding: 0 }}>{title}</Typography>
-        </Box>
+        <div className="card" onClick={handleClick} style={{ cursor: 'pointer' }}>
+          <Typography className='card-titleAlone' variant="h6" sx={{ margin: 0, padding: 0 }}>{title}</Typography>
+        </div>
       )}
     </>
   );
