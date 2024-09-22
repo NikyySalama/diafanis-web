@@ -2,10 +2,6 @@ import React from 'react';
 import '../CSS/Grid.css';
 import Card from './Card';
 import { useState, useEffect } from 'react';
-import Typography from '@mui/material/Typography';
-import Box from '@mui/material/Box';
-import { makeStyles } from '@mui/styles';
-
 const GridCard = () => {
     const [cards, setCards] = useState([]);
 
@@ -52,7 +48,7 @@ const GridCard = () => {
         </div>
       ) : (
         <div className='electionsEmpty'>
-           <Typography variant="h1">Lo sentimos, de momento no hay ninguna eleccion creada</Typography>
+          <h1 className='text-empty'>Lo sentimos, de momento no hay ninguna eleccion creada</h1>
         </div>
       );
     };
