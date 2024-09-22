@@ -17,7 +17,7 @@
 .add-section-button{
     padding: 0.5em;
     font-weight: 600;
-    background-color: #7aafff;
+    background-color: var(--button-main-color);
     border-radius: 0.7em;
     border: none;
     cursor: pointer;

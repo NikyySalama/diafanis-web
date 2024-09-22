@@ -20,7 +20,7 @@
 .add-election-button{
     padding: 0.8em;
     font-weight: 700;
-    background-color: #7aafff;
+    background-color: var(--button-main-color);
     border-radius: 1em;
     border: none;
     cursor: pointer;

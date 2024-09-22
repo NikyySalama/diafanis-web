@@ -35,14 +35,14 @@
 }
 
 .card-title {
-  color: #360269;
+  color: var(--primary-color);
   font-size: 2em;
   height: 100%;
 }
 
 .card-titleAlone{
   height: max-content;
-  color: #360269;
+  color: var(--primary-color);
   font-size: 2.5em;
   margin-top: 1em;
   margin-bottom: 1em;

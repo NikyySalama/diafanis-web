@@ -7,20 +7,20 @@ import { CssBaseline } from '@mui/material';
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#7A86FF',
+      main: '#3079E1',
     },
     secondary: {
-      main: '#30B3E1',
+      main: '#4E54B5',
     },
   },
   components: {
     MuiCssBaseline: {
       styleOverrides: {
         ':root': {
-          '--primary-color': '#7A86FF',
-          '--secondary-color' : '#30B3E1',
+          '--primary-color': '#3079E1',
+          '--secondary-color' : '#4E54B5',
           '--navbar-height' : '45px',
-          '--button-main-color' : '#A086FF',
+          '--button-main-color' : '#7aafff',
         },
       },
     },
