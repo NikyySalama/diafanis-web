@@ -11,6 +11,7 @@ const MainContent = () => {
   const [positions, setPositions] = useState(null);
   const [table, setTable] = useState(null);
   const [forms, setForms] = useState(null);
+  const [display, setDisplay] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -18,12 +19,12 @@ const MainContent = () => {
     const storedPositions = localStorage.getItem('positions');
     const storedTable = localStorage.getItem('tableInfo');
     const storedForms = localStorage.getItem('formulas');
-
+    const storedDisplay = localStorage.getItem('display');
     // Parse and set state
     setPositions(storedPositions ? JSON.parse(storedPositions) : null);
     setTable(storedTable ? JSON.parse(storedTable) : null);
     setForms(storedForms ? JSON.parse(storedForms) : null);
-
+    setDisplay(storedDisplay? JSON.parse(storedDisplay) : null);
     // Set loading to false after data retrieval
     setLoading(false);
 
@@ -37,12 +38,17 @@ const MainContent = () => {
     if (!storedForms) {
       console.warn('Forms data is missing.');
     }
+    if (!storedDisplay) {
+      console.warn('display data is missing.');
+    }
   }, []);
 
   // Handle missing data scenarios
   if (loading) {
     return <p>Loading...</p>;
   }
+  console.log(display);
+
 
   if (!positions || !table || !forms) {
     return <p>Some required data is missing. Please check your localStorage.</p>;
@@ -68,7 +74,7 @@ const MainContent = () => {
       </div>
       <MantineProvider withGlobalStyles withNormalizeCSS>
         <Carousel className="carousel" slideSize="70%" slideGap="md" withControls withIndicators>
-          {table.results && Object.entries(table.results).map(([positionId, formulas], index) => (
+          {display && table.results && Object.entries(table.results).map(([positionId, formulas], index) => (
             <Carousel.Slide key={index} className="carouselSlide">
               <>
                 <h2 className="slideTitulo">

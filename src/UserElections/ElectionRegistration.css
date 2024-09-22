@@ -1,46 +1,46 @@
 .election-registration {
-    font-family: Arial, Helvetica, sans-serif;
-  }
-  
-  .election-registration h1 {
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  
-  .election-registration form{
-      padding: 3%;
-  }
-  
-  .election-registration div {
-    margin-bottom: 15px;
-  }
-  
-  .election-registration label {
-    display: block;
-    margin-bottom: 5px;
-  }
-  
-  .election-registration input,
-  .election-registration textarea {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box;
-  }
-  
-  .election-registration button {
-    display: block;
-    width: 100%;
-    padding: 10px;
-    border: none;
-    border-radius: 4px;
-    background-color: #007bff;
-    color: #fff;
-    font-size: 16px;
-    cursor: pointer;
-  }
-  
-  .election-registration button:hover {
-    background-color: #0056b3;
-  }
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.election-registration h1 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.election-registration form{
+    padding: 3%;
+}
+
+.election-registration div {
+  margin-bottom: 15px;
+}
+
+.election-registration label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.election-registration input,
+.election-registration textarea {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.election-registration button {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  background-color: #007bff;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.election-registration button:hover {
+  background-color: #0056b3;
+}
