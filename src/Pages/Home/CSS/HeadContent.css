@@ -1,14 +1,9 @@
-
 .HeadContent {
   display: flex;
   flex-direction: column; 
   justify-content: center; 
   align-items: center;
-  padding-top: 5em;
+  padding-top: calc(5em + var(--navbar-height));
   padding-bottom: 5em;
   background-color: var(--secondary-color);
 }
-
-
-
-
