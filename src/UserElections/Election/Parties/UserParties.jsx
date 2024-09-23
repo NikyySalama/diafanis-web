@@ -81,8 +81,26 @@ const UserParties = () => {
         }
     };
 
-    const handleSubmit = (e) => {
+    const validateImageUrl = async (url) => {
+        try {
+            const response = await fetch(url, { method: 'HEAD' });
+            const contentType = response.headers.get('Content-Type');
+            return contentType && contentType.startsWith('image/');
+        } catch (error) {
+            console.error('Error al validar la URL de la imagen:', error);
+            return false;
+        }
+    };
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
+
+        const isValidImageUrl = await validateImageUrl(formData.logoUrl);
+        if (!isValidImageUrl) {
+            alert('La URL proporcionada no es una imagen válida.');
+            return;
+        }
+
         handleAddParty(formData);
         handleClose();
     };
