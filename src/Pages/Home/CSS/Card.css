@@ -4,7 +4,7 @@
   text-align: center;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   min-height: 100%;
-  background-color: #FFFFFF;
+  background-color:  var(--background-color);;
   overflow: hidden;
   display: flex;          
   justify-content: center;
@@ -17,6 +17,7 @@
 
 .card:hover{
   cursor: pointer;
+  transform: scale(1.05);
 }
 
 .card-img {
@@ -37,16 +38,5 @@
   text-align: center;
 }
 
-.card-title {
-  color: var(--primary-color);
-  font-size: 2em;
-  height: 100%;
-}
 
-.card-titleAlone{
-  height: max-content;
-  color: var(--primary-color);
-  font-size: 2.5em;
-  margin-top: 1em;
-  margin-bottom: 1em;
-}
+
