@@ -21,26 +21,13 @@ const MainContent = () => {
  // Create formulaMap and positions after the election data is available
   useEffect(() => {
     if (election && Array.isArray(election.electionPositions)) {
-      const newFormulaMap = {};
+      
       const newPositionsMap = {};
 
       election.electionPositions.forEach((position) => {
         newPositionsMap[position.uuid] = position;
-        if (Array.isArray(position.formulas)) {
-          position.formulas.forEach((formula) => {
-            if (formula && formula.uuid) {
-              newFormulaMap[formula.uuid] = formula;
-            }
-          });
-        }
       });
 
-      // Check if the new formulaMap is different from the current one
-      if (JSON.stringify(newFormulaMap) !== JSON.stringify(formulaMap)) {
-        setFormulaMap(newFormulaMap);
-        console.log(newFormulaMap);
-        localStorage.setItem('formulas', JSON.stringify(newFormulaMap));
-      }
       if (JSON.stringify(newPositionsMap) !== JSON.stringify(positions)) {
         setPositions(newPositionsMap);
         console.log(newPositionsMap);
@@ -94,6 +81,46 @@ const MainContent = () => {
       fetchData();
     }
   },[election,display,results]);
+
+  useEffect(() =>{
+    const newFormulaMap = {};
+    if(election && election.uuid){
+      const fetchData = async () => {
+        try {
+          console.log("4314");
+          console.log(election.uuid);
+          const response = await fetch(`http://localhost:8080/api/elections/${election.uuid}/electiveFormulas`, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+          });
+
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+
+          const data = await response.json();
+          
+          data.forEach((formula) => {
+            newFormulaMap[formula.uuid] = formula;
+          });
+    
+      // Check if the new formulaMap is different from the current one
+      if (JSON.stringify(newFormulaMap) !== JSON.stringify(formulaMap)) {
+        setFormulaMap(newFormulaMap);
+        console.log(newFormulaMap);
+        localStorage.setItem('formulas', JSON.stringify(newFormulaMap));
+      }
+          
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        }
+      };
+
+      fetchData();
+    }
+  },[election]);
 
 
   return (
