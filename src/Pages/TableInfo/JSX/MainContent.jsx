@@ -14,7 +14,7 @@ const TextContainer = ({ title, content }) => (
   </div>
 );
 
-const CarouselComponent = ({ table, positions, forms }) => (
+const CarouselComponent = ({ table, positions, forms, display }) => (
   <MantineProvider withGlobalStyles withNormalizeCSS>
     <Carousel slideSize="100%" slideGap="md" align="start" withControls withIndicators>
       {table.results && Object.entries(table.results).map(([positionId, formulas], index) => (
@@ -23,13 +23,17 @@ const CarouselComponent = ({ table, positions, forms }) => (
             <Typography variant="h5" className="slideTitulo">
               {positions[positionId]?.title || 'Unknown Position'}
             </Typography>
-            {Object.entries(formulas).map(([formulaId, votes]) => (
-              <ItemFormulaResult
-                key={formulaId}
-                votes={votes}
-                imgUrl={forms[formulaId]?.party?.logoUrl}
-              />
-            ))}
+            {display ? (
+              Object.entries(formulas).map(([formulaId, votes]) => (
+                <ItemFormulaResult
+                  key={formulaId}
+                  votes={votes}
+                  imgUrl={forms[formulaId]?.party?.logoUrl}
+                />
+              ))
+            ) : (
+              <Typography variant="body1">La elección aun no ha terminado</Typography>
+            )}
           </>
         </Carousel.Slide>
       ))}
@@ -44,16 +48,19 @@ const MainContent = () => {
   const [loading, setLoading] = useState(true);
   const [hash, setHash] = useState(null);
   const [publicKey, setPublicKey] = useState(null);
-
+  const [display, setDisplay] = useState(null);
+  
   useEffect(() => {
     // Retrieve data from localStorage and set state
     const storedPositions = localStorage.getItem('positions');
     const storedTable = localStorage.getItem('tableInfo');
     const storedForms = localStorage.getItem('formulas');
+    const storedDisplay = localStorage.getItem('display');
     // Parse and set state
     setPositions(storedPositions ? JSON.parse(storedPositions) : null);
     setTable(storedTable ? JSON.parse(storedTable) : null);
     setForms(storedForms ? JSON.parse(storedForms) : null);
+    setDisplay(storedDisplay ? JSON.parse(storedDisplay) : false);
     // Set loading to false after data retrieval
     setLoading(false);
 
@@ -95,7 +102,7 @@ const MainContent = () => {
         <TextContainer title="Hash" content={hash} />
         <TextContainer title="Public key" content={publicKey} />
       </div>
-      <CarouselComponent table={table} positions={positions} forms={forms} />
+      <CarouselComponent table={table} positions={positions} forms={forms} display={display} />
     </div>
   );
 };

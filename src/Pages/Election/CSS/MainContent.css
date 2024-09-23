@@ -1,4 +1,4 @@
-.main-container{
+.main-container {
     width: 100%;
     height: 80%;
     min-height: 80%;
@@ -6,7 +6,7 @@
     display: flex;
     flex-direction: row;
     justify-content: space-around;
-    overflow-y: auto; /* Allows vertical scrolling if content overflows */
+    overflow-y: auto;
 }
 
 .right-container .mantine-Carousel-container {
@@ -15,7 +15,7 @@
 }
 
 .right-container .mantine-Carousel-slide {
-    width: 100%;
+    width: 100% !important;
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -32,27 +32,28 @@
 
 .right-container .mantine-Carousel-root {
     background-color: var(--background-color);
-    max-width: 80%;
+    width: 80%;
     margin-top: 4%;
-    box-shadow: 0 0.25em 0.5em rgba(0, 0, 0, 0.1); 
-    border: 0.0625em solid #ccc; 
+    box-shadow: 0 0.25em 0.5em rgba(0, 0, 0, 0.1);
+    border: 0.0625em solid #ccc;
     height: 70%;
+    min-height: 18.75em; /* 300px converted to em */
 }
 
-.left-container{
+.left-container {
     max-width: 50%;
     min-width: 50%;
     height: 100%;
     min-height: 100%;
     display: flex;
     flex-direction: column;
-    justify-self: start;   
+    justify-self: start;
     align-items: center;
 }
 
-.list-tables{
+.list-tables {
     margin-top: 3%;
-    box-shadow: 0 0.25em 0.5em rgba(0, 0, 0, 0.1); 
+    box-shadow: 0 0.25em 0.5em rgba(0, 0, 0, 0.1);
     padding-top: 0.25%;
     height: 70%;
     min-height: 30%;
@@ -62,10 +63,10 @@
     justify-content: flex-start;
     min-width: 70%;
     max-width: 70%;
-    background-color:  var(--background-color);
+    background-color: var(--background-color);
 }
 
-.right-container{
+.right-container {
     max-width: 50%;
     min-width: 50%;
     height: 100%;
@@ -76,21 +77,21 @@
     align-items: center;
 }
 
-.result{
+.result {
     width: fit-content;
     color: #020246;
-    font-size: calc(0.078125em + 2.5vw); 
+    font-size: calc(0.078125em + 2.5vw);
     height: fit-content;
-    margin-top: 0%; 
+    margin-top: 0%;
 }
 
-.slideTitulo{
+.slideTitulo {
     color: #020246;
     margin-top: 0;
-    margin-bottom: 1.25em; 
+    margin-bottom: 1.25em;
 }
 
-.error{
+.error {
     margin-top: 40%;
     width: 60%;
 }

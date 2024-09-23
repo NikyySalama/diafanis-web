@@ -55,7 +55,7 @@ const MainContent = () => {
   }, [election]);
 
   useEffect(() =>{
-    if(election && election.uuid && true){
+    if(election && election.uuid){
       const fetchData = async () => {
         try {
           console.log("4314");
@@ -83,7 +83,7 @@ const MainContent = () => {
 
       fetchData();
     }
-  },[election,display,results]);
+  },[election,results]);
 
   useEffect(() =>{
     const newFormulaMap = {};
@@ -126,12 +126,10 @@ const MainContent = () => {
   },[election]);
 
 
-  return (
-    <MantineProvider withGlobalStyles withNormalizeCSS>
-      <div className='main-container'>
-        {election ?
-          (
-
+    return (
+      <MantineProvider withGlobalStyles withNormalizeCSS>
+        <div className='main-container'>
+          {election ? (
             <>
               <div className='left-container'>
                 <SearchField />
@@ -144,48 +142,41 @@ const MainContent = () => {
                 </List>
               </div>
               <div className='right-container'>
-                <Typography color='var(--primary-color)' variant='h4' className='result'>Resultados</Typography>
-                <Carousel  slideSize="100%" slideGap="md" align="start" withControls  withIndicators >
-                  {true && results && Object.entries(results).map(([positionId, formulas], index) => (
-                    <Carousel.Slide key={index} className="carouselSlide">
-                      <>
-                        <h2 className="slideTitulo">
-                          {positions[positionId]?.title || 'Unknown Position'}
-                        </h2>
-                        {Object.entries(formulas).map(([formulaId, votes]) => (
+              <Typography color='var(--primary-color)' variant='h4' className='carousel-title'>Resultados</Typography>
+              {results && Object.keys(results).length > 0 ? (
+                <Carousel slideSize="100%" slideGap="md" align="start" withControls withIndicators>
+                  {Object.entries(results).map(([positionId, formulas]) => (
+                    <Carousel.Slide key={positionId} className="carouselSlide">
+                      <Typography variant="h5" className="slideTitulo">
+                        {positions[positionId]?.title || 'Unknown Position'}
+                      </Typography>
+                      {display ? (
+                        Object.entries(formulas).map(([formulaId, votes]) => (
                           <ItemFormulaResult
                             key={formulaId}
                             votes={votes}
-
                             imgUrl={formulaMap[formulaId]?.party?.logoUrl}
                           />
-                        ))}
-                      </>
+                        ))
+                      ) : (
+                        <Typography sx={{color:'var(--primary-color)'}}  variant="body1">Lo sentimos, la elección aún no ha terminado</Typography>
+                      )}
                     </Carousel.Slide>
                   ))}
                 </Carousel>
-
-
-              </div>
+              ) : (
+                <></>
+              )}
+            </div>
             </>
-          ) :
-          (
-            <h1 className='error'>Lo sentimos, la eleccion aun no ha terminado</h1>
-          )
-        }
+          ) : (
+            <></>
+          )}
+        </div>
+      </MantineProvider>
+    );
 
-      </div>
-    </MantineProvider>
-  );
 };
 
 export default MainContent
 
-/*
-
-{election.votingTables && election.votingTables.map((table) => ( 
-                    
-                        <ItemMesa key={table.uuid} uuid={table.uuid}/>
-                    
-                    ))}
-*/
