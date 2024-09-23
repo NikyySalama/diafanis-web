@@ -7,14 +7,5 @@
     margin-top: var(--navbar-height);
 }
 
-.title{
-    font-size: xx-large;
-    margin: auto 0;
-    max-width: 100%;
-    width: fit-content;
-    height: fit-content;
-    max-height: 100%;
-    color: #020246;
-    font-size: clamp(1rem, 2vw + 2vh, 2rem);
-}
+
 

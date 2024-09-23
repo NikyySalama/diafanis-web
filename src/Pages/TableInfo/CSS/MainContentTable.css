@@ -1,0 +1,87 @@
+
+.main-container-table {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    padding: 1.25em;
+    box-sizing: border-box;
+}
+
+
+.info-container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-between;
+    margin-top: 2.5em;
+    margin-bottom: 1.25em;
+}
+
+
+.text-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    border: 0.125em solid #ccc;
+    border-radius: 0.25em;
+    background-color: #fff;
+    overflow: hidden;
+    margin: 0 0.625em;
+}
+
+.text-container .title-field {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #020246;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 0.5em;
+    border-bottom: 0.0625em solid #ccc;
+    margin: 0;
+}
+
+.text-container .output-field {
+    font-size: 1em;
+    overflow-y: auto;
+    max-height: 4em;
+    padding: 0.5em;
+    word-wrap: break-word;
+    margin: 0;
+}
+
+.main-container-table .mantine-Carousel-container {
+    width: 100%;
+    height: 80%;
+}
+
+.main-container-table .mantine-Carousel-slide {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 3%;
+}
+
+.main-container-table .mantine-Carousel-viewport {
+    width: 100%;
+    height: 100%;
+}
+
+.main-container-table .mantine-Carousel-root {
+    background-color: var(--background-color);
+    max-width: 80%;
+    margin-top: 1.25em;
+    box-shadow: 0 0.25em 0.5em rgba(0, 0, 0, 0.1);
+    border: 0.0625em solid #ccc;
+}
+
+.carouselSlide {
+    width: 100%;
+    padding: 1.25em;
+    box-sizing: border-box;
+}

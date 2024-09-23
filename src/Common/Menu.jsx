@@ -19,7 +19,7 @@ const Menu = () => {
     <div className="menu">
       <div className='menu-button' onClick={handleClick} style={{ cursor: 'pointer' }}>
         <img className="diafanis-icon" src={isotipo} alt="Isotipo" />
-        <Typography variant='h5' className="diafanis">Diafanis</Typography>
+        <Typography color='var(--primary-color)' variant='h5' className="diafanis">Diafanis</Typography>
       </div>
       
       <Button 
@@ -28,12 +28,9 @@ const Menu = () => {
           backgroundColor: 'var(--primary-color)', 
           height: '80%', 
           padding: '0.5% 1%', 
-          borderRadius: '0.5em', 
-          display: 'flex', 
-          alignItems: 'center', 
-          justifyContent: 'center', 
+         
           cursor: 'pointer', 
-          border: 'none', 
+          
           fontSize: '1em', 
           marginLeft: 'auto', 
           fontFamily: 'Inter',

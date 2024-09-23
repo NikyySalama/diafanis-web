@@ -9,16 +9,6 @@
   background-color: var(--secondary-color);
 }
 
-.HeadContent-title, .HeadContent-text {
-  margin: 0;
-  color: #EFF0F7;
-  height: fit-content;
-}
 
-.HeadContent-title {
-  font-size: 3em;
-}
 
-.HeadContent-text {
-  font-size: 1.5em;
-}
+

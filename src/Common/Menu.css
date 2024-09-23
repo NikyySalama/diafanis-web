@@ -48,21 +48,6 @@
 
 
 
-.my-elections-button {
-    color: white;
-    background-color: var(--primary-color);
-    height: 80%;
-    padding: 0.5% 1%;
-    border-radius: 0.5em;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    border: none;
-    font-size: 1em;
-    margin-left: auto;
-}
-
 .my-elections-button:hover {
    transform: scale(1.025);
 }

@@ -1,7 +1,7 @@
 import React from 'react';
 import '../CSS/SubTitle.css';
 import Typography from '@mui/material/Typography';
-import { makeStyles } from '@mui/styles';
+
 
 
 const SubTitle = () => {

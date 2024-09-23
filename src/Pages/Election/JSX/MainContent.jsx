@@ -7,6 +7,9 @@ import ItemMesa from './ItemMesa';
 import { Carousel } from '@mantine/carousel';
 import ItemFormulaResult from './ItemFormulaResult';
 import { MantineProvider } from '@mantine/core';
+import List from '@mui/material/List';
+import Typography from '@mui/material/Typography';
+
 
 import '@mantine/carousel/styles.css';
 const MainContent = () => {
@@ -52,7 +55,7 @@ const MainContent = () => {
   }, [election]);
 
   useEffect(() =>{
-    if(election && election.uuid && display){
+    if(election && election.uuid && true){
       const fetchData = async () => {
         try {
           console.log("4314");
@@ -132,18 +135,18 @@ const MainContent = () => {
             <>
               <div className='left-container'>
                 <SearchField />
-                <div className='list-tables'>
+                <List sx={{overflowY:'auto',width: '100%', backgroundColor: '#FFFFFF',padding:'0'}} className='list-tables'>
                   {election.votingTables && election.votingTables.length > 0 && (
                     election.votingTables.map((table) => (
-                      <ItemMesa key={table.uuid} uuid={table.uuid} />
+                    <ItemMesa key={table.uuid} uuid={table.uuid} />
                     ))
                   )}
-                </div>
+                </List>
               </div>
               <div className='right-container'>
-                <h1 className='result'>Resultados</h1>
-                <Carousel className="carousel" slideSize="70%" slideGap="md" withControls withIndicators >
-                  {display && results && Object.entries(results).map(([positionId, formulas], index) => (
+                <Typography color='var(--primary-color)' variant='h4' className='result'>Resultados</Typography>
+                <Carousel  slideSize="100%" slideGap="md" align="start" withControls  withIndicators >
+                  {true && results && Object.entries(results).map(([positionId, formulas], index) => (
                     <Carousel.Slide key={index} className="carouselSlide">
                       <>
                         <h2 className="slideTitulo">

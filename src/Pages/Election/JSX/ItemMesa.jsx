@@ -1,6 +1,6 @@
 import React from 'react';
 import '../CSS/ItemMesa.css';
-
+import Typography from '@mui/material/Typography';
 
 
 import { useNavigate } from 'react-router-dom';
@@ -16,8 +16,8 @@ const ItemMesa = ({uuid}) => {
   
   return (
     <div className="table-container" onClick={handleClick} style={{ cursor: 'pointer' }}>
-        <h4 className='table-mesa'>Mesa</h4>
-        <h6 className='uuid'>{uuid}</h6>
+        <Typography color='var(--primary-color)' variant='h4' className='table-mesa'>Mesa</Typography>
+        <Typography color='var(--primary-color)' sx={{ marginLeft: '1%' }} variant='body2' className='uuid'>{uuid}</Typography>
     </div>
   )};
 
