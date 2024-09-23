@@ -3,7 +3,7 @@ import '../CSS/Grid.css';
 import Card from './Card';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import { makeStyles } from '@mui/styles';
+
 
 const GridCard = () => {
   const [cards, setCards] = useState([]);
