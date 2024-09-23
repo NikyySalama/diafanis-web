@@ -1,23 +1,22 @@
-.position-registration {
-    font-family: Arial, Helvetica, sans-serif;
+.buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center; /* Alinea verticalmente los botones */
+    margin-top: 10px; /* Espacio entre los botones y la lista de posiciones */
 }
 
-.input-position {
-    width: 100%;
-    padding: 8px;
+.add-position-button,
+.register-button,
+.undo-button {
+    padding: 10px; /* Asegúrate de que todos los botones tengan el mismo padding */
     border-radius: 4px;
-    border: 1px solid #ccc; 
-    box-sizing: border-box;
+    cursor: pointer;
 }
 
 .add-position-button {
-    margin-bottom: 10px;
-    padding: 10px;
     background-color: #64abf8;
     color: #fff;
     border: none;
-    border-radius: 4px;
-    cursor: pointer
 }
 
 .add-position-button:hover {
@@ -25,14 +24,21 @@
 }
 
 .register-button {
-    padding: 10px;
     background-color: #697bca;
     color: #fff;
     border: none;
-    border-radius: 4px;
-    cursor: pointer
 }
 
 .register-button:hover {
     background-color: #465fce;
+}
+
+.undo-button {
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+}
+
+.undo-button:hover {
+    background-color: #218838;
 }

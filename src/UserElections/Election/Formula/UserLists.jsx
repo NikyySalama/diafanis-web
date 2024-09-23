@@ -19,13 +19,14 @@ const UserLists = () => {
     const fetchData = async () => {
       const fetchedFormulas = await fetchFormulas();
       const fetchedPositions = await fetchPositions();
-
+  
       setFormulas(fetchedFormulas);
       setPositions(fetchedPositions);
+      setPositionsData(new Array(fetchedPositions.length).fill(null));
     };
     fetchData();
     fetchParties();
-  }, []);
+  }, []);  
 
   const fetchParties = async () => {
     try {
@@ -101,13 +102,35 @@ const UserLists = () => {
   const handleFileUpload = (e, positionId) => {
     const file = e.target.files[0];
     const reader = new FileReader();
-
+  
     reader.onload = (event) => {
       const binaryStr = event.target.result;
       const workbook = XLSX.read(binaryStr, { type: 'array' });
       const sheet = workbook.Sheets[workbook.SheetNames[0]];
       const data = XLSX.utils.sheet_to_json(sheet);
-
+  
+      const requiredColumns = ['DNI', 'name', 'lastName', 'imageUrl', 'role'];
+      const fileColumns = Object.keys(data[0] || {});
+  
+      const isValidStructure = requiredColumns.every(col => fileColumns.includes(col));
+      if (!isValidStructure) {
+        alert('El archivo debe contener las columnas: DNI, name, lastName, imageUrl, role.');
+        e.target.value = '';
+        return;
+      }
+  
+      const dniRegex = /^[0-9]+$/;
+      const hasValidDNI = data.every(row => {
+        const dniValue = row.DNI;
+        return typeof dniValue === 'number' || (typeof dniValue === 'string' && dniRegex.test(dniValue));
+      });
+  
+      if (!hasValidDNI) {
+        alert('El campo DNI debe contener solo valores numéricos.');
+        e.target.value = '';
+        return;
+      }
+  
       const candidates = data.map(row => ({
         role: row.role || 'Desconocido',
         docNumber: parseInt(row.DNI, 10) || 0,
@@ -116,19 +139,26 @@ const UserLists = () => {
         surname: row.lastName || 'Apellido Desconocido',
         image: row.imageUrl || ''
       }));
-
+  
       setPositionsData(prevData => {
         const updatedData = [...prevData];
         updatedData[positionId] = candidates;
         return updatedData;
       });
     };
-
+  
     reader.readAsArrayBuffer(file);
-  };
+  };  
 
   const handlePositionsSubmit = async (e) => {
     e.preventDefault();
+
+    const allFilesUploaded = positions.every((_, index) => positionsData[index] && positionsData[index].length > 0);
+  
+    if (!allFilesUploaded) {
+      alert('Por favor, suba un archivo para cada posición.');
+      return;
+    }
 
     try {
       const postPromises = positions.map(async (position, index) => {
@@ -163,7 +193,6 @@ const UserLists = () => {
       });
 
       const results = await Promise.all(postPromises);
-      results.forEach((result, index) => console.log(`Fórmula subida para ${positions[index].title}:`, result));
     } catch (error) {
       console.error('Error en el envío de fórmulas:', error);
     }
