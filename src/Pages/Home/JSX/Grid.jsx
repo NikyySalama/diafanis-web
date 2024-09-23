@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import '../CSS/Grid.css';
 import Card from './Card';
-import { useState, useEffect } from 'react';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import { makeStyles } from '@mui/styles';

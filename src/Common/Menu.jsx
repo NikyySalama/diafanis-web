@@ -2,6 +2,8 @@ import React from 'react';
 import './Menu.css';
 import isotipo from './Isotipo.png' 
 import { useNavigate } from 'react-router-dom';
+import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
 const Menu = () => {
   const navigate = useNavigate();
   const handleClick = () => {
@@ -15,11 +17,36 @@ const Menu = () => {
 
   return (
     <div className="menu">
-        <img className="diafanis-icon" src={isotipo} onClick={handleClick} ></img>
-        <h1 className="diafanis" onClick={handleClick} >Diafanis</h1>
-        <button className="my-elections-button" onClick={handleClickUser}>Mis elecciones</button>
+      <div className='menu-button' onClick={handleClick} style={{ cursor: 'pointer' }}>
+        <img className="diafanis-icon" src={isotipo} alt="Isotipo" />
+        <Typography variant='h5' className="diafanis">Diafanis</Typography>
+      </div>
+      
+      <Button 
+        sx={{ 
+          color: 'white', 
+          backgroundColor: 'var(--primary-color)', 
+          height: '80%', 
+          padding: '0.5% 1%', 
+          borderRadius: '0.5em', 
+          display: 'flex', 
+          alignItems: 'center', 
+          justifyContent: 'center', 
+          cursor: 'pointer', 
+          border: 'none', 
+          fontSize: '1em', 
+          marginLeft: 'auto', 
+          fontFamily: 'Inter',
+          fontWeight: 700,
+        }} 
+        variant="contained" 
+        className="my-elections-button" 
+        onClick={handleClickUser}
+      >
+        Mis elecciones
+      </Button>
     </div>
   );
-};
-
+}
+  
 export default Menu;

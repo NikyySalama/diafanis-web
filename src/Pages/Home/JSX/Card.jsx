@@ -80,7 +80,7 @@ const Card = ({ id, title, imageUrl }) => {
         </div>
       ) : (
         <div className="card" onClick={handleClick} style={{ cursor: 'pointer' }}>
-          <Typography className='card-titleAlone' variant="h6" sx={{ margin: 0, padding: 0 }}>{title}</Typography>
+          <Typography className='card-titleAlone' variant="h4" sx={{ margin: 0, padding: 0 }}>{title}</Typography>
         </div>
       )}
     </>

@@ -29,8 +29,37 @@ const theme = createTheme({
         ':root': {
           '--primary-color': '#020246',
           '--secondary-color' : '#360269',
+          '--background-color' : '#FFFFFF',
           '--navbar-height' : '45px',
-          '--button-main-color' : '#7aafff',
+          '--button-main-color' : '#020246',
+        },
+        h1: {
+          fontFamily: 'Inter',
+          fontWeight: 700,
+        },
+        h2: {
+          fontFamily: 'Inter',
+          fontWeight: 700,
+        },
+        h3: {
+          fontFamily: 'Inter',
+          fontWeight: 700,
+        },
+        h4: {
+          fontFamily: 'Inter',
+          fontWeight: 700,
+        },
+        h5: {
+          fontFamily: 'Inter',
+          fontWeight: 700,
+        },
+        h6: {
+          fontFamily: 'Inter',
+          fontWeight: 700,
+        },
+        p: {
+          fontFamily: 'Inter',
+          fontWeight: 700,
         },
       },
     },
@@ -38,10 +67,36 @@ const theme = createTheme({
   typography: {
     fontFamily: '"Inter"',
     h1: {
-      fontWeight: 400, 
+      fontFamily: 'Inter',
+      fontWeight: 700,
+    },
+    h2: {
+      fontFamily: 'Inter',
+      fontWeight: 700,
+    },
+    h3: {
+      fontFamily: 'Inter',
+      fontWeight: 700,
+    },
+    h4: {
+      fontFamily: 'Inter',
+      fontWeight: 700,
+    },
+    h5: {
+      fontFamily: 'Inter',
+      fontWeight: 700,
+    },
+    h6: {
+      fontFamily: 'Inter',
+      fontWeight: 700,
     },
     body1: {
-      fontWeight: 400, 
+      fontFamily: 'Inter',
+      fontWeight: 700,
+    },
+    body2: {
+      fontFamily: 'Inter',
+      fontWeight: 700,
     },
     button: {
       textTransform: 'none', 
