@@ -85,7 +85,7 @@ const Tables = () => {
       const sheet = workbook.Sheets[sheetName];
       const data = XLSX.utils.sheet_to_json(sheet, { header: 1 });
   
-      const requiredColumns = ['id', 'country', 'state', 'city', 'address'];
+      const requiredColumns = ['country', 'state', 'city', 'address'];
       const fileColumns = data[0]; 
   
       const isValid = requiredColumns.every(col => fileColumns.includes(col));
