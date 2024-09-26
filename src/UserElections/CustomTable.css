@@ -1,0 +1,23 @@
+.table-section-container::-webkit-scrollbar {
+    width: 5px;
+    /* Ancho del scrollbar */
+}
+
+.table-section-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    /* Color de fondo del track */
+    border-radius: 10px;
+    /* Bordes redondeados */
+}
+
+.table-section-container::-webkit-scrollbar-thumb {
+    background: #888;
+    /* Color del thumb */
+    border-radius: 10px;
+    /* Bordes redondeados */
+}
+
+.table-section-container::-webkit-scrollbar-thumb:hover {
+    background: #555;
+    /* Color del thumb al pasar el mouse */
+}

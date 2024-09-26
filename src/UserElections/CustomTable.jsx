@@ -1,5 +1,5 @@
 import React from 'react';
-import { useTheme } from '@mui/material/styles';
+import { useTheme, lighten } from '@mui/material/styles';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -7,14 +7,21 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { lighten } from '@mui/material/styles';
+import './CustomTable.css'
 
 const CustomTable = ({ columns = [], rows = [], onRowClick }) => {
   const theme = useTheme();
 
   return (
-    <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 650 }} aria-label="customized table">
+    <TableContainer
+      className='table-section-container'
+      component={Paper}
+      sx={{
+        maxHeight: 'calc(100vh - 150px)', 
+        overflowY: 'auto',
+      }}
+    >
+      <Table stickyHeader sx={{ minWidth: 650 }} aria-label="customized table">
         <TableHead>
           <TableRow
             sx={{
@@ -22,6 +29,7 @@ const CustomTable = ({ columns = [], rows = [], onRowClick }) => {
               '& th': {
                 color: theme.palette.common.white,
                 fontWeight: 'bold',
+                backgroundColor: theme.palette.secondary.main, // Asegura que el fondo se aplique correctamente
               },
             }}
           >
@@ -52,7 +60,6 @@ const CustomTable = ({ columns = [], rows = [], onRowClick }) => {
                   '&:hover': {
                     backgroundColor: lighten(theme.palette.secondary.main, 0.8),
                   },
-                  '&:last-child td, &:last-child th': { border: 0 },
                   cursor: onRowClick ? 'pointer' : 'default',
                 }}
               >
