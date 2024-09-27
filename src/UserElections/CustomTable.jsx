@@ -13,7 +13,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import './CustomTable.css';
 
-const CustomTable = ({ title, columns = [], rows = [], onRowClick }) => {
+const CustomTable = ({ title, columns = [], rows = [], onRowClick, handleAddSelected, handleDeleteSelected }) => {
   const theme = useTheme();
   
   // Estado para manejar las filas seleccionadas
@@ -22,7 +22,7 @@ const CustomTable = ({ title, columns = [], rows = [], onRowClick }) => {
   // Manejar la selección de todas las filas
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelected = rows.map((row) => row.uuid);  // Suponiendo que "uuid" es el identificador único de la fila
+      const newSelected = rows.map((row) => row.uuid);
       setSelectedRows(newSelected);
       return;
     }
@@ -53,18 +53,10 @@ const CustomTable = ({ title, columns = [], rows = [], onRowClick }) => {
   // Verificar si la fila está seleccionada
   const isSelected = (uuid) => selectedRows.indexOf(uuid) !== -1;
 
-  const handleDeleteSelected = () => {
-
-  }
-
-  const handleAddSelected = () => {
-
-  }
-
   return (
     <>
       <div className='table-section-header'>
-        <h3>{title}</h3>
+        <h2>{title}</h2>
         <div className='table-header-actions'>
           <Button
             variant="contained"

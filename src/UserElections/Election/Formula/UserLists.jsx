@@ -209,11 +209,11 @@ const UserLists = () => {
   return (
     <div className="my-section">
       <div className="my-section-header">
-        <h2 className="my-section-title">Sus Fórmulas</h2>
-        <button className="add-section-button" onClick={handleCreateListClick}>Crear Fórmula</button>
+        {/*<h2 className="my-section-title">Sus Fórmulas</h2>
+        <button className="add-section-button" onClick={handleCreateListClick}>Crear Fórmula</button>*/}
       </div>
       
-      <CustomTable columns={columns} rows={formulas} />
+      <CustomTable title="Sus Fórmulas" columns={columns} rows={formulas} handleAddSelected={handleCreateListClick}/>
 
       <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>

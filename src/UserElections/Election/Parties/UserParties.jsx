@@ -116,16 +116,18 @@ const UserParties = () => {
     return (
         <div className="user-lists">
             <div className="my-section-header">
-                <h2 className="my-section-title">Sus Partidos</h2>
+                {/*<h2 className="my-section-title">Sus Partidos</h2>
                 <button className="add-section-button" onClick={handleCreatePartyClick}>
                     Crear Partido
-                </button>
+                </button>*/}
             </div>
             
             <CustomTable 
+                title="Sus Partidos"
                 columns={columns}
                 rows={rows}
                 onRowClick={(row) => console.log('Partido seleccionado:', row)}
+                handleAddSelected={handleCreatePartyClick}
             />
 
             <Modal show={showModal} onHide={handleClose}>

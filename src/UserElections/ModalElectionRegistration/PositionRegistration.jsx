@@ -1,11 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './PositionRegistration.css';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ReplayIcon from '@mui/icons-material/Replay';
 
-const PositionRegistration = ({ onClose, electionId }) => {
+const PositionRegistration = ({ onClose, electionId, initialPositions }) => {
   const [positions, setPositions] = useState([{ title: '' }]);
   const [lastRemoved, setLastRemoved] = useState(null); // Para el undo
+
+  // Cuando initialData esté disponible, pre-rellena los campos del formulario
+  useEffect(() => {
+    if (initialPositions && initialPositions.length > 0) {
+      setPositions(initialPositions.map((position) => ({ title: position.title })));
+    } else {
+      setPositions([{ title: '' }]); // Restablece a la posición inicial si no hay datos
+    }
+  }, [initialPositions]);
 
   const handlePositionChange = (index, event) => {
     const newPositions = [...positions];
@@ -17,7 +26,7 @@ const PositionRegistration = ({ onClose, electionId }) => {
     setPositions([...positions, { title: '' }]);
   };
 
-  const handleAddPosition = async (position) => {
+  const handleAddPosition = async (position) => { //TODO: si estoy modificando las posiciones, tengo que hacer un PATCH
     const positionToSend = {
       title: position.title,
       description: '',

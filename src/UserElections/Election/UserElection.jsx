@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import Navbar from './Navbar';
 import { useLocation } from 'react-router-dom';
 import UserLists from './Formula/UserLists';
-import ElectionInfo from './ElectionInfo';
+import ElectionInfo from './Info/ElectionInfo';
 import Tables from './Tables/UserTables';
 import UserParties from './Parties/UserParties';
 import { ElectionProvider } from './ElectionContext';

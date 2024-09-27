@@ -1,0 +1,43 @@
+.election-info {
+    position: relative;
+    background-color: var(--primary-color-light1); /* Azul marino oscuro */
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 600px;
+    margin: 20px auto;
+    box-shadow: 10px 10px 15px rgba(0, 1, 0.7, 0.2);
+}
+
+.election-info h2 {
+    margin-bottom: 20px;
+    text-align: center;
+    font-size: 1.8em;
+    font-weight: bold;
+}
+
+.edit-icon-container {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.election-info p {
+    margin: 10px 0;
+    font-size: 1.1em;
+    line-height: 1.6;
+    font-weight: 400;
+}
+
+.election-info ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.election-info ul li {
+    background-color: var(--primary-color-light3); /* Un azul un poco más claro para las posiciones */
+    padding: 10px;
+    margin: 8px 0;
+    border-radius: 4px;
+    font-weight: 600;
+    color: #f0f0f0;
+}

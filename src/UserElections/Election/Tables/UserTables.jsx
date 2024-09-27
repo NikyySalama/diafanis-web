@@ -127,11 +127,16 @@ const Tables = () => {
   return (
     <div className='my-section'>
       <div className="my-section-header">
-        <h2 className='my-section-title'>Sus Mesas</h2>
-        <button className='add-section-button' onClick={handleCreateTableClick}>Crear Mesa</button>
+        {/*<h2 className='my-section-title'>Sus Mesas</h2>
+        <button className='add-section-button' onClick={handleCreateTableClick}>Crear Mesa</button>*/}
       </div>
 
-      <CustomTable columns={columns} rows={rows} onRowClick={(row) => console.log('Fila clickeada', row)} />
+      <CustomTable 
+        title="Sus Mesas" 
+        columns={columns} 
+        rows={rows} 
+        onRowClick={(row) => console.log('Fila clickeada', row)} 
+        handleAddSelected={handleCreateTableClick}/>
 
       <Modal show={showUploadModal} onHide={handleCloseUploadModal}>
         <Modal.Header closeButton>

@@ -59,17 +59,18 @@ const UserElections = () => {
       <NavbarUserElection />
       <div className="my-elections">
       <div className="my-elections-header">
-        <h1 className="my-elections-title">Sus Elecciones</h1>
+        {/*<h1 className="my-elections-title">Sus Elecciones</h1>
         <button className="add-election-button" onClick={openModal}>
           Crear Elección
-        </button>
+        </button>*/}
       </div>
 
         <CustomTable
-          title={"Sus Elecciones"}
+          title="Sus Elecciones"
           columns={columns}
           rows={elections}
           onRowClick={(row) => handleElectionClicked(row.title, row.uuid)}
+          handleAddSelected={openModal}
         />
 
         <ElectionModal

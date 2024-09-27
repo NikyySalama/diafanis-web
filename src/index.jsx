@@ -22,6 +22,11 @@ const theme = createTheme({
       styleOverrides: {
         ':root': {
           '--primary-color': '#020246',
+          '--primary-color-light5': '#10109c', 
+          '--primary-color-light4': '#3636e3',
+          '--primary-color-light3': '#6c6ce0',
+          '--primary-color-light2': '#a5a5fa',
+          '--primary-color-light1': '#cfcfff',
           '--secondary-color' : '#4E54B5',
           '--secondary-color-light': '#ecebf7',
           '--secondary-color-hover': '#cbc7fc',
