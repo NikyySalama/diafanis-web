@@ -18,6 +18,7 @@ const ElectionRegistration = ({ handleAddElection, handleContinue, initialData }
                 startsAt: initialData.startsAt || '',
                 endsAt: initialData.endsAt || '',
             });
+            console.log(initialData);
         }
     }, [initialData]);
 

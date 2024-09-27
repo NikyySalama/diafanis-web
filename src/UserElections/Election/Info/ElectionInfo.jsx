@@ -73,7 +73,7 @@ const ElectionInfo = () => {
                 show={isModalOpen}
                 onClose={closeModal}
                 onAddElection={fetchInfo}
-                initialPositions={info}  // Pasa los datos de la elección actual para editar
+                initialData={info}  // Pasa los datos de la elección actual para editar
             />
         </div>
     );

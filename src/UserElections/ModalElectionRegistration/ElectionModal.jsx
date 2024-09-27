@@ -15,6 +15,8 @@ const ElectionModal = ({ show, onClose, onAddElection, initialData }) => {
     setAddedElection(null);
   };
 
+  console.log("data", initialData);
+
   const handleAddElection = async (newElection) => {
     try {
       const method = initialData ? 'PATCH' : 'POST';
@@ -62,7 +64,7 @@ const ElectionModal = ({ show, onClose, onAddElection, initialData }) => {
             <PositionRegistration 
               onClose={handleClose} 
               electionId={addedElection.uuid} 
-              initialData={initialData.positions}
+              initialPositions={initialData.positions}
             />
           ) : (
             <p>Cargando...</p>
