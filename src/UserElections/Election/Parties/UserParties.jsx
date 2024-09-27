@@ -13,6 +13,7 @@ const UserParties = () => {
         colorHex: '',
         name: ''
     });
+    const [clickedParty, setClickedParty] = useState(false);
 
     const fetchParties = async () => {
         try {
@@ -42,6 +43,17 @@ const UserParties = () => {
         setFormData({ logoUrl: '', colorHex: '', name: '' });
         setShowModal(true);
     };
+
+    const handlePartyClick = (row) => {
+        setFormData({
+            logoUrl: row.logoUrl || '', 
+            colorHex: row.colorHex || '',
+            name: row.name || '',
+            uuid: row.uuid || ''
+        });
+        setClickedParty(true);
+        setShowModal(true);
+    };    
 
     const handleClose = () => setShowModal(false);
 
@@ -81,6 +93,35 @@ const UserParties = () => {
         }
     };
 
+    const handleUpdateParty = async () => {
+        const { logoUrl, colorHex, name, uuid } = formData;
+        const partyData = {
+            logoUrl,
+            colorHex,
+            name,
+        };
+
+        try {
+            const response = await fetch(`http://localhost:8080/api/parties/${uuid}`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(partyData)
+            });
+
+            if (response.ok) {
+                const savedParty = await response.json();
+                fetchParties(); 
+            } else {
+                console.error('Error al guardar el partido:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Error en la solicitud:', error);
+        }
+        setClickedParty(false);
+    };
+
     const validateImageUrl = async (url) => {
         try {
             const response = await fetch(url, { method: 'HEAD' });
@@ -100,8 +141,12 @@ const UserParties = () => {
             alert('La URL proporcionada no es una imagen válida.');
             return;
         }
-
-        handleAddParty(formData);
+        if(clickedParty){
+            handleUpdateParty();
+        }
+        else{
+            handleAddParty(formData);
+        }
         handleClose();
     };
 
@@ -110,8 +155,11 @@ const UserParties = () => {
     ];
 
     const rows = parties.map(party => ({
-        name: party.name
-    }));
+        uuid: party.uuid, // Necesario si estás usando selección
+        name: party.name,
+        logoUrl: party.logoUrl,
+        colorHex: party.colorHex
+    }));    
 
     return (
         <div className="user-lists">
@@ -126,7 +174,7 @@ const UserParties = () => {
                 title="Sus Partidos"
                 columns={columns}
                 rows={rows}
-                onRowClick={(row) => console.log('Partido seleccionado:', row)}
+                onRowClick={(row) => handlePartyClick(row)}
                 handleAddSelected={handleCreatePartyClick}
             />
 
