@@ -1,5 +1,5 @@
-import React from 'react';
-import { useTheme, lighten } from '@mui/material/styles';
+import React, { useState } from 'react';
+import { useTheme } from '@mui/material/styles';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -7,73 +7,146 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import './CustomTable.css'
+import Checkbox from '@mui/material/Checkbox';
+import Button from '@mui/material/Button';
+import DeleteIcon from '@mui/icons-material/Delete';
+import AddIcon from '@mui/icons-material/Add';
+import './CustomTable.css';
 
-const CustomTable = ({ columns = [], rows = [], onRowClick }) => {
+const CustomTable = ({ title, columns = [], rows = [], onRowClick }) => {
   const theme = useTheme();
+  
+  // Estado para manejar las filas seleccionadas
+  const [selectedRows, setSelectedRows] = useState([]);
+
+  // Manejar la selección de todas las filas
+  const handleSelectAllClick = (event) => {
+    if (event.target.checked) {
+      const newSelected = rows.map((row) => row.uuid);  // Suponiendo que "uuid" es el identificador único de la fila
+      setSelectedRows(newSelected);
+      return;
+    }
+    setSelectedRows([]);
+  };
+
+  // Manejar la selección individual de cada fila
+  const handleRowClick = (event, uuid) => {
+    const selectedIndex = selectedRows.indexOf(uuid);
+    let newSelected = [];
+
+    if (selectedIndex === -1) {
+      newSelected = newSelected.concat(selectedRows, uuid);
+    } else if (selectedIndex === 0) {
+      newSelected = newSelected.concat(selectedRows.slice(1));
+    } else if (selectedIndex === selectedRows.length - 1) {
+      newSelected = newSelected.concat(selectedRows.slice(0, -1));
+    } else if (selectedIndex > 0) {
+      newSelected = newSelected.concat(
+        selectedRows.slice(0, selectedIndex),
+        selectedRows.slice(selectedIndex + 1)
+      );
+    }
+
+    setSelectedRows(newSelected);
+  };
+
+  // Verificar si la fila está seleccionada
+  const isSelected = (uuid) => selectedRows.indexOf(uuid) !== -1;
+
+  const handleDeleteSelected = () => {
+
+  }
+
+  const handleAddSelected = () => {
+
+  }
 
   return (
-    <TableContainer
-      className='table-section-container'
-      component={Paper}
-      sx={{
-        maxHeight: 'calc(100vh - 150px)', 
-        overflowY: 'auto',
-      }}
-    >
-      <Table stickyHeader sx={{ minWidth: 650 }} aria-label="customized table">
-        <TableHead>
-          <TableRow
-            sx={{
-              backgroundColor: theme.palette.secondary.main,
-              '& th': {
-                color: theme.palette.common.white,
-                fontWeight: 'bold',
-                backgroundColor: theme.palette.secondary.main, // Asegura que el fondo se aplique correctamente
-              },
-            }}
+    <>
+      <div className='table-section-header'>
+        <h3>{title}</h3>
+        <div className='table-header-actions'>
+          <Button
+            variant="contained"
+            onClick={handleAddSelected}
           >
-            {columns.map((column, index) => (
-              <TableCell key={index} align={column.align || 'left'}>
-                {column.label}
-              </TableCell>
-            ))}
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {rows.length === 0 ? (
+            <AddIcon />
+          </Button>
+          <Button
+            variant="contained"
+            onClick={handleDeleteSelected}
+            disabled={selectedRows.length === 0}
+          >
+            <DeleteIcon />
+          </Button>
+        </div>
+      </div>
+      <TableContainer
+        className='table-section-container'
+        component={Paper}
+      >
+        <Table stickyHeader sx={{ minWidth: 650 }} aria-label="customized table">
+          <TableHead>
             <TableRow>
-              <TableCell colSpan={columns.length} align="center">
-                No hay datos disponibles
+              {/* Checkbox de selección de todas las filas */}
+              <TableCell padding="checkbox" className="header-cell">
+                <Checkbox
+                  indeterminate={selectedRows.length > 0 && selectedRows.length < rows.length}
+                  checked={rows.length > 0 && selectedRows.length === rows.length}
+                  onChange={handleSelectAllClick}
+                  inputProps={{ 'aria-label': 'select all rows' }}
+                />
               </TableCell>
+              {columns.map((column, index) => (
+                <TableCell key={index} align={column.align || 'left'}  className="header-cell">
+                  {column.label}
+                </TableCell>
+              ))}
             </TableRow>
-          ) : (
-            rows.map((row, rowIndex) => (
-              <TableRow
-                key={rowIndex}
-                onClick={() => onRowClick && onRowClick(row)}
-                sx={{
-                  backgroundColor:
-                    rowIndex % 2 === 0
-                      ? theme.palette.action.hover
-                      : theme.palette.background.paper,
-                  '&:hover': {
-                    backgroundColor: lighten(theme.palette.secondary.main, 0.8),
-                  },
-                  cursor: onRowClick ? 'pointer' : 'default',
-                }}
-              >
-                {columns.map((column, colIndex) => (
-                  <TableCell key={colIndex} align={column.align || 'left'}>
-                    {row[column.field] || 'N/A'}
-                  </TableCell>
-                ))}
+          </TableHead>
+          <TableBody>
+            {rows.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={columns.length + 1} align="center">
+                  No hay datos disponibles
+                </TableCell>
               </TableRow>
-            ))
-          )}
-        </TableBody>
-      </Table>
-    </TableContainer>
+            ) : (
+              rows.map((row, rowIndex) => {
+                const isItemSelected = isSelected(row.uuid);
+                return (
+                  <TableRow className='table-row-data'
+                    key={rowIndex}
+                    onClick={(event) => onRowClick && onRowClick(row)}
+                    role="checkbox"
+                    aria-checked={isItemSelected}
+                    selected={isItemSelected}
+                  >
+                    {/* Checkbox para cada fila */}
+                    <TableCell padding="checkbox">
+                      <Checkbox
+                        checked={isItemSelected}
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          handleRowClick(event, row.uuid)
+                        }
+                        }
+                        inputProps={{ 'aria-labelledby': `enhanced-table-checkbox-${rowIndex}` }}
+                      />
+                    </TableCell>
+                    {columns.map((column, colIndex) => (
+                      <TableCell key={colIndex} align={column.align || 'left'}>
+                        {row[column.field] || 'N/A'}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                );
+              })
+            )}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </>
   );
 };
 
