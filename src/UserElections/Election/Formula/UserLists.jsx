@@ -12,21 +12,30 @@ const UserLists = () => {
   const [formulas, setFormulas] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [showPositionsModal, setShowPositionsModal] = useState(false);
+  const [showModalFormula, setShowModalFormula] = useState(false);
   const [formData, setFormData] = useState({ partyId: '', partyName: '', id: '' });
   const [positionsData, setPositionsData] = useState([]);
+  const [clickedFormula, setClickedFormula] = useState(false);
+  const [editFormulaData, setEditFormulaData] = useState({
+    formulaNumber: '', 
+    partyId: '', 
+    partyName: '', 
+    candidates: [],
+    uuid: ''
+  });
 
   useEffect(() => {
     const fetchData = async () => {
       const fetchedFormulas = await fetchFormulas();
       const fetchedPositions = await fetchPositions();
-  
+
       setFormulas(fetchedFormulas);
       setPositions(fetchedPositions);
       setPositionsData(new Array(fetchedPositions.length).fill(null));
     };
     fetchData();
     fetchParties();
-  }, []);  
+  }, []);
 
   const fetchParties = async () => {
     try {
@@ -52,6 +61,8 @@ const UserLists = () => {
             title: position.title,
             formulaNumber: formula.idNumber,
             partyName: formula.party.name,
+            candidates: formula.candidates,
+            uuid: formula.uuid, // Añadimos el UUID de la fórmula para poder editarla
           }))
         );
         return formulas;
@@ -81,6 +92,11 @@ const UserLists = () => {
   const handleCreateListClick = () => {
     setFormData({ partyId: '', partyName: '', id: '' });
     setShowModal(true);
+  };
+
+  const handleEditFormulaClick = (formula) => {
+    setEditFormulaData(formula);
+    setShowModalFormula(true);
   };
 
   const handleChange = (e) => {
@@ -200,20 +216,47 @@ const UserLists = () => {
     setShowPositionsModal(false);
   };
 
+  // Envía los datos de la fórmula editada
+  const handleUpdateFormula = async (e) => {
+    e.preventDefault();
+    if (!editFormulaData || !editFormulaData.uuid || !editFormulaData.partyId) {
+      console.error('Datos incompletos o inválidos:', editFormulaData);
+      return;
+    }
+
+    try {
+      const response = await fetch(`http://localhost:8080/api/electiveFormulas/${editFormulaData.uuid}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(editFormulaData),
+      });
+      console.log("formula data: ", editFormulaData);
+
+      if (response.ok) {
+        const savedFormula = await response.json();
+        setFormulas(formulas.map(f => (f.uuid === savedFormula.uuid ? savedFormula : f))); // Actualiza las fórmulas
+        setShowModalFormula(false);
+      } else {
+        console.error('Error al actualizar la fórmula:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error en la solicitud:', error);
+    }
+  };
+
   const columns = [
     { label: 'Posición', field: 'title' },
     { label: 'Partido', field: 'partyName' },
-    { label: 'ID', field: 'formulaNumber' }
+    { label: 'ID', field: 'formulaNumber' },
   ];
 
   return (
     <div className="my-section">
-      <div className="my-section-header">
-        {/*<h2 className="my-section-title">Sus Fórmulas</h2>
-        <button className="add-section-button" onClick={handleCreateListClick}>Crear Fórmula</button>*/}
-      </div>
+      <div className="my-section-header"></div>
       
-      <CustomTable title="Sus Fórmulas" columns={columns} rows={formulas} handleAddSelected={handleCreateListClick}/>
+      <CustomTable title="Sus Fórmulas" columns={columns} rows={formulas} onRowClick={(row) => handleEditFormulaClick(row)} handleAddSelected={handleCreateListClick} />
 
       <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>
@@ -271,6 +314,94 @@ const UserLists = () => {
             </div>
           ))}
           <button type="submit" className="modal-button" onClick={handlePositionsSubmit}>Guardar</button>
+        </Modal.Body>
+      </Modal>
+
+      {/* Modal para editar una fórmula */}
+      <Modal show={showModalFormula} onHide={() => setShowModalFormula(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Editar Fórmula</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {editFormulaData && (
+            <form onSubmit={handleUpdateFormula}>
+              <div className="form-group">
+                <label htmlFor="formulaNumber">ID de fórmula:</label>
+                <input
+                  type="text"
+                  id="formulaNumber"
+                  name="formulaNumber"
+                  value={editFormulaData.formulaNumber || ''}
+                  onChange={(e) =>
+                    setEditFormulaData({ ...editFormulaData, formulaNumber: e.target.value })
+                  }
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="partyName">Partido:</label>
+                <select
+                  id="partyId"
+                  name="partyId"
+                  value={editFormulaData.partyId || ''}
+                  onChange={(e) => {
+                    const selectedParty = parties.find(party => party.uuid === e.target.value);
+                    setEditFormulaData({
+                      ...editFormulaData,
+                      partyId: e.target.value,
+                      partyName: selectedParty ? selectedParty.name : ''
+                    });
+                  }}
+                  required >
+                  <option value="">Seleccione un partido</option>
+                  {parties.map(party => (
+                    <option key={party.uuid} value={party.uuid}>{party.name}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="form-group">
+                <label>Candidatos:</label>
+                {editFormulaData.candidates.map((candidate, index) => (
+                  <div key={index}>
+                    <input
+                      type="text"
+                      value={candidate.data.name || ''}
+                      onChange={(e) => {
+                        const updatedCandidates = [...editFormulaData.candidates];
+                        updatedCandidates[index].data.name = e.target.value;
+                        setEditFormulaData({ ...editFormulaData, candidates: updatedCandidates });
+                      }}
+                      placeholder="Nombre"
+                      required
+                    />
+                    <input
+                      type="text"
+                      value={candidate.data.lastName || ''}
+                      onChange={(e) => {
+                        const updatedCandidates = [...editFormulaData.candidates];
+                        updatedCandidates[index].data.lastName = e.target.value;
+                        setEditFormulaData({ ...editFormulaData, candidates: updatedCandidates });
+                      }}
+                      placeholder="Apellido"
+                      required
+                    />
+                    <input
+                      type="text"
+                      value={candidate.role || ''}
+                      onChange={(e) => {
+                        const updatedCandidates = [...editFormulaData.candidates];
+                        updatedCandidates[index].role = e.target.value;
+                        setEditFormulaData({ ...editFormulaData, candidates: updatedCandidates });
+                      }}
+                      placeholder="Rol"
+                      required
+                    />
+                  </div>
+                ))}
+              </div>
+              <button type="submit" className="modal-button">Guardar Cambios</button>
+            </form>
+          )}
         </Modal.Body>
       </Modal>
     </div>

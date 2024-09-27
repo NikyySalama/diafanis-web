@@ -64,8 +64,8 @@ const ElectionModal = ({ show, onClose, onAddElection, initialData }) => {
             <PositionRegistration 
               onClose={handleClose} 
               electionId={addedElection.uuid} 
-              initialPositions={initialData.positions}
-            />
+              initialPositions={initialData?.positions || []}  // Asegúrate de que no falle si es undefined
+              />
           ) : (
             <p>Cargando...</p>
           )
