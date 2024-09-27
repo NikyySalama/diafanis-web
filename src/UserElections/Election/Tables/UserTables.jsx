@@ -9,8 +9,16 @@ const Tables = () => {
   const electionId = useElection();
   const [tables, setTables] = useState([]);
   const [showUploadModal, setShowUploadModal] = useState(false);
+  const [showUploadTableModal, setShowUploadTableModal] = useState(false);
   const [tablesData, setTablesData] = useState([]);
   const [isFileValid, setIsFileValid] = useState(false);
+  const [tableData, setTableData] = useState({
+    country: '', 
+    state: '',
+    city: '',
+    address: '',
+    uuid: '',
+  });
 
   useEffect(() => {
     fetchTables();
@@ -26,12 +34,12 @@ const Tables = () => {
       });
       if (response.ok) {
         const data = await response.json();
-        setTables(data);
+        setTables(data); // Guardamos las mesas tal como llegan
       } else {
-        console.error('error al obtener las mesas', response.statusText);
+        console.error('Error al obtener las mesas', response.statusText);
       }
     } catch (error) {
-      console.error('error en la solicitud de partidos', error);
+      console.error('Error en la solicitud de mesas', error);
     }
   };
 
@@ -57,6 +65,7 @@ const Tables = () => {
       if (response.ok) {
         const savedTable = await response.json();
         console.log('Mesa guardada:', savedTable);
+        fetchTables();
       } else {
         console.error('Error al guardar la mesa:', response.statusText);
       }
@@ -69,11 +78,30 @@ const Tables = () => {
     setShowUploadModal(true);
   };
 
+  const handleTableClick = (row) => {
+    // Buscar la mesa correcta usando su dirección o algún identificador único
+    const clickedTable = tables.find(table => table.location.address === row.address);
+    if (clickedTable) {
+      setTableData({
+        country: clickedTable.location.country, 
+        state: clickedTable.location.state,
+        city: clickedTable.location.city,
+        address: clickedTable.location.address,
+        uuid: clickedTable.uuid,
+      });
+      setShowUploadTableModal(true); // Mostrar modal para edición
+    }
+  };
+
   const handleCloseUploadModal = () => {
     setShowUploadModal(false);
     setIsFileValid(false);
   };
-  
+
+  const handleCloseEditTableModal = () => {
+    setShowUploadTableModal(false);
+  };
+
   const handleFileUpload = (e) => {
     const file = e.target.files[0];
     const reader = new FileReader();
@@ -103,13 +131,51 @@ const Tables = () => {
   
     reader.readAsArrayBuffer(file);
   };
-  
+
+  const handleUpdateTable = async () => {
+    const { country, state, city, address, uuid } = tableData;
+    const location = {
+      country, state, city, address,
+    };
+
+    const tableToSend = {
+      location,
+    };
+
+    try {
+        const response = await fetch(`http://localhost:8080/api/tables/${uuid}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(tableToSend)
+        });
+
+        if (response.ok) {
+            const savedTable = await response.json();
+            fetchTables(); 
+        } else {
+            console.error('Error al actualizar la mesa:', response.statusText);
+        }
+    } catch (error) {
+        console.error('Error en la solicitud:', error);
+    }
+    setShowUploadTableModal(false);
+  };
 
   const handleTablesSubmit = (e) => {
     e.preventDefault();
     handleCloseUploadModal();
     tablesData.forEach(tableData => postTable(tableData));
     fetchTables();
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setTableData(prevData => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
 
   const columns = [
@@ -135,7 +201,7 @@ const Tables = () => {
         title="Sus Mesas" 
         columns={columns} 
         rows={rows} 
-        onRowClick={(row) => console.log('Fila clickeada', row)} 
+        onRowClick={handleTableClick} 
         handleAddSelected={handleCreateTableClick}/>
 
       <Modal show={showUploadModal} onHide={handleCloseUploadModal}>
@@ -154,6 +220,64 @@ const Tables = () => {
               />
             </div>
             <button type="submit" className="modal-button" disabled={!isFileValid}>
+              Guardar
+            </button>
+          </form>
+        </Modal.Body>
+      </Modal>
+
+      {/* Modal para editar mesa seleccionada */}
+      <Modal show={showUploadTableModal} onHide={handleCloseEditTableModal}>
+        <Modal.Header closeButton>
+          <Modal.Title>Editar Mesa</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <form>
+            <div className="form-group">
+              <label>País:</label>
+              <input
+                type="text"
+                name="country"
+                value={tableData.country}
+                onChange={handleInputChange}
+                className="form-control"
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label>Estado:</label>
+              <input
+                type="text"
+                name="state"
+                value={tableData.state}
+                onChange={handleInputChange}
+                className="form-control"
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label>Ciudad:</label>
+              <input
+                type="text"
+                name="city"
+                value={tableData.city}
+                onChange={handleInputChange}
+                className="form-control"
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label>Dirección:</label>
+              <input
+                type="text"
+                name="address"
+                value={tableData.address}
+                onChange={handleInputChange}
+                className="form-control"
+                required
+              />
+            </div>
+            <button type="button" className="modal-button" onClick={handleUpdateTable}>
               Guardar
             </button>
           </form>
