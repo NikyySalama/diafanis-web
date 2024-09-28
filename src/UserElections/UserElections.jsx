@@ -46,7 +46,7 @@ const UserElections = () => {
     const oneDayLater = new Date(new Date(startsAt).getTime() + 24 * 60 * 60 * 1000);
 
     // Comparar la fecha actual con startsAt + 1 día
-    const electionEditable = new Date() > oneDayLater;    
+    const electionEditable = new Date() < oneDayLater;
     navigate('/userElections/election', { state: { title, electionId, electionEditable } });
   };
 

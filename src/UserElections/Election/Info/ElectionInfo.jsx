@@ -6,7 +6,7 @@ import ElectionModal from '../../ModalElectionRegistration/ElectionModal';
 import './ElectionInfo.css';
 
 const ElectionInfo = () => {
-    const { electionId } = useElection();
+    const { electionId, electionEditable } = useElection();
     const [info, setInfo] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -45,7 +45,12 @@ const ElectionInfo = () => {
         }
     }, [electionId]);
 
-    const openModal = () => setIsModalOpen(true);
+    const openModal = () => {
+        if(electionEditable)
+            setIsModalOpen(true);
+        else
+            alert('La eleccion ya no es editable.');
+    }
     const closeModal = () => setIsModalOpen(false);
 
     return (
