@@ -6,7 +6,7 @@ import '../ModalSection.css';
 import CustomTable from '../../CustomTable';
 
 const UserLists = () => {
-  const electionId = useElection();
+  const { electionId } = useElection();
   const [parties, setParties] = useState([]);
   const [positions, setPositions] = useState([]);
   const [formulas, setFormulas] = useState([]);

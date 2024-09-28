@@ -41,8 +41,13 @@ const UserElections = () => {
     }
   };
 
-  const handleElectionClicked = (title, electionId) => {
-    navigate('/userElections/election', { state: { title, electionId } });
+  const handleElectionClicked = (title, electionId, startsAt) => {
+    // Sumar 1 día a startsAt
+    const oneDayLater = new Date(new Date(startsAt).getTime() + 24 * 60 * 60 * 1000);
+
+    // Comparar la fecha actual con startsAt + 1 día
+    const electionEditable = new Date() > oneDayLater;    
+    navigate('/userElections/election', { state: { title, electionId, electionEditable } });
   };
 
   const openModal = () => setIsModalOpen(true);
@@ -69,7 +74,7 @@ const UserElections = () => {
           title="Sus Elecciones"
           columns={columns}
           rows={elections}
-          onRowClick={(row) => handleElectionClicked(row.title, row.uuid)}
+          onRowClick={(row) => handleElectionClicked(row.title, row.uuid, row.startsAt)}
           handleAddSelected={openModal}
         />
 

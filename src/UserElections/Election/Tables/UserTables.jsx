@@ -6,7 +6,7 @@ import * as XLSX from 'xlsx';
 import '../ElectionSection.css';
 
 const Tables = () => {
-  const electionId = useElection();
+  const { electionId } = useElection();
   const [tables, setTables] = useState([]);
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [showUploadTableModal, setShowUploadTableModal] = useState(false);

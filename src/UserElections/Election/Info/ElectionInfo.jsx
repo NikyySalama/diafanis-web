@@ -6,7 +6,7 @@ import ElectionModal from '../../ModalElectionRegistration/ElectionModal';
 import './ElectionInfo.css';
 
 const ElectionInfo = () => {
-    const electionId = useElection();
+    const { electionId } = useElection();
     const [info, setInfo] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
