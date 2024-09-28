@@ -5,9 +5,10 @@ import CustomTable from '../../CustomTable';
 import '../ModalSection.css';
 
 const UserParties = () => {
-    const { electionId } = useElection();
+    const { electionId, electionEditable } = useElection();
     const [parties, setParties] = useState([]);
     const [showModal, setShowModal] = useState(false);
+    const [showViewModal, setShowViewModal] = useState(false); // Para modal de visualización
     const [formData, setFormData] = useState({
         logoUrl: '', 
         colorHex: '',
@@ -41,6 +42,7 @@ const UserParties = () => {
 
     const handleCreatePartyClick = () => {
         setFormData({ logoUrl: '', colorHex: '', name: '' });
+        setClickedParty(false); // Para asegurarse de que no esté editando
         setShowModal(true);
     };
 
@@ -51,11 +53,23 @@ const UserParties = () => {
             name: row.name || '',
             uuid: row.uuid || ''
         });
-        setClickedParty(true);
-        setShowModal(true);
-    };    
+        setShowViewModal(true); // Modal de visualización
+    };
 
-    const handleClose = () => setShowModal(false);
+    const handleEditPartyClick = () => {
+        if(electionEditable){
+            setShowViewModal(false); // Cierra el modal de visualización
+            setClickedParty(true);   // Marca que estamos editando
+            setShowModal(true);      // Abre el modal de edición
+        }
+        else
+            alert('La eleccion ya no es editable.');
+    };
+
+    const handleClose = () => {
+        setShowModal(false);
+        setShowViewModal(false);
+    };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -159,7 +173,7 @@ const UserParties = () => {
         name: party.name,
         logoUrl: party.logoUrl,
         colorHex: party.colorHex
-    }));    
+    }));
 
     return (
         <div className="user-lists">
@@ -169,7 +183,7 @@ const UserParties = () => {
                     Crear Partido
                 </button>*/}
             </div>
-            
+
             <CustomTable 
                 title="Sus Partidos"
                 columns={columns}
@@ -178,9 +192,23 @@ const UserParties = () => {
                 handleAddSelected={handleCreatePartyClick}
             />
 
+            {/* Modal de visualización */}
+            <Modal show={showViewModal} onHide={handleClose}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Detalles del Partido</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <p>Nombre: {formData.name}</p>
+                    <p>Logo URL: <span className="url-display">{formData.logoUrl}</span></p>  {/* Aplica el estilo aquí */}
+                    <p>Color: {formData.colorHex}</p>
+                    <button type="button" className="modal-button" onClick={handleEditPartyClick}>Editar</button>
+                </Modal.Body>
+            </Modal>
+
+            {/* Modal de edición/creación */}
             <Modal show={showModal} onHide={handleClose}>
                 <Modal.Header closeButton>
-                    <Modal.Title>Agregar Partido</Modal.Title>
+                    <Modal.Title>{clickedParty ? 'Editar Partido' : 'Agregar Partido'}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <form onSubmit={handleSubmit}>
