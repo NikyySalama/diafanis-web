@@ -6,10 +6,11 @@ import * as XLSX from 'xlsx';
 import '../ElectionSection.css';
 
 const Tables = () => {
-  const { electionId } = useElection();
+  const { electionId, electionEditable } = useElection();
   const [tables, setTables] = useState([]);
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [showUploadTableModal, setShowUploadTableModal] = useState(false);
+  const [showViewTableModal, setShowViewTableModal] = useState(false); // Estado para mostrar la vista sin editar
   const [tablesData, setTablesData] = useState([]);
   const [isFileValid, setIsFileValid] = useState(false);
   const [tableData, setTableData] = useState({
@@ -79,7 +80,6 @@ const Tables = () => {
   };
 
   const handleTableClick = (row) => {
-    // Buscar la mesa correcta usando su dirección o algún identificador único
     const clickedTable = tables.find(table => table.location.address === row.address);
     if (clickedTable) {
       setTableData({
@@ -89,13 +89,17 @@ const Tables = () => {
         address: clickedTable.location.address,
         uuid: clickedTable.uuid,
       });
-      setShowUploadTableModal(true); // Mostrar modal para edición
+      setShowViewTableModal(true); // Mostrar modal para visualizar la mesa
     }
   };
 
   const handleCloseUploadModal = () => {
     setShowUploadModal(false);
     setIsFileValid(false);
+  };
+
+  const handleCloseViewTableModal = () => {
+    setShowViewTableModal(false);
   };
 
   const handleCloseEditTableModal = () => {
@@ -178,6 +182,15 @@ const Tables = () => {
     }));
   };
 
+  const handleEditTableClick = () => {
+    if(electionEditable){
+      setShowViewTableModal(false);
+      setShowUploadTableModal(true); // Abrir el modal de edición
+    }
+    else
+      alert('La eleccion ya no es editable.');
+  };
+
   const columns = [
     { label: 'Numero', field: 'id', align: 'left' },
     { label: 'Ciudad', field: 'city', align: 'left' },
@@ -226,61 +239,72 @@ const Tables = () => {
         </Modal.Body>
       </Modal>
 
+      <Modal show={showViewTableModal} onHide={handleCloseViewTableModal}>
+        <Modal.Header closeButton>
+          <Modal.Title>Ver Mesa</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <div>
+            <p><strong>País:</strong> {tableData.country}</p>
+            <p><strong>Estado:</strong> {tableData.state}</p>
+            <p><strong>Ciudad:</strong> {tableData.city}</p>
+            <p><strong>Dirección:</strong> {tableData.address}</p>
+          </div>
+          <button type="button" className="modal-button" onClick={handleEditTableClick}>
+            Editar
+          </button>
+        </Modal.Body>
+      </Modal>
+
       {/* Modal para editar mesa seleccionada */}
       <Modal show={showUploadTableModal} onHide={handleCloseEditTableModal}>
         <Modal.Header closeButton>
           <Modal.Title>Editar Mesa</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <form>
-            <div className="form-group">
-              <label>País:</label>
-              <input
-                type="text"
-                name="country"
-                value={tableData.country}
-                onChange={handleInputChange}
-                className="form-control"
-                required
-              />
-            </div>
-            <div className="form-group">
-              <label>Estado:</label>
-              <input
-                type="text"
-                name="state"
-                value={tableData.state}
-                onChange={handleInputChange}
-                className="form-control"
-                required
-              />
-            </div>
-            <div className="form-group">
-              <label>Ciudad:</label>
-              <input
-                type="text"
-                name="city"
-                value={tableData.city}
-                onChange={handleInputChange}
-                className="form-control"
-                required
-              />
-            </div>
-            <div className="form-group">
-              <label>Dirección:</label>
-              <input
-                type="text"
-                name="address"
-                value={tableData.address}
-                onChange={handleInputChange}
-                className="form-control"
-                required
-              />
-            </div>
-            <button type="button" className="modal-button" onClick={handleUpdateTable}>
-              Guardar
-            </button>
-          </form>
+          <div className="form-group">
+            <label htmlFor="country">País:</label>
+            <input
+              type="text"
+              id="country"
+              name="country"
+              value={tableData.country}
+              onChange={handleInputChange}
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="state">Estado:</label>
+            <input
+              type="text"
+              id="state"
+              name="state"
+              value={tableData.state}
+              onChange={handleInputChange}
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="city">Ciudad:</label>
+            <input
+              type="text"
+              id="city"
+              name="city"
+              value={tableData.city}
+              onChange={handleInputChange}
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="address">Dirección:</label>
+            <input
+              type="text"
+              id="address"
+              name="address"
+              value={tableData.address}
+              onChange={handleInputChange}
+            />
+          </div>
+          <button className="modal-button" onClick={handleUpdateTable}>
+            Guardar cambios
+          </button>
         </Modal.Body>
       </Modal>
     </div>
