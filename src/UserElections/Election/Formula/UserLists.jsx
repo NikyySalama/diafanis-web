@@ -7,6 +7,7 @@ import CustomTable from '../../CustomTable';
 import CreateListModal from './CreateListModal';
 import CreateCandidatesModal from './CreateCandidatesModal'
 import EditFormulaModal from './EditFormulaModal'
+import { fetchParties, fetchFormulas, fetchPositions } from './fetchFormulaUtils';
 
 const UserLists = () => {
   const { electionId, electionEditable } = useElection();
@@ -27,12 +28,12 @@ const UserLists = () => {
 
   useEffect(() => {
     fetchData();
-    fetchParties();
+    fetchPartiesData();
   }, []);
 
   const fetchData = async () => {
     try {
-      const [fetchedFormulas, fetchedPositions] = await Promise.all([fetchFormulas(), fetchPositions()]);
+      const [fetchedFormulas, fetchedPositions] = await Promise.all([fetchFormulas(electionId), fetchPositions(electionId)]);
       console.log("formulas: ", fetchedFormulas);
       setFormulas(fetchedFormulas);
       setPositions(fetchedPositions);
@@ -42,52 +43,9 @@ const UserLists = () => {
     }
   };
 
-  const fetchParties = async () => {
-    try {
-      const response = await fetch(`http://localhost:8080/api/elections/${electionId}/parties`);
-      if (response.ok) {
-        const data = await response.json();
-        setParties(data);
-      } else {
-        console.error('Error al obtener los partidos');
-      }
-    } catch (error) {
-      console.error('Error en la solicitud de partidos', error);
-    }
-  };
-
-  const fetchFormulas = async () => {
-    try {
-      const response = await fetch(`http://localhost:8080/api/elections/${electionId}/electionPositions`);
-      if (response.ok) {
-        const positions = await response.json();
-        return positions.flatMap(position => 
-          position.formulas.map(formula => ({
-            title: position.title,
-            idNumber: formula.idNumber,
-            partyUuid: formula.party.uuid, // Asegúrate de usar `uuid` correctamente
-            partyName: formula.party.name,
-            candidates: formula.candidates,
-            uuid: formula.uuid,
-          }))
-        );
-      } else {
-        throw new Error('Error al obtener las posiciones');
-      }
-    } catch (error) {
-      console.error('Error en fetchFormulas:', error);
-      return [];
-    }
-  };
-
-  const fetchPositions = async () => {
-    try {
-      const response = await fetch(`http://localhost:8080/api/elections/${electionId}/electionPositions`);
-      return response.ok ? await response.json() : [];
-    } catch (error) {
-      console.error('Error en fetchPositions:', error);
-      return [];
-    }
+  const fetchPartiesData = async () => {
+    const data = await fetchParties(electionId);
+    setParties(data);
   };
 
   const handleCreateListClick = () => {
