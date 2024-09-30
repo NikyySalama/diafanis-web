@@ -1,7 +1,7 @@
 import React from 'react';
 import { Modal } from 'react-bootstrap';
 
-const CreateListModal = ({ show, onHide, setEditFormulaData, handleSubmit, editFormulaData, parties }) => (
+const EditFormulaModal = ({ show, onHide, setEditFormulaData, handleSubmit, editFormulaData, parties }) => (
     <Modal show={show} onHide={onHide}>
         <Modal.Header closeButton>
           <Modal.Title>Editar Fórmula</Modal.Title>
@@ -42,4 +42,4 @@ const CreateListModal = ({ show, onHide, setEditFormulaData, handleSubmit, editF
       </Modal>
 );
 
-export default CreateListModal;
+export default EditFormulaModal;

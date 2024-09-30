@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useElection } from '../ElectionContext';
-import { Modal } from 'react-bootstrap';
 import * as XLSX from 'xlsx';
 import '../ModalSection.css';
 import CustomTable from '../../CustomTable';
 import CreateListModal from './CreateListModal';
 import CreateCandidatesModal from './CreateCandidatesModal'
 import EditFormulaModal from './EditFormulaModal'
+import FormulaInfoModal from './FormulaInfoModal';
 import { fetchParties, fetchFormulas, fetchPositions } from './fetchFormulaUtils';
 
 const UserLists = () => {
@@ -17,11 +17,12 @@ const UserLists = () => {
   const [positionsData, setPositionsData] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [showPositionsModal, setShowPositionsModal] = useState(false);
-  const [showModalFormula, setShowModalFormula] = useState(false);
+  const [showEditFormulaModal, setShowEditFormulaModal] = useState(false);
+  const [showFormulaInfoModal, setShowFormulaInfoModal] = useState(false);
   const [formData, setFormData] = useState({ partyUuid: '', partyName: '', id: '' });
   const [editFormulaData, setEditFormulaData] = useState({
     idNumber: '', 
-    partyUuid: '', 
+    partyUuid: '',
     candidates: [],
     uuid: ''
   });
@@ -55,7 +56,7 @@ const UserLists = () => {
 
   const handleEditFormulaClick = (formula) => {
     setEditFormulaData(formula);
-    setShowModalFormula(true);
+    setShowFormulaInfoModal(true);
   };
 
   const handleChange = (e) => {
@@ -212,7 +213,7 @@ const UserLists = () => {
       if (response.ok) {
         const updatedFormula = await response.json();
         setFormulas(formulas.map(f => f.uuid === updatedFormula.uuid ? updatedFormula : f));
-        setShowModalFormula(false);
+        setShowEditFormulaModal(false);
         fetchData();
       } else {
         console.error('Error al actualizar la fórmula:', response.statusText);
@@ -256,9 +257,24 @@ const UserLists = () => {
         positions={positions}
       />
 
+      <FormulaInfoModal
+        show={showFormulaInfoModal}
+        onHide={() => setShowFormulaInfoModal(false)}
+        handleEdit={() => {
+          if(electionEditable){
+            setShowEditFormulaModal(true); 
+            setShowFormulaInfoModal(false);
+          }
+          else
+            alert('La eleccion ya no es editable.');
+        }}
+        editFormulaData={editFormulaData}
+        parties={parties}
+      />
+
       <EditFormulaModal
-        show={showModalFormula}
-        onHide={() => setShowModalFormula(false)}
+        show={showEditFormulaModal}
+        onHide={() => setShowEditFormulaModal(false)}
         setEditFormulaData={setEditFormulaData}
         handleSubmit={handleUpdateFormula}
         editFormulaData={editFormulaData}

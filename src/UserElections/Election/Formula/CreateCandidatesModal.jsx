@@ -1,7 +1,7 @@
 import React from 'react';
 import { Modal } from 'react-bootstrap';
 
-const CreateListModal = ({ show, onHide, handleFileUpload, handleSubmit, positions }) => (
+const CreateCandidatesModal = ({ show, onHide, handleFileUpload, handleSubmit, positions }) => (
     <Modal show={show} onHide={onHide}>
         <Modal.Header closeButton>
           <Modal.Title>Posiciones y Candidatos</Modal.Title>
@@ -27,4 +27,4 @@ const CreateListModal = ({ show, onHide, handleFileUpload, handleSubmit, positio
     </Modal>
 );
 
-export default CreateListModal;
+export default CreateCandidatesModal;

@@ -32,9 +32,14 @@ const ElectionRegistration = ({ handleAddElection, handleContinue, initialData }
 
     const handleSubmit = (e) => {
         e.preventDefault();
+
+        if (new Date(formData.startsAt) < new Date()){
+            alert('La fecha y hora de inicio deben ser posteriores a la fecha y hora actual.');
+            return;
+        }
         
         if (new Date(formData.startsAt) >= new Date(formData.endsAt)) {
-            alert('La fecha y hora de inicio deben ser anteriores a la fecha y hora de fin.'); // Mostrar alerta
+            alert('La fecha y hora de inicio deben ser anteriores a la fecha y hora de fin.');
             return;
         }
 
