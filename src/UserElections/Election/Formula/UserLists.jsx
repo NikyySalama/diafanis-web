@@ -156,14 +156,43 @@ const UserLists = () => {
 
   const handlePositionsSubmit = async (e) => {
     e.preventDefault();
-
+  
+    // Verificar si hay algún archivo no subido
     if (positions.some((_, index) => !positionsData[index]?.length)) {
       alert('Por favor, suba un archivo para cada posición.');
       return;
     }
-
+  
     try {
-      const postPromises = positions.map((position, index) => {
+      // Primero, subir las fórmulas y recolectar sus UUIDs
+      const formulaPromises = positions.map((position, index) => {
+        const formulaData = {
+          title: 'title',
+          partyUuid: formData.partyUuid,
+          electionPositionUuid: position.uuid,
+          idNumber: formData.id,
+          electionUuid: electionId,
+        };
+  
+        return fetch(`http://localhost:8080/api/electiveFormulas`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formulaData),
+        }).then(async (response) => {
+          if (!response.ok) {
+            throw new Error(`Error en la respuesta del servidor: ${response.status}`);
+          }
+          const text = await response.text();
+          return text ? JSON.parse(text) : {};
+        });
+      });
+  
+      // Esperar a que todas las fórmulas se suban y obtener sus UUIDs
+      const uploadedFormulas = await Promise.all(formulaPromises);
+  
+      // Crear y enviar los candidatos para cada fórmula
+      for (let index = 0; index < uploadedFormulas.length; index++) {
+        const uploadedFormula = uploadedFormulas[index];
         const candidates = positionsData[index].map((candidate, candidateIndex) => ({
           role: candidate.role,
           imageUrl: candidate.image,
@@ -173,33 +202,28 @@ const UserLists = () => {
             docType: candidate.docType,
             name: candidate.name,
             lastName: candidate.surname,
-            imageUrl: candidate.image
+            imageUrl: candidate.image,
+            formulaUuid: uploadedFormula.uuid,
           },
         }));
-
-        const formulaData = {
-          title: 'title',
-          partyUuid: formData.partyUuid,
-          electionPositionUuid: position.uuid,
-          idNumber: formData.id,
-          candidates,
-        };
-
-        console.log(formulaData);
-        // TODO: arreglar este POST
-        return fetch(`http://localhost:8080/api/electiveFormulas`, {
+  
+        const response = await fetch(`http://localhost:8080/api/electiveFormulas/${uploadedFormula.uuid}/candidates`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(formulaData),
+          body: JSON.stringify(candidates),
         });
-      });
-
-      await Promise.all(postPromises);
+  
+        if (!response.ok) {
+          throw new Error(`Error en el envío de candidatos: ${response.status}`);
+        }
+      }
+  
+      // Cerrar el modal si todo salió bien
       setShowPositionsModal(false);
     } catch (error) {
-      console.error('Error en el envío de fórmulas:', error);
+      console.error('Error en el envío de fórmulas o candidatos:', error);
     }
-  };
+  };  
 
   //TODO: change formula data
 
