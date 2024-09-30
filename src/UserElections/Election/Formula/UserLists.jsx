@@ -4,17 +4,20 @@ import { Modal } from 'react-bootstrap';
 import * as XLSX from 'xlsx';
 import '../ModalSection.css';
 import CustomTable from '../../CustomTable';
+import CreateListModal from './CreateListModal';
+import CreateCandidatesModal from './CreateCandidatesModal'
+import EditFormulaModal from './EditFormulaModal'
 
 const UserLists = () => {
   const { electionId, electionEditable } = useElection();
   const [parties, setParties] = useState([]);
   const [positions, setPositions] = useState([]);
   const [formulas, setFormulas] = useState([]);
+  const [positionsData, setPositionsData] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [showPositionsModal, setShowPositionsModal] = useState(false);
   const [showModalFormula, setShowModalFormula] = useState(false);
   const [formData, setFormData] = useState({ partyUuid: '', partyName: '', id: '' });
-  const [positionsData, setPositionsData] = useState([]);
   const [editFormulaData, setEditFormulaData] = useState({
     idNumber: '', 
     partyUuid: '', 
@@ -28,11 +31,15 @@ const UserLists = () => {
   }, []);
 
   const fetchData = async () => {
-    const [fetchedFormulas, fetchedPositions] = await Promise.all([fetchFormulas(), fetchPositions()]);
-    console.log("formulas: ", fetchedFormulas);
-    setFormulas(fetchedFormulas);
-    setPositions(fetchedPositions);
-    setPositionsData(new Array(fetchedPositions.length).fill(null));
+    try {
+      const [fetchedFormulas, fetchedPositions] = await Promise.all([fetchFormulas(), fetchPositions()]);
+      console.log("formulas: ", fetchedFormulas);
+      setFormulas(fetchedFormulas);
+      setPositions(fetchedPositions);
+      setPositionsData(new Array(fetchedPositions.length).fill(null));
+    } catch (error) {
+      console.error('Error al obtener datos:', error);
+    }
   };
 
   const fetchParties = async () => {
@@ -274,108 +281,31 @@ const UserLists = () => {
         handleAddSelected={handleCreateListClick} 
       />
 
-      <Modal show={showModal} onHide={() => setShowModal(false)}>
-        <Modal.Header closeButton>
-          <Modal.Title>Datos de la Lista</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <form onSubmit={handleSubmit}>
-            <div className="form-group">
-              <label htmlFor="id">ID de fórmula:</label>
-              <input
-                type="text"
-                id="id"
-                name="id"
-                value={formData.id}
-                onChange={handleChange}
-                placeholder="Ingrese ID de fórmula"
-                required
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="partyUuid">Partido:</label>
-              <select
-                id="partyUuid"
-                name="partyUuid"
-                value={formData.partyUuid}
-                onChange={handleChange}
-                required
-              >
-                <option value="">Seleccionar Partido</option>
-                {parties.map((party) => (
-                  <option key={party.uuid} value={party.uuid}>
-                    {party.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <button type="submit" className="btn btn-primary">Crear Lista</button>
-          </form>
-        </Modal.Body>
-      </Modal>
+      <CreateListModal
+        show={showModal}
+        onHide={() => setShowModal(false)}
+        formData={formData}
+        parties={parties}
+        handleChange={handleChange}
+        handleSubmit={handleSubmit}
+      />
 
-      <Modal show={showPositionsModal} onHide={() => setShowPositionsModal(false)}>
-        <Modal.Header closeButton>
-          <Modal.Title>Posiciones y Candidatos</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <form onSubmit={handlePositionsSubmit}>
-            {positions.map((position, index) => (
-              <div key={position.uuid} className="form-group">
-                <label htmlFor={`position${index}`}>{position.title}</label>
-                <input
-                  type="file"
-                  id={`position${index}`}
-                  name={`position${index}`}
-                  accept=".xlsx, .xls"
-                  onChange={(e) => handleFileUpload(e, index)}
-                  required
-                />
-              </div>
-            ))}
-            <button type="submit" className="btn btn-primary">Subir Fórmulas</button>
-          </form>
-        </Modal.Body>
-      </Modal>
+      <CreateCandidatesModal
+        show={showPositionsModal}
+        onHide={() => setShowPositionsModal(false)}
+        handleFileUpload={handleFileUpload}
+        handleSubmit={handlePositionsSubmit}
+        positions={positions}
+      />
 
-      <Modal show={showModalFormula} onHide={() => setShowModalFormula(false)}>
-        <Modal.Header closeButton>
-          <Modal.Title>Editar Fórmula</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <form onSubmit={handleUpdateFormula}>
-            <div className="form-group">
-              <label htmlFor="id">ID de fórmula:</label>
-              <input
-                type="text"
-                id="id"
-                name="idNumber"
-                value={editFormulaData.idNumber}
-                onChange={(e) => setEditFormulaData({ ...editFormulaData, idNumber: e.target.value })}
-                required
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="partyUuid">Partido:</label>
-              <select
-                id="partyUuid"
-                name="partyUuid"
-                value={editFormulaData.partyUuid}
-                onChange={(e) => setEditFormulaData({ ...editFormulaData, partyUuid: e.target.value })}
-                required
-              >
-                <option value="">Seleccionar Partido</option>
-                {parties.map((party) => (
-                  <option key={party.uuid} value={party.uuid}>
-                    {party.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <button type="submit" className="btn btn-primary">Guardar Cambios</button>
-          </form>
-        </Modal.Body>
-      </Modal>
+      <EditFormulaModal
+        show={showModalFormula}
+        onHide={() => setShowModalFormula(false)}
+        setEditFormulaData={setEditFormulaData}
+        handleSubmit={handleUpdateFormula}
+        editFormulaData={editFormulaData}
+        parties={parties}
+      />
     </div>
   );
 };
