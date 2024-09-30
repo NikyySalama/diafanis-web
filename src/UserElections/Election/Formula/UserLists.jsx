@@ -220,6 +220,7 @@ const UserLists = () => {
   
       // Cerrar el modal si todo salió bien
       setShowPositionsModal(false);
+      fetchData();
     } catch (error) {
       console.error('Error en el envío de fórmulas o candidatos:', error);
     }
@@ -247,6 +248,7 @@ const UserLists = () => {
         const updatedFormula = await response.json();
         setFormulas(formulas.map(f => f.uuid === updatedFormula.uuid ? updatedFormula : f));
         setShowModalFormula(false);
+        fetchData();
       } else {
         console.error('Error al actualizar la fórmula:', response.statusText);
       }
