@@ -53,10 +53,11 @@ const Tables = () => {
     };
     const tableToSend = {
       name: table.id,
+      electionUuid: electionId,
       location: location
     };
     try {
-      const response = await fetch(`http://localhost:8080/api/tables/${electionId}`, {
+      const response = await fetch(`http://localhost:8080/api/tables`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

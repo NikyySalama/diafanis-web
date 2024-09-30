@@ -6,7 +6,7 @@ import '../ModalSection.css';
 import CustomTable from '../../CustomTable';
 
 const UserLists = () => {
-  const { electionId } = useElection();
+  const { electionId, electionEditable } = useElection();
   const [parties, setParties] = useState([]);
   const [positions, setPositions] = useState([]);
   const [formulas, setFormulas] = useState([]);
@@ -180,11 +180,14 @@ const UserLists = () => {
         const formulaData = {
           title: 'title',
           partyUuid: formData.partyUuid,
+          electionPositionUuid: position.uuid,
           idNumber: formData.id,
           candidates,
         };
 
-        return fetch(`http://localhost:8080/api/electiveFormulas/${position.uuid}`, {
+        console.log(formulaData);
+        // TODO: arreglar este POST
+        return fetch(`http://localhost:8080/api/electiveFormulas`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(formulaData),

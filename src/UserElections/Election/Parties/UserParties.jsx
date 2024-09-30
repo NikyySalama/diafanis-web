@@ -88,7 +88,7 @@ const UserParties = () => {
         };
 
         try {
-            const response = await fetch(`http://localhost:8080/api/parties/${electionId}`, {
+            const response = await fetch(`http://localhost:8080/api/parties`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

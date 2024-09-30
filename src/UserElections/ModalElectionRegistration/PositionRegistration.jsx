@@ -30,9 +30,10 @@ const PositionRegistration = ({ onClose, electionId, initialPositions }) => {
     const positionToSend = {
       title: position.title,
       description: '',
+      electionUuid: electionId,
     };
     try {
-      const response = await fetch(`http://localhost:8080/api/electionPositions/${electionId}`, {
+      const response = await fetch(`http://localhost:8080/api/electionPositions`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -19,7 +19,7 @@ const ElectionModal = ({ show, onClose, onAddElection, initialData }) => {
 
   const handleAddElection = async (newElection) => {
     try {
-      const method = initialData ? 'PATCH' : 'POST';
+      const method = initialData ? 'PUT' : 'POST';
       const url = initialData
         ? `http://localhost:8080/api/elections/${initialData.uuid}`
         : 'http://localhost:8080/api/elections';
