@@ -221,6 +221,31 @@ const UserLists = () => {
     console.log("formula subida: ", formulaDataToPatch);
   };
 
+  const handleDeleteLists = async (formulas) => {
+    if(!electionEditable){
+      alert('La eleccion ya no es editable.');
+      return;
+    }
+    
+    try {
+      await Promise.all(
+        formulas.map(async (formula) => {
+          const response = await fetch(`http://localhost:8080/api/electiveFormulas/${formula}`, {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+          });
+  
+          if (!response.ok) {
+            throw new Error(`Error en la respuesta del servidor: ${response.status}`);
+          }
+        })
+      );
+      fetchData();
+    } catch (error) {
+      console.error('Error al eliminar formulas', error);
+    }
+  };
+
   const columns = [
     { label: 'Posición', field: 'title' },
     { label: 'Partido', field: 'partyName' },
@@ -234,7 +259,8 @@ const UserLists = () => {
         columns={columns} 
         rows={formulas} 
         onRowClick={handleEditFormulaClick} 
-        handleAddSelected={handleCreateListClick} 
+        handleAddSelected={handleCreateListClick}
+        handleDeleteSelected={handleDeleteLists}
       />
 
       <CreateListModal

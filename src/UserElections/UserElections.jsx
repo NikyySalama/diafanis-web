@@ -50,6 +50,26 @@ const UserElections = () => {
     navigate('/userElections/election', { state: { title, electionId, electionEditable } });
   };
 
+  const handleDeleteElections = async (elections) => {
+    try {
+      await Promise.all(
+        elections.map(async (election) => {
+          const response = await fetch(`http://localhost:8080/api/elections/${election}`, {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+          });
+  
+          if (!response.ok) {
+            throw new Error(`Error en la respuesta del servidor: ${response.status}`);
+          }
+        })
+      );
+      fetchElections();
+    } catch (error) {
+      console.error('Error al eliminar elecciones', error);
+    }
+  };  
+
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
@@ -76,6 +96,7 @@ const UserElections = () => {
           rows={elections}
           onRowClick={(row) => handleElectionClicked(row.title, row.uuid, row.startsAt)}
           handleAddSelected={openModal}
+          handleDeleteSelected={handleDeleteElections}
         />
 
         <ElectionModal

@@ -192,6 +192,31 @@ const Tables = () => {
       alert('La eleccion ya no es editable.');
   };
 
+  const handleDeleteTables = async (tables) => {
+    if(!electionEditable){
+      alert('La eleccion ya no es editable.');
+      return;
+    }
+    
+    try {
+      await Promise.all(
+        tables.map(async (table) => {
+          const response = await fetch(`http://localhost:8080/api/tables/${table}`, {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+          });
+  
+          if (!response.ok) {
+            throw new Error(`Error en la respuesta del servidor: ${response.status}`);
+          }
+        })
+      );
+      fetchTables();
+    } catch (error) {
+      console.error('Error al eliminar mesas', error);
+    }
+  };
+
   const columns = [
     { label: 'Numero', field: 'id', align: 'left' },
     { label: 'Ciudad', field: 'city', align: 'left' },
@@ -199,6 +224,7 @@ const Tables = () => {
   ];
 
   const rows = tables.map((table, index) => ({
+    uuid: table.uuid,
     id: index + 1,
     city: table.location.city,
     address: table.location.address,
@@ -216,7 +242,9 @@ const Tables = () => {
         columns={columns} 
         rows={rows} 
         onRowClick={handleTableClick} 
-        handleAddSelected={handleCreateTableClick}/>
+        handleAddSelected={handleCreateTableClick}
+        handleDeleteSelected={handleDeleteTables}
+      />
 
       <Modal show={showUploadModal} onHide={handleCloseUploadModal}>
         <Modal.Header closeButton>

@@ -7,7 +7,7 @@
 
 .table-section-header h3 {
     margin: 0;
-    color: var(--primary-color); /* Color primario para el texto del encabezado */
+    color: var(--primary-color);
 }
 
 .table-header-actions {
@@ -68,7 +68,7 @@
 }
 
 .table-section-container .header-cell {
-    background-color: var(--secondary-color);
+    background-color: var(--primary-color-light4);
     color: var(--background-color);
     font-weight: 300;
 }

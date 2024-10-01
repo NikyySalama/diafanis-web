@@ -164,6 +164,31 @@ const UserParties = () => {
         handleClose();
     };
 
+    const handleDeleteParties = async (parties) => {
+        if(!electionEditable){
+            alert('La eleccion ya no es editable.');
+            return;
+        }
+         
+        try {
+            await Promise.all(
+                parties.map(async (party) => {
+                    const response = await fetch(`http://localhost:8080/api/parties/${party}`, {
+                        method: 'DELETE',
+                        headers: { 'Content-Type': 'application/json' },
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`Error en la respuesta del servidor: ${response.status}`);
+                    }
+                })
+            );
+            fetchParties();
+        } catch (error) {
+            console.error('Error al eliminar partidos', error);
+        }
+    }; 
+
     const columns = [
         { label: 'Nombre', field: 'name', align: 'left' },
     ];
@@ -190,6 +215,7 @@ const UserParties = () => {
                 rows={rows}
                 onRowClick={(row) => handlePartyClick(row)}
                 handleAddSelected={handleCreatePartyClick}
+                handleDeleteSelected={handleDeleteParties}
             />
 
             {/* Modal de visualización */}

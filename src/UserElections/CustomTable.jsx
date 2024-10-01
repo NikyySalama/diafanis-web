@@ -56,7 +56,7 @@ const CustomTable = ({ title, columns = [], rows = [], onRowClick, handleAddSele
   return (
     <>
       <div className='table-section-header'>
-        <h2>{title}</h2>
+        <h2 className='my-section-title'>{title}</h2>
         <div className='table-header-actions'>
           <Button
             variant="contained"
@@ -66,7 +66,7 @@ const CustomTable = ({ title, columns = [], rows = [], onRowClick, handleAddSele
           </Button>
           <Button
             variant="contained"
-            onClick={handleDeleteSelected}
+            onClick={() => handleDeleteSelected(selectedRows)}
             disabled={selectedRows.length === 0}
           >
             <DeleteIcon />
