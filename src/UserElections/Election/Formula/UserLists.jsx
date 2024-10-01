@@ -226,7 +226,7 @@ const UserLists = () => {
       alert('La eleccion ya no es editable.');
       return;
     }
-    
+
     try {
       await Promise.all(
         formulas.map(async (formula) => {
