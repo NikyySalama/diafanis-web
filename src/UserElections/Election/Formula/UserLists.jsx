@@ -35,7 +35,7 @@ const UserLists = () => {
   const fetchData = async () => {
     try {
       const [fetchedFormulas, fetchedPositions] = await Promise.all([fetchFormulas(electionId), fetchPositions(electionId)]);
-      console.log("formulas: ", fetchedFormulas);
+      console.log("fetched formulas: ", fetchedFormulas);
       setFormulas(fetchedFormulas);
       setPositions(fetchedPositions);
       setPositionsData(new Array(fetchedPositions.length).fill(null));
@@ -156,7 +156,6 @@ const UserLists = () => {
       // Esperar a que todas las fórmulas se suban y obtener sus UUIDs
       const uploadedFormulas = await Promise.all(formulaPromises);
   
-      // Crear y enviar los candidatos para cada fórmula
       for (let index = 0; index < uploadedFormulas.length; index++) {
         const uploadedFormula = uploadedFormulas[index];
         const candidates = positionsData[index].map((candidate, candidateIndex) => ({
@@ -172,7 +171,7 @@ const UserLists = () => {
             formulaUuid: uploadedFormula.uuid,
           },
         }));
-  
+        
         const response = await fetch(`http://localhost:8080/api/electiveFormulas/${uploadedFormula.uuid}/candidates`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -191,8 +190,6 @@ const UserLists = () => {
       console.error('Error en el envío de fórmulas o candidatos:', error);
     }
   };  
-
-  //TODO: change formula data
 
   const handleUpdateFormula = async (e) => {
     e.preventDefault();
