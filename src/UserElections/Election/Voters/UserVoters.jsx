@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useElection } from '../ElectionContext';
 import { Modal } from 'react-bootstrap';
 import CustomTable from '../../CustomTable';
+import * as XLSX from 'xlsx';
 import '../ModalSection.css';
 
 const UserVoters = () => {
@@ -10,6 +11,7 @@ const UserVoters = () => {
     const [showModal, setShowModal] = useState(false);
     const [showViewModal, setShowViewModal] = useState(false); // Para modal de visualización
     const [votersData, setVotersData] = useState([]);
+    const [tables, setTables] = useState([]);
     const [formData, setFormData] = useState({
         docNumber: '', 
         name: '',
@@ -17,10 +19,12 @@ const UserVoters = () => {
         imageUrl: ''
     });
     const [clickedVoter, setClickedVoter] = useState(false);
+    const [selectedTable, setSelectedTable] = useState('');
+    const [file, setFile] = useState(null);
 
     const fetchVoters = async () => {
         try {
-            const response = await fetch(`http://localhost:8080/api/elections/${electionId}/persons`, {
+            const response = await fetch(`http://localhost:8080/api/elections/${electionId}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
@@ -29,21 +33,42 @@ const UserVoters = () => {
 
             if (response.ok) {
                 const data = await response.json();
-                setVoters(data);
+                setVoters(data.people);
             } else {
-                console.error('Error al obtener los partidos', response.statusText);
+                console.error('Error al obtener los votantes', response.statusText);
             }
         } catch (error) {
-            console.error('Error en la solicitud de partidos', error);
+            console.error('Error en la solicitud de votantes', error);
+        }
+    };
+
+    const fetchTables = async () => {
+        try {
+          const response = await fetch(`http://localhost:8080/api/elections/${electionId}/tables`, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          });
+          if (response.ok) {
+            const data = await response.json();
+            console.log("mesas: ", data);
+            setTables(data); // Guardamos las mesas tal como llegan
+          } else {
+            console.error('Error al obtener las mesas', response.statusText);
+          }
+        } catch (error) {
+          console.error('Error en la solicitud de mesas', error);
         }
     };
 
     useEffect(() => {
         fetchVoters();
+        fetchTables();
     }, []);
 
     const handleCreateVotersClick = () => {
-        setClickedParty(false); // Para asegurarse de que no esté editando
+        setClickedVoter(false); // Para asegurarse de que no esté editando
         setShowModal(true);
     };
 
@@ -71,19 +96,79 @@ const UserVoters = () => {
     const handleClose = () => {
         setShowModal(false);
         setShowViewModal(false);
+        setSelectedTable('');
+        setFile(null);
     };
 
-    const handleAddVoters = async (newVoters) => {
-        
+    const handleTableChange = (e) => {
+        setSelectedTable(e.target.value);
     };
 
-    const handleUpdateVoter = async () => {
-        
+    const handleFileChange = (e) => {
+        setFile(e.target.files[0]);
     };
 
-    const handleSubmit = async (e) => {
-        
+    const handleSubmit = async () => {
+        if (!selectedTable) {
+            alert('Por favor seleccione una mesa.');
+            return;
+        }
+
+        if (!file) {
+            alert('Por favor suba un archivo Excel.');
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const data = new Uint8Array(e.target.result);
+            const workbook = XLSX.read(data, { type: 'array' });
+            const sheetName = workbook.SheetNames[0];
+            const worksheet = workbook.Sheets[sheetName];
+            const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: ['name', 'lastName', 'imageUrl', 'docNumber'] });
+
+            const votersData = jsonData.slice(1);
+
+            // Validar estructura del archivo
+            if (!jsonData.length || !jsonData[0].name || !jsonData[0].lastName || !jsonData[0].imageUrl || !jsonData[0].docNumber) {
+                alert('La estructura del archivo Excel no es correcta. Asegúrese de tener las columnas: name, lastName, imageUrl, docNumber.');
+                return;
+            }
+
+            // Enviar los datos al endpoint
+            addVoters(votersData);
+        };
+        reader.readAsArrayBuffer(file);
     };
+
+    const addVoters = async (votersData) => {
+        try {
+            const updatedVotersData = votersData.map(voter => ({
+                ...voter,
+                docType: 'DNI',
+                electorTableUuid: selectedTable,
+                electionUuid: electionId
+            }));
+    
+            console.log("voters: ", updatedVotersData);
+            const response = await fetch(`http://localhost:8080/api/tables/${selectedTable}/electors`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(updatedVotersData),
+            });
+    
+            if (response.ok) {
+                fetchVoters();
+                handleClose();
+            } else {
+                console.error('Error al subir los votantes', response.statusText);
+            }
+        } catch (error) {
+            console.error('Error en la solicitud de votantes', error);
+        }
+    };    
 
     const handleDeleteVoters = async (voters) => {
         if(!electionEditable){
@@ -104,7 +189,7 @@ const UserVoters = () => {
                     }
                 })
             );
-            fetchParties();
+            fetchVoters();
         } catch (error) {
             console.error('Error al eliminar votantes', error);
         }
@@ -126,13 +211,6 @@ const UserVoters = () => {
 
     return (
         <div>
-            <div className="my-section-header">
-                {/*<h2 className="my-section-title">Sus Votantes</h2>
-                <button className="add-section-button" onClick={handleCreateVotersClick}>
-                    Crear Votantes
-                </button>*/}
-            </div>
-
             <CustomTable 
                 title="Sus Votantes"
                 columns={columns}
@@ -152,6 +230,33 @@ const UserVoters = () => {
                     <p>Documento: {formData.docNumber}</p>
                     <button type="button" className="modal-button" onClick={handleEditVoterClick}>Editar</button>
                 </Modal.Body>
+            </Modal>
+
+            {/* Modal para agregar votantes */}
+            <Modal show={showModal} onHide={handleClose}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Agregar Votantes</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <div>
+                        <label>Seleccione una Mesa:</label>
+                        <select value={selectedTable} onChange={handleTableChange}>
+                            <option value="">Seleccione...</option>
+                            {tables.map((table) => (
+                                <option key={table.uuid} value={table.uuid}>
+                                    {table.location.city} - {table.location.address}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                    <div>
+                        <label>Subir archivo Excel:</label>
+                        <input type="file" accept=".xlsx, .xls" onChange={handleFileChange} />
+                    </div>
+                </Modal.Body>
+                <Modal.Footer>
+                    <button type="button" className="modal-button" onClick={handleSubmit}>Subir Votantes</button>
+                </Modal.Footer>
             </Modal>
         </div>
     );

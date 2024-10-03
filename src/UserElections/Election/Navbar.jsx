@@ -21,6 +21,7 @@ const Navbar = ({ setActiveSection, title }) => {
               <li className="nav-item" onClick={() => setActiveSection('parties')}>Partidos</li>
               <li className="nav-item" onClick={() => setActiveSection('lists')}>Formulas</li>
               <li className="nav-item" onClick={() => setActiveSection('tables')}>Mesas</li>
+              <li className="nav-item" onClick={() => setActiveSection('voters')}>Votantes</li>
           </ul>
       </nav>
     </>

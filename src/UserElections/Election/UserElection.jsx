@@ -5,6 +5,7 @@ import UserLists from './Formula/UserLists';
 import ElectionInfo from './Info/ElectionInfo';
 import Tables from './Tables/UserTables';
 import UserParties from './Parties/UserParties';
+import UserVoters from './Voters/UserVoters';
 import { ElectionProvider } from './ElectionContext';
 
 const Election = () => {
@@ -30,6 +31,8 @@ const Election = () => {
                 return <UserLists />;
             case 'tables':
                 return <Tables />;
+            case 'voters':
+                return <UserVoters />;
             case 'info':
             default:
                 return <ElectionInfo />;
