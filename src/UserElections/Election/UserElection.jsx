@@ -6,6 +6,7 @@ import ElectionInfo from './Info/ElectionInfo';
 import Tables from './Tables/UserTables';
 import UserParties from './Parties/UserParties';
 import UserVoters from './Voters/UserVoters';
+import UserAuthorities from './Authorities/UserAuthorities';
 import { ElectionProvider } from './ElectionContext';
 
 const Election = () => {
@@ -33,6 +34,8 @@ const Election = () => {
                 return <Tables />;
             case 'voters':
                 return <UserVoters />;
+            case 'authorities':
+                return <UserAuthorities />;
             case 'info':
             default:
                 return <ElectionInfo />;
