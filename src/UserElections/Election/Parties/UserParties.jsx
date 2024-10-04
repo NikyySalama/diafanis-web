@@ -91,7 +91,8 @@ const UserParties = () => {
             const response = await fetch(`http://localhost:8080/api/parties`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization' : `Bearer ${sessionStorage.getItem('jwt')}`,
                 },
                 body: JSON.stringify(partyData)
             });
@@ -119,7 +120,8 @@ const UserParties = () => {
             const response = await fetch(`http://localhost:8080/api/parties/${uuid}`, {
                 method: 'PATCH',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization' : `Bearer ${sessionStorage.getItem('jwt')}`,
                 },
                 body: JSON.stringify(partyData)
             });
@@ -175,7 +177,9 @@ const UserParties = () => {
                 parties.map(async (party) => {
                     const response = await fetch(`http://localhost:8080/api/parties/${party}`, {
                         method: 'DELETE',
-                        headers: { 'Content-Type': 'application/json' },
+                        headers: { 
+                            'Content-Type': 'application/json',
+                            'Authorization' : `Bearer ${sessionStorage.getItem('jwt')}`, },
                     });
 
                     if (!response.ok) {

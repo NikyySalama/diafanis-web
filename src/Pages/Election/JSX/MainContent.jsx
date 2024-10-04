@@ -17,8 +17,8 @@ const MainContent = () => {
   const [positions, setPositions] = useState({});
   const [display,setDisplay]  = useState(null);
   const [results, setResults] = useState({});
-  // Fetch election from localStorage once
-  const savedElection = localStorage.getItem('election');
+  // Fetch election from sessionStorage once
+  const savedElection = sessionStorage.getItem('election');
   const election = savedElection ? JSON.parse(savedElection) : null;
 
  // Create formulaMap and positions after the election data is available
@@ -34,7 +34,7 @@ const MainContent = () => {
       if (JSON.stringify(newPositionsMap) !== JSON.stringify(positions)) {
         setPositions(newPositionsMap);
         console.log(newPositionsMap);
-        localStorage.setItem('positions', JSON.stringify(newPositionsMap));
+        sessionStorage.setItem('positions', JSON.stringify(newPositionsMap));
       }
     } else {
       console.warn('No election positions available or election data is missing.');
@@ -50,7 +50,7 @@ const MainContent = () => {
       // Compare the dates
       const show  = electionDate < currentDate;
       setDisplay(show);
-      localStorage.setItem('display',JSON.stringify(display));
+      sessionStorage.setItem('display',JSON.stringify(display));
     }
   }, [election]);
 
@@ -113,7 +113,7 @@ const MainContent = () => {
       if (JSON.stringify(newFormulaMap) !== JSON.stringify(formulaMap)) {
         setFormulaMap(newFormulaMap);
         console.log(newFormulaMap);
-        localStorage.setItem('formulas', JSON.stringify(newFormulaMap));
+        sessionStorage.setItem('formulas', JSON.stringify(newFormulaMap));
       }
           
         } catch (error) {

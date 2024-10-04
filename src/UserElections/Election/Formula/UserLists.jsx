@@ -142,7 +142,10 @@ const UserLists = () => {
   
         return fetch(`http://localhost:8080/api/electiveFormulas`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 
+            'Content-Type': 'application/json',
+            'Authorization' : `Bearer ${sessionStorage.getItem('jwt')}`,
+           },
           body: JSON.stringify(formulaData),
         }).then(async (response) => {
           if (!response.ok) {
@@ -174,7 +177,10 @@ const UserLists = () => {
         
         const response = await fetch(`http://localhost:8080/api/electiveFormulas/${uploadedFormula.uuid}/candidates`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 
+            'Content-Type': 'application/json',
+            'Authorization' : `Bearer ${sessionStorage.getItem('jwt')}`,
+           },
           body: JSON.stringify(candidates),
         });
   
@@ -203,7 +209,9 @@ const UserLists = () => {
     try {
       const response = await fetch(`http://localhost:8080/api/electiveFormulas/${editFormulaData.uuid}`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization' : `Bearer ${sessionStorage.getItem('jwt')}`, },
         body: JSON.stringify(formulaDataToPatch),
       });
 
@@ -232,7 +240,9 @@ const UserLists = () => {
         formulas.map(async (formula) => {
           const response = await fetch(`http://localhost:8080/api/electiveFormulas/${formula}`, {
             method: 'DELETE',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 
+              'Content-Type': 'application/json',
+              'Authorization' : `Bearer ${sessionStorage.getItem('jwt')}`, },
           });
   
           if (!response.ok) {

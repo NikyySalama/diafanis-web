@@ -7,6 +7,7 @@ const ElectionRegistration = ({ handleAddElection, handleContinue, initialData }
         description: '',
         startsAt: '',
         endsAt: '',
+        username: sessionStorage.getItem('user'),
     });
 
     // Cuando initialData esté disponible, pre-rellena los campos del formulario

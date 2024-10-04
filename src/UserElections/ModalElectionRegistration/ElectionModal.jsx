@@ -27,7 +27,8 @@ const ElectionModal = ({ show, onClose, onAddElection, initialData }) => {
       const response = await fetch(url, {
         method,
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization' : `Bearer ${sessionStorage.getItem('jwt')}`,
         },
         body: JSON.stringify(newElection)
       });

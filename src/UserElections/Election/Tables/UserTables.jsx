@@ -60,7 +60,8 @@ const Tables = () => {
       const response = await fetch(`http://localhost:8080/api/tables`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization' : `Bearer ${sessionStorage.getItem('jwt')}`,
         },
         body: JSON.stringify(tableToSend)
       });
@@ -151,7 +152,8 @@ const Tables = () => {
         const response = await fetch(`http://localhost:8080/api/tables/${uuid}`, {
             method: 'PATCH',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization' : `Bearer ${sessionStorage.getItem('jwt')}`,
             },
             body: JSON.stringify(tableToSend)
         });
@@ -203,7 +205,10 @@ const Tables = () => {
         tables.map(async (table) => {
           const response = await fetch(`http://localhost:8080/api/tables/${table}`, {
             method: 'DELETE',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 
+              'Content-Type': 'application/json',
+              'Authorization' : `Bearer ${sessionStorage.getItem('jwt')}`,
+            },
           });
   
           if (!response.ok) {

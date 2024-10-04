@@ -6,6 +6,8 @@ import NavbarUserElection from './NavbarUserElection';
 import CustomTable from './CustomTable';
 
 const UserElections = () => {
+  const jwt = sessionStorage.getItem('jwt');
+  const username = sessionStorage.getItem('user');
   const [elections, setElections] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
@@ -56,7 +58,9 @@ const UserElections = () => {
         elections.map(async (election) => {
           const response = await fetch(`http://localhost:8080/api/elections/${election}`, {
             method: 'DELETE',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 
+              'Content-Type': 'application/json',
+              'Authorization' : `Bearer ${sessionStorage.getItem('jwt')}`, },
           });
   
           if (!response.ok) {
@@ -103,6 +107,8 @@ const UserElections = () => {
           show={isModalOpen}
           onClose={closeModal}
           onAddElection={fetchElections}
+          token={jwt}
+          user={username}
         />
       </div>
     </div>

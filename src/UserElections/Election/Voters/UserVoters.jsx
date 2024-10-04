@@ -157,7 +157,8 @@ const UserVoters = () => {
             const response = await fetch(`http://localhost:8080/api/tables/${selectedTable}/electors`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization' : `Bearer ${sessionStorage.getItem('jwt')}`,
                 },
                 body: JSON.stringify(updatedVotersData),
             });
@@ -179,6 +180,7 @@ const UserVoters = () => {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization' : `Bearer ${sessionStorage.getItem('jwt')}`,
                 },
                 body: JSON.stringify({
                     docNumber: formData.docNumber,
@@ -217,7 +219,10 @@ const UserVoters = () => {
                 voters.map(async (voter) => {
                     const response = await fetch(`http://localhost:8080/api/persons/${voter}`, {
                         method: 'DELETE',
-                        headers: { 'Content-Type': 'application/json' },
+                        headers: { 
+                            'Content-Type': 'application/json',
+                            'Authorization' : `Bearer ${sessionStorage.getItem('jwt')}`,
+                         },
                     });
 
                     if (!response.ok) {

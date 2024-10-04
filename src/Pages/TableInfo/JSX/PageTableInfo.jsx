@@ -11,15 +11,15 @@ const PageTableInfo = () => {
   const [table, setTable] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Retrieve tableUuid from localStorage
-  const tableUuid = localStorage.getItem('tableUuid');
+  // Retrieve tableUuid from sessionStorage
+  const tableUuid = sessionStorage.getItem('tableUuid');
 
   useEffect(() => {
     // Define the fetchData function to get table data
     const fetchData = async () => {
       try {
         if (!tableUuid) {
-          console.warn('No table UUID found in localStorage.');
+          console.warn('No table UUID found in sessionStorage.');
           setLoading(false);
           return;
         }
@@ -40,8 +40,8 @@ const PageTableInfo = () => {
         const data = await response.json();
         setTable(data); // Set the fetched data to the state
 
-        // Store the table data in localStorage
-        localStorage.setItem('tableInfo', JSON.stringify(data));
+        // Store the table data in sessionStorage
+        sessionStorage.setItem('tableInfo', JSON.stringify(data));
       } catch (error) {
         console.error('Error fetching data:', error); // Handle any errors
       } finally {

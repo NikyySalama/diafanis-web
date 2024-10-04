@@ -108,7 +108,8 @@ const UserAuthorities = () => {
             const response = await fetch(`http://localhost:8080/api/tables/${selectedTable}/authorities`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization' : `Bearer ${sessionStorage.getItem('jwt')}`,
                 },
                 body: JSON.stringify(updatedAuthoritiesData),
             });

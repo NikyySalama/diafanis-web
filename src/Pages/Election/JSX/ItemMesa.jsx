@@ -10,7 +10,7 @@ const ItemMesa = ({uuid}) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    localStorage.setItem('tableUuid', uuid); 
+    sessionStorage.setItem('tableUuid', uuid); 
     navigate(`/election/table`);
   };
   

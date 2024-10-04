@@ -3,7 +3,7 @@ import './PositionRegistration.css';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ReplayIcon from '@mui/icons-material/Replay';
 
-const PositionRegistration = ({ onClose, electionId, initialPositions }) => {
+const PositionRegistration = ({ onClose, electionId, initialPositions,token }) => {
   const [positions, setPositions] = useState([{ title: '', uuid: null }]);
   const [lastRemoved, setLastRemoved] = useState(null); // Para el undo
 
@@ -44,6 +44,7 @@ const PositionRegistration = ({ onClose, electionId, initialPositions }) => {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
+            'Authorization' : `Bearer ${sessionStorage.getItem('jwt')}`,
           },
           body: JSON.stringify(positionToSend),
         });
@@ -53,6 +54,7 @@ const PositionRegistration = ({ onClose, electionId, initialPositions }) => {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            'Authorization' : `Bearer ${sessionStorage.getItem('jwt')}`,
           },
           body: JSON.stringify(positionToSend),
         });

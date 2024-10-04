@@ -12,7 +12,7 @@ const Election = () => {
   const [loading, setLoading] = useState(true); // Add a loading state
 
   useEffect(() => {
-    const savedElectionId = localStorage.getItem('electionId');
+    const savedElectionId = sessionStorage.getItem('electionId');
     if (savedElectionId) {
       setElecctionUuid(savedElectionId);
       setLoading(false);
@@ -36,7 +36,7 @@ const Election = () => {
 
           const data = await response.json();
           setElection(data);
-          localStorage.setItem('election', JSON.stringify(data)); // Save election to localStorage
+          sessionStorage.setItem('election', JSON.stringify(data)); // Save election to sessionStorage
         } catch (error) {
           console.error('Error fetching data:', error);
         }
