@@ -10,13 +10,15 @@ const UserVoters = () => {
     const [voters, setVoters] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const [showViewModal, setShowViewModal] = useState(false); // Para modal de visualización
+    const [showEditVoterModal, setShowEditVoterModal] = useState(false);
     const [votersData, setVotersData] = useState([]);
     const [tables, setTables] = useState([]);
     const [formData, setFormData] = useState({
         docNumber: '', 
         name: '',
         lastName: '',
-        imageUrl: ''
+        imageUrl: '',
+        uuid: '',
     });
     const [clickedVoter, setClickedVoter] = useState(false);
     const [selectedTable, setSelectedTable] = useState('');
@@ -87,7 +89,7 @@ const UserVoters = () => {
         if(electionEditable){
             setShowViewModal(false); // Cierra el modal de visualización
             setClickedVoter(true);   // Marca que estamos editando
-            setShowModal(true);      // Abre el modal de edición
+            setShowEditVoterModal(true);      // Abre el modal de edición
         }
         else
             alert('La eleccion ya no es editable.');
@@ -96,6 +98,7 @@ const UserVoters = () => {
     const handleClose = () => {
         setShowModal(false);
         setShowViewModal(false);
+        setShowEditVoterModal(false);
         setSelectedTable('');
         setFile(null);
     };
@@ -168,7 +171,40 @@ const UserVoters = () => {
         } catch (error) {
             console.error('Error en la solicitud de votantes', error);
         }
-    };    
+    };  
+    
+    const handleSubmitVoter = async () => {
+        try {
+            const response = await fetch(`http://localhost:8080/api/persons/${formData.uuid}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    docNumber: formData.docNumber,
+                    name: formData.name,
+                    lastName: formData.lastName,
+                }),
+            });
+
+            if (response.ok) {
+                fetchVoters();
+                handleClose();
+            } else {
+                console.error('Error al actualizar el votante', response.statusText);
+            }
+        } catch (error) {
+            console.error('Error en la solicitud de actualización de votante', error);
+        }
+    };
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormData((prev) => ({
+            ...prev,
+            [name]: value,
+        }));
+    };
 
     const handleDeleteVoters = async (voters) => {
         if(!electionEditable){
@@ -193,7 +229,7 @@ const UserVoters = () => {
         } catch (error) {
             console.error('Error al eliminar votantes', error);
         }
-    }; 
+    };
 
     const columns = [
         { label: 'Nro. Documento', field: 'docNumber', align: 'left' },
@@ -228,7 +264,7 @@ const UserVoters = () => {
                 <Modal.Body>
                     <p>Nombre y apellido: {formData.name} {formData.lastName}</p>
                     <p>Documento: {formData.docNumber}</p>
-                    <button type="button" className="modal-button" onClick={handleEditVoterClick}>Editar</button>
+                    {/*<button type="button" className="modal-button" onClick={handleEditVoterClick}>Editar</button>*/}
                 </Modal.Body>
             </Modal>
 
@@ -256,6 +292,45 @@ const UserVoters = () => {
                 </Modal.Body>
                 <Modal.Footer>
                     <button type="button" className="modal-button" onClick={handleSubmit}>Subir Votantes</button>
+                </Modal.Footer>
+            </Modal>
+
+            {/* Modal para editar votante */}
+            <Modal show={showEditVoterModal} onHide={handleClose}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Editar Votante</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <div>
+                        <label>Nro. Documento:</label>
+                        <input
+                            type="text"
+                            name="docNumber"
+                            value={formData.docNumber}
+                            onChange={handleInputChange}
+                        />
+                    </div>
+                    <div>
+                        <label>Nombre:</label>
+                        <input
+                            type="text"
+                            name="name"
+                            value={formData.name}
+                            onChange={handleInputChange}
+                        />
+                    </div>
+                    <div>
+                        <label>Apellido:</label>
+                        <input
+                            type="text"
+                            name="lastName"
+                            value={formData.lastName}
+                            onChange={handleInputChange}
+                        />
+                    </div>
+                </Modal.Body>
+                <Modal.Footer>
+                    <button type="button" className="modal-button" onClick={handleSubmitVoter}>Guardar Cambios</button>
                 </Modal.Footer>
             </Modal>
         </div>
