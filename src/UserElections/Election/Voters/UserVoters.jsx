@@ -26,7 +26,7 @@ const UserVoters = () => {
 
     const fetchVoters = async () => {
         try {
-            const response = await fetch(`http://localhost:8080/api/elections/${electionId}`, {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/elections/${electionId}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
@@ -46,7 +46,7 @@ const UserVoters = () => {
 
     const fetchTables = async () => {
         try {
-          const response = await fetch(`http://localhost:8080/api/elections/${electionId}/tables`, {
+          const response = await fetch(`${process.env.REACT_APP_API_URL}/api/elections/${electionId}/tables`, {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json'
@@ -154,7 +154,7 @@ const UserVoters = () => {
             }));
     
             console.log("voters: ", updatedVotersData);
-            const response = await fetch(`http://localhost:8080/api/tables/${selectedTable}/electors`, {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/tables/${selectedTable}/electors`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -176,7 +176,7 @@ const UserVoters = () => {
     
     const handleSubmitVoter = async () => {
         try {
-            const response = await fetch(`http://localhost:8080/api/persons/${formData.uuid}`, {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/persons/${formData.uuid}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -217,7 +217,7 @@ const UserVoters = () => {
         try {
             await Promise.all(
                 voters.map(async (voter) => {
-                    const response = await fetch(`http://localhost:8080/api/persons/${voter}`, {
+                    const response = await fetch(`${process.env.REACT_APP_API_URL}/api/persons/${voter}`, {
                         method: 'DELETE',
                         headers: { 
                             'Content-Type': 'application/json',

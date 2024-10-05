@@ -27,7 +27,7 @@ const Tables = () => {
 
   const fetchTables = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/api/elections/${electionId}/tables`, {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/elections/${electionId}/tables`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'
@@ -57,7 +57,7 @@ const Tables = () => {
       location: location
     };
     try {
-      const response = await fetch(`http://localhost:8080/api/tables`, {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/tables`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -149,7 +149,7 @@ const Tables = () => {
     };
 
     try {
-        const response = await fetch(`http://localhost:8080/api/tables/${uuid}`, {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/tables/${uuid}`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
@@ -203,7 +203,7 @@ const Tables = () => {
     try {
       await Promise.all(
         tables.map(async (table) => {
-          const response = await fetch(`http://localhost:8080/api/tables/${table}`, {
+          const response = await fetch(`${process.env.REACT_APP_API_URL}/api/tables/${table}`, {
             method: 'DELETE',
             headers: { 
               'Content-Type': 'application/json',

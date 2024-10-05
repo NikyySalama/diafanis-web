@@ -1,6 +1,6 @@
 export const fetchParties = async (electionId) => {
     try {
-        const response = await fetch(`http://localhost:8080/api/elections/${electionId}/parties`);
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/elections/${electionId}/parties`);
         if (response.ok) {
             return await response.json();
         } else {
@@ -15,7 +15,7 @@ export const fetchParties = async (electionId) => {
 
 export const fetchFormulas = async (electionId) => {
     try {
-        const response = await fetch(`http://localhost:8080/api/elections/${electionId}/electionPositions`);
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/elections/${electionId}/electionPositions`);
         if (response.ok) {
             const positions = await response.json();
             return positions.flatMap(position =>
@@ -39,7 +39,7 @@ export const fetchFormulas = async (electionId) => {
 
 export const fetchPositions = async (electionId) => {
     try {
-        const response = await fetch(`http://localhost:8080/api/elections/${electionId}/electionPositions`);
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/elections/${electionId}/electionPositions`);
         return response.ok ? await response.json() : [];
     } catch (error) {
         console.error('Error en fetchPositions:', error);

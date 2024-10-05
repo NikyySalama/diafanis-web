@@ -18,7 +18,7 @@ const UserElections = () => {
 
   const fetchElections = async () => {
     try {
-      const response = await fetch('http://localhost:8080/api/elections', {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/elections`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -56,7 +56,7 @@ const UserElections = () => {
     try {
       await Promise.all(
         elections.map(async (election) => {
-          const response = await fetch(`http://localhost:8080/api/elections/${election}`, {
+          const response = await fetch(`${process.env.REACT_APP_API_URL}/api/elections/${election}`, {
             method: 'DELETE',
             headers: { 
               'Content-Type': 'application/json',

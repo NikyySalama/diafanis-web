@@ -18,7 +18,7 @@ const UserParties = () => {
 
     const fetchParties = async () => {
         try {
-            const response = await fetch(`http://localhost:8080/api/elections/${electionId}/parties`, {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/elections/${electionId}/parties`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
@@ -88,7 +88,7 @@ const UserParties = () => {
         };
 
         try {
-            const response = await fetch(`http://localhost:8080/api/parties`, {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/parties`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -117,7 +117,7 @@ const UserParties = () => {
         };
 
         try {
-            const response = await fetch(`http://localhost:8080/api/parties/${uuid}`, {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/parties/${uuid}`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
@@ -175,7 +175,7 @@ const UserParties = () => {
         try {
             await Promise.all(
                 parties.map(async (party) => {
-                    const response = await fetch(`http://localhost:8080/api/parties/${party}`, {
+                    const response = await fetch(`${process.env.REACT_APP_API_URL}/api/parties/${party}`, {
                         method: 'DELETE',
                         headers: { 
                             'Content-Type': 'application/json',

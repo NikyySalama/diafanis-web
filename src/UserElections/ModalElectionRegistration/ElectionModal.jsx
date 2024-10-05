@@ -21,8 +21,8 @@ const ElectionModal = ({ show, onClose, onAddElection, initialData }) => {
     try {
       const method = initialData ? 'PUT' : 'POST';
       const url = initialData
-        ? `http://localhost:8080/api/elections/${initialData.uuid}`
-        : 'http://localhost:8080/api/elections';
+        ? `${process.env.REACT_APP_API_URL}/api/elections/${initialData.uuid}`
+        : `${process.env.REACT_APP_API_URL}/api/elections`;
       
       const response = await fetch(url, {
         method,

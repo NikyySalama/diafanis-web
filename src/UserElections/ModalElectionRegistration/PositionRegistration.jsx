@@ -40,7 +40,7 @@ const PositionRegistration = ({ onClose, electionId, initialPositions,token }) =
       let response;
       if (position.uuid) {
         // Si la posición ya tiene un uuid, hacemos un PUT
-        response = await fetch(`http://localhost:8080/api/electionPositions/${position.uuid}`, {
+        response = await fetch(`${process.env.REACT_APP_API_URL}/api/electionPositions/${position.uuid}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -50,7 +50,7 @@ const PositionRegistration = ({ onClose, electionId, initialPositions,token }) =
         });
       } else {
         // Si la posición no tiene uuid, hacemos un POST
-        response = await fetch(`http://localhost:8080/api/electionPositions`, {
+        response = await fetch(`${process.env.REACT_APP_API_URL}/api/electionPositions`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

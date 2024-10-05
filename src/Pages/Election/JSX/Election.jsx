@@ -5,6 +5,7 @@ import Title from "./Title";
 import MainContent from "./MainContent";
 import Menu from "../../../Common/Menu";
 import { useState, useEffect } from 'react';
+import Box from '@mui/material/Box';
 
 const Election = () => {
   const [election, setElection] = useState(null); // Initialize with null to handle loading states
@@ -23,7 +24,7 @@ const Election = () => {
     if (elecctionUuid) {
       const fetchData = async () => {
         try {
-          const response = await fetch(`http://localhost:8080/api/elections/${elecctionUuid}`, {
+          const response = await fetch(`${process.env.REACT_APP_API_URL}/api/elections/${elecctionUuid}`, {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json',
@@ -50,11 +51,17 @@ const Election = () => {
   return (
     <div className="election">
       {loading ? (
-        <p>Loading...</p> // Loading message while fetching UUID
+        <Box display="flex" alignItems="center" justifyContent="center"  height="100%" width="100%">
+          <p>Cargando...</p>
+        </Box>
       ) : !elecctionUuid ? (
-        <p>No election ID found.</p> // Message if no UUID is found
+        <Box   display="flex" alignItems="center" justifyContent="center"  height="100%" width="100%">
+          <p>No se encontro la eleccion.</p>
+        </Box>
       ) : !election ? (
-        <p>Loading election data...</p> // Message while fetching election data
+        <Box display="flex" alignItems="center" justifyContent="center"  height="100%" width="100%">
+          <p>Cargando data de la eleccion...</p>
+        </Box>
       ) : (
         <>
           <Menu />

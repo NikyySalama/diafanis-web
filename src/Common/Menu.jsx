@@ -70,37 +70,37 @@ const Signin = ({ openState, setOpenState }) => {
     setOpenState(false);
     setFormValues({
       Email: '',
-      Password: '',
-      Username: '',
-      Name: '',
-      Lastname: '',
-      PerfilIMG: ''
+      Contraseña: '',
+      Usuario: '',
+      Nombre: '',
+      Apellido: '',
+      Imagen: ''
     });
   };
 
   const [formValues, setFormValues] = useState({
     Email: '',
-    Password: '',
-    Username: '',
-    Name: '',
-    Lastname: '',
-    PerfilIMG: ''
+    Contraseña: '',
+    Usuario: '',
+    Nombre: '',
+    Apellido: '',
+    Imagen: ''
   });
 
   const [errors, setErrors] = useState({
     Email: '',
-    Password: '',
-    Username: '',
-    Name: '',
-    Lastname: '',
+    Contraseña: '',
+    Usuario: '',
+    Nombre: '',
+    Apellido: '',
   });
 
   const [touched, setTouched] = useState({
     Email: false,
-    Password: false,
-    Username: false,
-    Name: false,
-    Lastname: false,
+    Contraseña: false,
+    Usuario: false,
+    Nombre: false,
+    Apellido: false,
   });
 
   const handleInputChange = (event) => {
@@ -125,23 +125,23 @@ const Signin = ({ openState, setOpenState }) => {
     switch (fieldName) {
       case 'Email':
         if (!value) {
-          error = 'Email is required';
+          error = 'Email es obligatorio';
         } else if (!/\S+@\S+\.\S+/.test(value)) {
-          error = 'Email is invalid';
+          error = 'Email formato invalido';
         }
         break;
-      case 'Password':
+      case 'Contraseña':
         if (!value) {
-          error = 'Password is required';
+          error = 'Contraseña es obligatorio';
         } else if (value.length < 6) {
-          error = 'Password must be at least 6 characters';
+          error = 'Contraseña debe tener al menos 6 letras';
         }
         break;
-      case 'Username':
-      case 'Name':
-      case 'Lastname':
+      case 'Usuario':
+      case 'Nombre':
+      case 'Apellido':
         if (!value) {
-          error = `${fieldName} is required`;
+          error = `${fieldName} es obligatorio`;
         }
         break;
       default:
@@ -176,31 +176,31 @@ const Signin = ({ openState, setOpenState }) => {
       setStep(0);
       setTouched({
         Email: false,
-        Password: false,
-        Username: false,
-        Name: false,
-        Lastname: false,
+        Contraseña: false,
+        Usuario: false,
+        Nombre: false,
+        Apellido: false,
       });
       setErrors({
         Email: '',
-        Password: '',
-        Username: '',
-        Name: '',
-        Lastname: '',
+        Contraseña: '',
+        Usuario: '',
+        Nombre: '',
+        Apellido: '',
       });
       try {
-        const response = await fetch('http://localhost:8080/api/auth/register', {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/auth/register`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            username: formValues.Username,
-            password: formValues.Password,
-            lastName: formValues.Lastname,
-            name: formValues.Name,
+            username: formValues.Usuario,
+            password: formValues.Contraseña,
+            lastName: formValues.Apellido,
+            name: formValues.Nombre,
             email: formValues.Email,
-            imageUrl: formValues.PerfilIMG,
+            imageUrl: formValues.Imagen,
           }),
         });
 
@@ -262,7 +262,7 @@ const Signin = ({ openState, setOpenState }) => {
           />
         </Box>
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <StepIndicator currentStep={step} totalSteps={3} />
+          <StepIndicator currentStep={step} totalSteps={2} />
         </Box>
         <Typography sx={{ mt: 3, ml: 0.75 }} variant="h5">
           Cree su cuenta
@@ -271,21 +271,21 @@ const Signin = ({ openState, setOpenState }) => {
         {step === 0 && (
           <Box>
             <InputField
-              label="Username"
+              label="Usuario"
               placeholder=""
               onChangeMethod={handleInputChange}
               onBlurMethod={handleBlur}
               values={formValues}
-              error={touched.Username && !!errors.Username}
-              helperText={touched.Username && errors.Username}
+              error={touched.Usuario && !!errors.Usuario}
+              helperText={touched.Usuario && errors.Usuario}
               required
             />
             <PasswordInput
               onChangeMethod={handleInputChange}
               onBlurMethod={handleBlur}
               values={formValues}
-              error={touched.Password && !!errors.Password}
-              helperText={touched.Password && errors.Password}
+              error={touched.Contraseña && !!errors.Contraseña}
+              helperText={touched.Contraseña && errors.Contraseña}
               required
             />
           </Box>
@@ -305,27 +305,27 @@ const Signin = ({ openState, setOpenState }) => {
               required
             />
             <InputField
-              label="Name"
+              label="Nombre"
               placeholder=""
               onChangeMethod={handleInputChange}
               onBlurMethod={handleBlur}
               values={formValues}
-              error={touched.Name && !!errors.Name}
-              helperText={touched.Name && errors.Name}
+              error={touched.Nombre && !!errors.Nombre}
+              helperText={touched.Nombre && errors.Nombre}
               required
             />
             <InputField
-              label="Lastname"
+              label="Apellido"
               placeholder=""
               onChangeMethod={handleInputChange}
               onBlurMethod={handleBlur}
               values={formValues}
-              error={touched.Lastname && !!errors.Lastname}
-              helperText={touched.Lastname && errors.Lastname}
+              error={touched.Apellido && !!errors.Apellido}
+              helperText={touched.Apellido && errors.Apellido}
               required
             />
             <InputField
-              label="PerfilIMG"
+              label="Imagen"
               placeholder="URL"
               onChangeMethod={handleInputChange}
               values={formValues}
@@ -357,7 +357,7 @@ const Signin = ({ openState, setOpenState }) => {
           >
             Atras
           </Button>
-          {step < 3 ? (
+          {step < 2 ? (
             <Button
               sx={{
                 color: 'var(--background-color)',
@@ -427,12 +427,12 @@ const PasswordInput = ({ onChangeMethod, onBlurMethod, values, error, helperText
 
   return (
     <FormControl sx={{ m: 1, width: '21em' }} variant="standard" error={error} required={required}>
-      <InputLabel sx={{ color: 'grey' }} htmlFor="standard-adornment-password">Password</InputLabel>
+      <InputLabel sx={{ color: 'grey' }} htmlFor="standard-adornment-password">Contraseña</InputLabel>
       <Input
         id="standard-adornment-password"
         type={showPassword ? 'text' : 'password'}
-        name='Password'
-        value={values['Password']}
+        name='Contraseña'
+        value={values['Contraseña']}
         onChange={onChangeMethod}
         onBlur={onBlurMethod}
         autoComplete="current-password"
@@ -462,15 +462,15 @@ const Login = ({ open, setOpenState }) => {
 
 
   const [formValues, setFormValues] = useState({
-    Username: '',
-    Password: '',
+    Usuario: '',
+    Contraseña: '',
   });
 
   const handleCloseLogin = () => {
     setOpenState(false); 
     setFormValues({
-      Username: '',
-      Password: '',
+      Usuario: '',
+      Contraseña: '',
     });
   };
 
@@ -487,14 +487,14 @@ const Login = ({ open, setOpenState }) => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await fetch('http://localhost:8080/api/auth/login', {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          username: formValues.Username,
-          password: formValues.Password,
+          username: formValues.Usuario,
+          password: formValues.Contraseña,
         }),
 
       });
@@ -561,7 +561,7 @@ const Login = ({ open, setOpenState }) => {
         </Typography>
 
         <Box>
-          <InputField label={"Username"} placeholder={""} onChangeMethod={handleInputChange} values={formValues} />
+          <InputField label={"Usuario"} placeholder={""} onChangeMethod={handleInputChange} values={formValues} />
           <PasswordInput onChangeMethod={handleInputChange} values={formValues} />
         </Box>
 

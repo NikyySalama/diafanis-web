@@ -140,7 +140,7 @@ const UserLists = () => {
           electionUuid: electionId,
         };
   
-        return fetch(`http://localhost:8080/api/electiveFormulas`, {
+        return fetch(`${process.env.REACT_APP_API_URL}/api/electiveFormulas`, {
           method: 'POST',
           headers: { 
             'Content-Type': 'application/json',
@@ -175,7 +175,7 @@ const UserLists = () => {
           },
         }));
         
-        const response = await fetch(`http://localhost:8080/api/electiveFormulas/${uploadedFormula.uuid}/candidates`, {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/electiveFormulas/${uploadedFormula.uuid}/candidates`, {
           method: 'POST',
           headers: { 
             'Content-Type': 'application/json',
@@ -207,7 +207,7 @@ const UserLists = () => {
     }
 
     try {
-      const response = await fetch(`http://localhost:8080/api/electiveFormulas/${editFormulaData.uuid}`, {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/electiveFormulas/${editFormulaData.uuid}`, {
         method: 'PATCH',
         headers: { 
           'Content-Type': 'application/json',
@@ -238,7 +238,7 @@ const UserLists = () => {
     try {
       await Promise.all(
         formulas.map(async (formula) => {
-          const response = await fetch(`http://localhost:8080/api/electiveFormulas/${formula}`, {
+          const response = await fetch(`${process.env.REACT_APP_API_URL}/api/electiveFormulas/${formula}`, {
             method: 'DELETE',
             headers: { 
               'Content-Type': 'application/json',

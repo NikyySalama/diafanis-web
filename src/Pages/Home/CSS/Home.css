@@ -1,14 +1,13 @@
 .home{
     min-height: 100%;
-    width: 100%; /* Ensure the parent itself fills its container */
-    padding: 0; /* Remove any default padding */
-    margin: 0; /* Remove any default margin */
+    width: 100%; 
+    margin: 0; 
     position: fixed;
     height: 100%;
     top: 0;
     left: 0;
     right: 0;
-    min-height: 100%; /* Minimum height of the container is the viewport height */
+    min-height: 100%;
     
     overflow-x: auto; 
     display: flex;

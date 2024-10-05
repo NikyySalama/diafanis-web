@@ -60,7 +60,7 @@ const MainContent = () => {
         try {
           console.log("4314");
           console.log(election.uuid);
-          const response = await fetch(`http://localhost:8080/api/elections/${election.uuid}/results`, {
+          const response = await fetch(`${process.env.REACT_APP_API_URL}/api/elections/${election.uuid}/results`, {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json'
@@ -92,7 +92,7 @@ const MainContent = () => {
         try {
           console.log("4314");
           console.log(election.uuid);
-          const response = await fetch(`http://localhost:8080/api/elections/${election.uuid}/electiveFormulas`, {
+          const response = await fetch(`${process.env.REACT_APP_API_URL}/api/elections/${election.uuid}/electiveFormulas`, {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json'

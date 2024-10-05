@@ -24,7 +24,7 @@ const PageTableInfo = () => {
           return;
         }
 
-        const response = await fetch(`http://localhost:8080/api/tables/${tableUuid}`, {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/tables/${tableUuid}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',

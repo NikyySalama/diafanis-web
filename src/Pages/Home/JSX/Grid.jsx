@@ -47,9 +47,15 @@ const GridCard = () => {
           </div>
         </div>
       ) : (
-        <div className='electionsEmpty'>
-           <Typography variant="h4">Lo sentimos, de momento no hay ninguna eleccion creada</Typography>
-        </div>
+        <Box   sx={{
+          height: '60em',
+          display: 'flex',
+          flexDirection: 'column', 
+          alignItems: 'center',    
+          justifyContent: 'center' 
+        }} >
+           <Typography color='var(--primary-color)' align='center' variant="h3">Lo sentimos, de momento no hay ninguna eleccion creada</Typography>
+        </Box>
       )
 };
 

@@ -22,7 +22,7 @@ const UserAuthorities = () => {
 
     const fetchTables = async () => {
         try {
-          const response = await fetch(`http://localhost:8080/api/elections/${electionId}/tables`, {
+          const response = await fetch(`${process.env.REACT_APP_API_URL}/api/elections/${electionId}/tables`, {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json'
@@ -105,7 +105,7 @@ const UserAuthorities = () => {
                 electionUuid: electionId
             }));
     
-            const response = await fetch(`http://localhost:8080/api/tables/${selectedTable}/authorities`, {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/tables/${selectedTable}/authorities`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
