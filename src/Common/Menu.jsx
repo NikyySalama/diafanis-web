@@ -43,11 +43,11 @@ const StepIndicator = ({ currentStep, totalSteps }) => {
             {index < currentStep ? (
               <CheckIcon />
             ) : (
-              <Typography sx={{ color: 'white' }}> {index + 1}</Typography> // Display number for incomplete steps
+              <Typography sx={{ color: 'white' }}> {index + 1}</Typography> 
             )}
           </Box>
 
-          {/* Draw the connecting line */}
+          
           {index < totalSteps - 1 && (
             <Box
               sx={{
@@ -173,8 +173,21 @@ const Signin = ({ openState, setOpenState }) => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (validateForm()) {
-     // console.log('Submitted values:', formValues);
       setStep(0);
+      setTouched({
+        Email: false,
+        Password: false,
+        Username: false,
+        Name: false,
+        Lastname: false,
+      });
+      setErrors({
+        Email: '',
+        Password: '',
+        Username: '',
+        Name: '',
+        Lastname: '',
+      });
       try {
         const response = await fetch('http://localhost:8080/api/auth/register', {
           method: 'POST',
@@ -190,22 +203,18 @@ const Signin = ({ openState, setOpenState }) => {
             imageUrl: formValues.PerfilIMG,
           }),
         });
-  
+
         if (response.ok) {
           const data = await response.json();
           console.log('Form submitted successfully', data);
-          // You can handle success, navigate, or show a success message
         } else {
-          // Extracting more details from the response
           const errorMessage = await response.json();
           console.error('Error submitting form:', response.status, errorMessage);
-          // Handle form submission errors here (e.g., show error message to user)
         }
       } catch (error) {
         console.error('Network or server error:', error);
-        // Handle network or other types of errors here (e.g., no server connection)
       }
-      
+
       handleCloseSignin();
     }
   };
@@ -262,13 +271,13 @@ const Signin = ({ openState, setOpenState }) => {
         {step === 0 && (
           <Box>
             <InputField
-              label="Email"
-              placeholder="123@gmail.com"
+              label="Username"
+              placeholder=""
               onChangeMethod={handleInputChange}
               onBlurMethod={handleBlur}
               values={formValues}
-              error={touched.Email && !!errors.Email}
-              helperText={touched.Email && errors.Email}
+              error={touched.Username && !!errors.Username}
+              helperText={touched.Username && errors.Username}
               required
             />
             <PasswordInput
@@ -286,13 +295,13 @@ const Signin = ({ openState, setOpenState }) => {
           <Box>
             <Typography sx={{ m: 1, mb: 0, mt: 3 }}>Informacion personal</Typography>
             <InputField
-              label="Username"
-              placeholder=""
+              label="Email"
+              placeholder="123@gmail.com"
               onChangeMethod={handleInputChange}
               onBlurMethod={handleBlur}
               values={formValues}
-              error={touched.Username && !!errors.Username}
-              helperText={touched.Username && errors.Username}
+              error={touched.Email && !!errors.Email}
+              helperText={touched.Email && errors.Email}
               required
             />
             <InputField
@@ -452,20 +461,20 @@ const Login = ({ open, setOpenState }) => {
   const navigate = useNavigate();
 
 
- const [formValues, setFormValues] = useState({
+  const [formValues, setFormValues] = useState({
     Username: '',
     Password: '',
   });
 
   const handleCloseLogin = () => {
-    setOpenState(false); // Now using setOpenState to control the modal
-        setFormValues({
+    setOpenState(false); 
+    setFormValues({
       Username: '',
       Password: '',
     });
   };
 
- 
+
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -477,7 +486,6 @@ const Login = ({ open, setOpenState }) => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    //console.log('Submitted values:', formValues);
     try {
       const response = await fetch('http://localhost:8080/api/auth/login', {
         method: 'POST',
@@ -488,31 +496,22 @@ const Login = ({ open, setOpenState }) => {
           username: formValues.Username,
           password: formValues.Password,
         }),
-      
+
       });
 
       if (response.ok) {
         const data = await response.json();
-        //console.log('Form submitted successfully', data);
-        console.log(data.token);
-        console.log(data.username);
-        sessionStorage.setItem('jwt',data.token);
-        sessionStorage.setItem('user',data.username);
-        console.log("hpq");
-        console.log(sessionStorage.getItem('jwt'));
+        sessionStorage.setItem('jwt', data.token);
+        sessionStorage.setItem('user', data.username);
         navigate(`/userElections`);
-        // You can handle success, navigate, or show a success message
       } else {
-        // Extracting more details from the response
         const errorMessage = await response.json();
         console.error('Error submitting form:', response.status, errorMessage);
-        // Handle form submission errors here (e.g., show error message to user)
       }
     } catch (error) {
       console.error('Network or server error:', error);
-      // Handle network or other types of errors here (e.g., no server connection)
     }
-    handleCloseLogin(); // Close the modal after form submission
+    handleCloseLogin(); 
   };
 
   return (
@@ -557,16 +556,16 @@ const Login = ({ open, setOpenState }) => {
             }}
           />
         </Box>
-        <Typography  sx={{ mt: 3, ml: 0.75 }} id="multi-step-modal-title" variant="h5">
+        <Typography sx={{ mt: 3, ml: 0.75 }} id="multi-step-modal-title" variant="h5">
           Inicie sesion
         </Typography>
-        
+
         <Box>
-        <InputField label={"Username"} placeholder={""} onChangeMethod={handleInputChange} values={formValues} />
-        <PasswordInput onChangeMethod={handleInputChange} values={formValues} />
+          <InputField label={"Username"} placeholder={""} onChangeMethod={handleInputChange} values={formValues} />
+          <PasswordInput onChangeMethod={handleInputChange} values={formValues} />
         </Box>
 
-        <Button 
+        <Button
           sx={{
             color: 'var(--background-color)',
             backgroundColor: 'var(--primary-color)',
@@ -577,9 +576,9 @@ const Login = ({ open, setOpenState }) => {
             fontWeight: 700,
             width: '24.5em',
             border: '0.25px solid black',
-          }} 
-          variant="contained" 
-        type='submit'>
+          }}
+          variant="contained"
+          type='submit'>
           Iniciar sesion
         </Button>
       </Box>
@@ -658,7 +657,7 @@ const Menu = () => {
         Iniciar sesion
       </Button>
       <Signin openState={openSignin} setOpenState={setOpenSignin} />
-      <Login open={openLogin} setOpenState={setOpenLogin} /> 
+      <Login open={openLogin} setOpenState={setOpenLogin} />
     </div>
   );
 }
