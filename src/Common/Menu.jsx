@@ -595,6 +595,7 @@ const Login = ({ open, setOpenState }) => {
 
 const Menu = () => {
 
+  const userIsActive = sessionStorage.getItem('user') && sessionStorage.getItem('user').trim() !== '';
   const [openLogin, setOpenLogin] = useState(false);
   const [openSignin, setOpenSignin] = useState(false);
 
@@ -615,47 +616,71 @@ const Menu = () => {
     <div className="menu">
       <div className='menu-button' onClick={handleClick} style={{ cursor: 'pointer' }}>
         <img className="diafanis-icon" src={isotipo} alt="Isotipo" />
-        <Typography color='var(--primary-color)' variant='h5' className="diafanis">Diafanis</Typography>
+        <Typography variant='h5' className="diafanis">Diafanis</Typography>
       </div>
-
-      <Button
-        sx={{
-          color: 'var(--primary-color)',
-          backgroundColor: 'var(--background-color)',
-          height: '80%',
-          padding: '0.5% 1%',
-          marginRight: '0.5em',
-          cursor: 'pointer',
-          fontSize: '1em',
-          fontFamily: 'Inter',
-          marginLeft: 'auto',
-          fontWeight: 700,
-          border: '0.25px solid black',
-        }}
-        variant="contained"
-        className="my-elections-button"
-        onClick={handleOpenSignin}
-      >
-        Crear usuario
-      </Button>
-      <Button
-        sx={{
-          color: 'var(--background-color)',
-          backgroundColor: 'var(--primary-color)',
-          height: '80%',
-          padding: '0.5% 1%',
-          border: '0.25px solid black',
-          cursor: 'pointer',
-          fontSize: '1em',
-          fontFamily: 'Inter',
-          fontWeight: 700,
-        }}
-        variant="contained"
-        className="my-elections-button"
-        onClick={handleOpenLogin}
-      >
-        Iniciar sesion
-      </Button>
+      {!userIsActive ? (
+        <>
+          <Button
+            sx={{
+              color: 'var(--primary-color)',
+              backgroundColor: 'var(--background-color)',
+              height: '80%',
+              padding: '0.5% 1%',
+              marginRight: '0.5em',
+              cursor: 'pointer',
+              fontSize: '1em',
+              fontFamily: 'Inter',
+              marginLeft: 'auto',
+              fontWeight: 700,
+              border: '0.25px solid black',
+            }}
+            variant="contained"
+            className="my-elections-button"
+            onClick={handleOpenSignin}
+          >
+            Crear usuario
+          </Button>
+          <Button
+            sx={{
+              color: 'var(--background-color)',
+              backgroundColor: 'var(--primary-color)',
+              height: '80%',
+              padding: '0.5% 1%',
+              border: '0.25px solid black',
+              cursor: 'pointer',
+              fontSize: '1em',
+              fontFamily: 'Inter',
+              fontWeight: 700,
+            }}
+            variant="contained"
+            className="my-elections-button"
+            onClick={handleOpenLogin}
+          >
+            Iniciar sesion
+          </Button>
+        </>
+      ) : (
+        <Button
+          sx={{
+            color: 'var(--background-color)',
+            backgroundColor: 'var(--primary-color)',
+            height: '80%',
+              padding: '0.5% 1%',
+              marginRight: '0.5em',
+              cursor: 'pointer',
+              fontSize: '1em',
+              fontFamily: 'Inter',
+              marginLeft: 'auto',
+              fontWeight: 700,
+              border: '0.25px solid black',
+          }}
+          variant="contained"
+          className="my-elections-button"
+          onClick={handleClickUser}
+        >
+          Mis elecciones
+        </Button>
+      )}
       <Signin openState={openSignin} setOpenState={setOpenSignin} />
       <Login open={openLogin} setOpenState={setOpenLogin} />
     </div>
