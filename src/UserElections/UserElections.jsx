@@ -6,11 +6,16 @@ import NavbarUserElection from './NavbarUserElection';
 import CustomTable from './CustomTable';
 
 const UserElections = () => {
-  const jwt = sessionStorage.getItem('jwt');
-  const username = sessionStorage.getItem('user');
   const [elections, setElections] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
+  useEffect(() => {
+    const isLoggedIn = sessionStorage.getItem('jwt'); // Example check
+    if (!isLoggedIn) {
+      navigate('/'); // Redirect to login if not authenticated
+    }
+  }, [navigate]); // Ensure that `navigate` is included in the dependency array
+
 
   useEffect(() => {
     fetchElections();
@@ -107,8 +112,6 @@ const UserElections = () => {
           show={isModalOpen}
           onClose={closeModal}
           onAddElection={fetchElections}
-          token={jwt}
-          user={username}
         />
       </div>
     </div>

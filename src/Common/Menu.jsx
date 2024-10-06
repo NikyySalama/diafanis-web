@@ -18,7 +18,7 @@ import FormControl from '@mui/material/FormControl';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import CheckIcon from '@mui/icons-material/Check';
-
+import im from './Group35593.png'
 
 
 const StepIndicator = ({ currentStep, totalSteps }) => {
@@ -236,7 +236,7 @@ const Signin = ({ openState, setOpenState }) => {
         border: '1px solid #000',
         borderRadius: 2,
         height: 'fit-content',
-        backgroundImage: 'url("./Group35593.png")',
+        backgroundImage: `${im}`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
@@ -453,10 +453,6 @@ const PasswordInput = ({ onChangeMethod, onBlurMethod, values, error, helperText
   );
 };
 
-
-
-
-
 const Login = ({ open, setOpenState }) => {
   const navigate = useNavigate();
 
@@ -531,7 +527,7 @@ const Login = ({ open, setOpenState }) => {
         border: '1px solid #000',
         borderRadius: 2,
         height: 'fit-content',
-        backgroundImage: 'url("./Group35593.png")',
+        backgroundImage: `${im}`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
@@ -585,12 +581,6 @@ const Login = ({ open, setOpenState }) => {
     </Modal>
   );
 };
-
-
-
-
-
-
 
 
 const Menu = () => {

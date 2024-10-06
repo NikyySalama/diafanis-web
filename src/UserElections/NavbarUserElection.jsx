@@ -13,7 +13,7 @@ const NavbarUserElection = () => {
   const handleClick = () => {
     navigate(`/`);
   };
-
+  
   const handleOpenLogin = () => setOpenLogout(true);
   
 

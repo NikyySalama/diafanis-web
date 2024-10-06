@@ -1,12 +1,20 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './Navbar.css';
 import { CssBaseline } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 const Navbar = ({ setActiveSection, title }) => {
 
   const handleGoBack = () => {
     window.history.back();
   };
+  const navigate = useNavigate();
+  useEffect(() => {
+    const isLoggedIn = sessionStorage.getItem('jwt'); // Example check
+    if (!isLoggedIn) {
+      navigate('/'); // Redirect to login if not authenticated
+    }
+  }, [navigate]); // Ensure that `navigate` is included in the dependency array
 
   return (
     <>
