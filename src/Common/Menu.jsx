@@ -3,18 +3,8 @@ import './Menu.css';
 import isotipo from './Isotipo.png'
 import { Form, useNavigate } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
-import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
-import Modal from '@mui/material/Modal';
-import Box from '@mui/material/Box';
-import Divider from '@mui/material/Divider';
-import TextField from '@mui/material/TextField';
-import IconButton from '@mui/material/IconButton';
-import Input from '@mui/material/Input';
-import InputLabel from '@mui/material/InputLabel';
-import InputAdornment from '@mui/material/InputAdornment';
-import FormHelperText from '@mui/material/FormHelperText';
-import FormControl from '@mui/material/FormControl';
+import im from './Group35593.png'
+import { FormControl, FormHelperText, InputAdornment, Modal, Box, IconButton, Button, Input, InputLabel, Popover, Typography, List, ListItem } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import CheckIcon from '@mui/icons-material/Check';
@@ -43,11 +33,11 @@ const StepIndicator = ({ currentStep, totalSteps }) => {
             {index < currentStep ? (
               <CheckIcon />
             ) : (
-              <Typography sx={{ color: 'white' }}> {index + 1}</Typography> 
+              <Typography sx={{ color: 'white' }}> {index + 1}</Typography>
             )}
           </Box>
 
-          
+
           {index < totalSteps - 1 && (
             <Box
               sx={{
@@ -467,7 +457,7 @@ const Login = ({ open, setOpenState }) => {
   });
 
   const handleCloseLogin = () => {
-    setOpenState(false); 
+    setOpenState(false);
     setFormValues({
       Usuario: '',
       Contraseña: '',
@@ -511,7 +501,7 @@ const Login = ({ open, setOpenState }) => {
     } catch (error) {
       console.error('Network or server error:', error);
     }
-    handleCloseLogin(); 
+    handleCloseLogin();
   };
 
   return (
@@ -586,6 +576,141 @@ const Login = ({ open, setOpenState }) => {
   );
 };
 
+const UserData = ({ open, setOpenState }) => {
+  let user;
+
+  const [formValues, setFormValues] = useState({
+    Nombre: '',
+    Apellido: '',
+    Email: '',
+    Imagen: '',
+  });
+
+  const handleCloseUserData = () => {
+    setOpenState(false);
+    setFormValues({
+      Nombre: '',
+      Apellido: '',
+      Email: '',
+      Imagen: '',
+    });
+  };
+
+  useEffect(() => {
+    if (open) {
+      const data = JSON.parse(sessionStorage.getItem('userData'));
+      if (data) {
+        setFormValues({
+          Nombre: data.name || '',
+          Apellido: data.lastName || '',
+          Email: data.email || '',
+          Imagen: data.imageUrl || '',
+        });
+        user = data.username
+      }
+    }
+  }, [open]);
+
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    setFormValues((prevValues) => ({
+      ...prevValues,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    try {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/users/${sessionStorage.getItem('user')}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${sessionStorage.getItem('jwt')}`,
+        },
+        body: JSON.stringify({
+          name: formValues.Nombre,
+          email: formValues.Email,
+          lastName: formValues.Apellido,
+          imageUrl: formValues.Email,
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+
+      } else {
+        const errorMessage = await response.json();
+        console.error('Error submitting form:', response.status, errorMessage);
+      }
+    } catch (error) {
+      console.error('Network or server error:', error);
+    }
+
+    handleCloseUserData();
+  };
+
+  return (
+    <Modal
+      open={open}
+      onClose={handleCloseUserData}
+      aria-labelledby="modal-modal-title"
+      aria-describedby="modal-modal-description"
+    >
+      <Box sx={{
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: '27em',
+        bgcolor: 'background.paper',
+        border: '1px solid #000',
+        borderRadius: 2,
+        height: 'fit-content',
+        backgroundImage: `${im}`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        boxShadow: 24,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexDirection: 'column',
+        p: 4,
+      }} component="form" onSubmit={handleSubmit} >
+        <Typography sx={{ mt: 3, ml: 0.75 }} id="multi-step-modal-title" variant="h5">
+          Datos Personales
+        </Typography>
+
+        <Box>
+          <InputField label={"Nombre"} placeholder={""} onChangeMethod={handleInputChange} values={formValues} />
+          <InputField label={"Apellido"} placeholder={""} onChangeMethod={handleInputChange} values={formValues} />
+          <InputField label={"Email"} placeholder={""} onChangeMethod={handleInputChange} values={formValues} />
+          <InputField label={"Imagen"} placeholder={""} onChangeMethod={handleInputChange} values={formValues} />
+        </Box>
+
+        <Button
+          sx={{
+            color: 'var(--background-color)',
+            backgroundColor: 'var(--primary-color)',
+            cursor: 'pointer',
+            fontFamily: 'Inter',
+            mt: 4,
+            ml: 0.75,
+            fontWeight: 700,
+            width: '24.5em',
+            border: '0.25px solid black',
+          }}
+          variant="contained"
+          type='submit'>
+          Actualizar
+        </Button>
+      </Box>
+    </Modal>
+  );
+};
+
 
 
 
@@ -595,13 +720,52 @@ const Login = ({ open, setOpenState }) => {
 
 const Menu = () => {
 
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const handleClickPopover = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClosePopover = () => {
+    setAnchorEl(null);
+  };
+
+  const open = Boolean(anchorEl);
+  const id = open ? 'simple-popover' : undefined;
   const userIsActive = sessionStorage.getItem('user') && sessionStorage.getItem('user').trim() !== '';
   const [openLogin, setOpenLogin] = useState(false);
   const [openSignin, setOpenSignin] = useState(false);
+  const [openUserData, setOpenUserData] = useState(false);
 
   const handleOpenLogin = () => setOpenLogin(true);
 
   const handleOpenSignin = () => setOpenSignin(true);
+
+  const handleOpenUserData = async () => {
+    try {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/users/${sessionStorage.getItem('user')}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        sessionStorage.setItem('userData', JSON.stringify(data));
+        setOpenUserData(true);
+
+      } else {
+        const errorMessage = await response.json();
+        console.error('Error submitting form:', response.status, errorMessage);
+      }
+    } catch (error) {
+      console.error('Network or server error:', error);
+    }
+
+  }
+
+
 
   const navigate = useNavigate();
   const handleClick = () => {
@@ -609,8 +773,10 @@ const Menu = () => {
   };
 
   const handleClickUser = () => {
+    handleClosePopover();
     navigate(`/userElections`);
   };
+
 
   return (
     <div className="menu">
@@ -660,11 +826,12 @@ const Menu = () => {
           </Button>
         </>
       ) : (
-        <Button
-          sx={{
-            color: 'var(--background-color)',
-            backgroundColor: 'var(--primary-color)',
-            height: '80%',
+        <>
+          <Button
+            sx={{
+              color: 'var(--background-color)',
+              backgroundColor: 'var(--primary-color)',
+              height: '80%',
               padding: '0.5% 1%',
               marginRight: '0.5em',
               cursor: 'pointer',
@@ -673,16 +840,60 @@ const Menu = () => {
               marginLeft: 'auto',
               fontWeight: 700,
               border: '0.25px solid black',
-          }}
-          variant="contained"
-          className="my-elections-button"
-          onClick={handleClickUser}
-        >
-          Mis elecciones
-        </Button>
+            }}
+            variant="contained"
+
+            onClick={handleClickPopover}
+
+          >
+            Mi cuenta
+          </Button>
+
+          <Popover
+            id={id}
+            open={open}
+            anchorEl={anchorEl}
+            onClose={handleClosePopover}
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'left',
+            }}
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'left',
+            }}
+          >
+            <List>
+              <ListItem >
+                <Button
+                  sx={{
+                    paddingLeft: '2.75em', width: '100%', textAlign: 'left', color: 'var(--primary-color)',
+                    backgroundColor: 'var(--background-color)',
+                  }}
+                  onClick={handleOpenUserData}
+                >
+                  Modificar mis datos
+                </Button>
+              </ListItem>
+              <ListItem>
+                <Button
+                  sx={{
+                    width: '100%', textAlign: 'left', color: 'var(--primary-color)',
+                    backgroundColor: 'var(--background-color)',
+                  }}
+                  onClick={handleClickUser}
+                >
+                  Mis elecciones
+                </Button>
+              </ListItem>
+            </List>
+          </Popover>
+
+        </>
       )}
       <Signin openState={openSignin} setOpenState={setOpenSignin} />
       <Login open={openLogin} setOpenState={setOpenLogin} />
+      <UserData open={openUserData} setOpenState={setOpenUserData} />
     </div>
   );
 }
