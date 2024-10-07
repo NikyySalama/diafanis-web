@@ -8,7 +8,6 @@ import { FormControl, FormHelperText, InputAdornment, Modal, Box, IconButton, Bu
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import CheckIcon from '@mui/icons-material/Check';
-import im from './Group35593.png'
 
 
 const StepIndicator = ({ currentStep, totalSteps }) => {
