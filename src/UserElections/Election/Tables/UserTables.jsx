@@ -119,13 +119,13 @@ const Tables = () => {
       const sheet = workbook.Sheets[sheetName];
       const data = XLSX.utils.sheet_to_json(sheet, { header: 1 });
   
-      const requiredColumns = ['id', 'country', 'state', 'city', 'address'];
+      const requiredColumns = ['country', 'state', 'city', 'address'];
       const fileColumns = data[0]; 
   
       const isValid = requiredColumns.every(col => fileColumns.includes(col));
   
       if (!isValid) {
-        alert('El archivo Excel no tiene la estructura correcta. Asegúrate de que contenga las columnas: id, country, state, city, address.');
+        alert('El archivo Excel no tiene la estructura correcta. Asegúrate de que contenga las columnas:  country, state, city, address.');
         setIsFileValid(false);
         e.target.value = '';
         return;
@@ -223,14 +223,13 @@ const Tables = () => {
   };
 
   const columns = [
-    { label: 'Numero', field: 'id', align: 'left' },
+    
     { label: 'Ciudad', field: 'city', align: 'left' },
     { label: 'Direccion', field: 'address', align: 'left' },
   ];
 
   const rows = tables.map((table, index) => ({
     uuid: table.uuid,
-    id: index + 1,
     city: table.location.city,
     address: table.location.address,
   }));
