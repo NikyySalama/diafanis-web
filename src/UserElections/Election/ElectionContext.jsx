@@ -4,9 +4,15 @@ const ElectionContext = createContext();
 
 export const useElection = () => useContext(ElectionContext);
 
-export const ElectionProvider = ({ children, electionId }) => {
+export const ElectionProvider = ({ children, electionId, electionEditable }) => {
+
+  const value = {
+    electionId,
+    electionEditable,
+  };
+
   return (
-    <ElectionContext.Provider value={electionId}>
+    <ElectionContext.Provider value={value}>
       {children}
     </ElectionContext.Provider>
   );

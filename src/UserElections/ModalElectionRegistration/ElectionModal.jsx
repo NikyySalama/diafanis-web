@@ -3,7 +3,7 @@ import { Modal } from 'react-bootstrap';
 import ElectionRegistration from './ElectionRegistration';
 import PositionRegistration from './PositionRegistration';
 
-const ElectionModal = ({ show, onClose, onAddElection }) => {
+const ElectionModal = ({ show, onClose, onAddElection, initialData }) => {
   const [modalContent, setModalContent] = useState('election');
   const [addedElection, setAddedElection] = useState(null);
 
@@ -13,34 +13,31 @@ const ElectionModal = ({ show, onClose, onAddElection }) => {
     onClose();
     setModalContent('election');
     setAddedElection(null);
-  }
+  };
+
+  console.log("data", initialData);
 
   const handleAddElection = async (newElection) => {
-    const electionData = {
-        title: newElection.title,
-        description: newElection.description,
-        startsAt: newElection.startsAt,
-        endsAt: newElection.endsAt,
-        image: "base 64"
-    };
     try {
-        const response = await fetch('http://localhost:8080/api/elections', {
-        method: 'POST',
+      const method = initialData ? 'PATCH' : 'POST';
+      const url = initialData
+        ? `${process.env.REACT_APP_API_URL}/api/elections/${initialData.uuid}`
+        : `${process.env.REACT_APP_API_URL}/api/elections`;
+      
+      const response = await fetch(url, {
+        method,
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization' : `Bearer ${sessionStorage.getItem('jwt')}`,
         },
-        body: JSON.stringify(electionData)
+        body: JSON.stringify(newElection)
       });
 
       if (response.ok) {
         const savedElection = await response.json();
         console.log('Elección guardada:', savedElection);
-        onAddElection(); 
-
+        onAddElection(); // Actualizar la lista de elecciones
         setAddedElection(savedElection);
-        if (addedElection) {
-          console.log("uuid elec:", addedElection.uuid);
-        }
       } else {
         console.error('Error al guardar la elección:', response.statusText);
       }
@@ -58,13 +55,21 @@ const ElectionModal = ({ show, onClose, onAddElection }) => {
       </Modal.Header>
       <Modal.Body>
         {modalContent === 'election' ? (
-            <ElectionRegistration handleAddElection={handleAddElection} handleContinue={handleContinue} />
+          <ElectionRegistration
+            handleAddElection={handleAddElection}
+            handleContinue={handleContinue}
+            initialData={initialData}
+          />
         ) : (
-            addedElection ? (
-                <PositionRegistration onClose={handleClose} electionId={addedElection.uuid} />
-            ) : (
-                <p>Cargando...</p>
-            )
+          addedElection ? (
+            <PositionRegistration 
+              onClose={handleClose} 
+              electionId={addedElection.uuid} 
+              initialPositions={initialData?.positions || []}  // Asegúrate de que no falle si es undefined
+              />
+          ) : (
+            <p>Cargando...</p>
+          )
         )}
       </Modal.Body>
     </Modal>

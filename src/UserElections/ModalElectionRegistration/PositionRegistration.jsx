@@ -1,11 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './PositionRegistration.css';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ReplayIcon from '@mui/icons-material/Replay';
 
-const PositionRegistration = ({ onClose, electionId }) => {
-  const [positions, setPositions] = useState([{ title: '' }]);
+const PositionRegistration = ({ onClose, electionId, initialPositions,token }) => {
+  const [positions, setPositions] = useState([{ title: '', uuid: null }]);
   const [lastRemoved, setLastRemoved] = useState(null); // Para el undo
+  // TODO: const [removed, setRemoveds] = useState(null);
+
+  // Cuando initialData esté disponible, pre-rellena los campos del formulario
+  useEffect(() => {
+    if (initialPositions && initialPositions.length > 0) {
+      setPositions(initialPositions.map((position) => ({
+        title: position.title,
+        uuid: position.uuid, // Agrega el identificador
+      })));
+    } else {
+      setPositions([{ title: '', uuid: null }]); // Restablece a la posición inicial si no hay datos
+    }
+  }, [initialPositions]);
 
   const handlePositionChange = (index, event) => {
     const newPositions = [...positions];
@@ -14,22 +27,40 @@ const PositionRegistration = ({ onClose, electionId }) => {
   };
 
   const addPosition = () => {
-    setPositions([...positions, { title: '' }]);
+    setPositions([...positions, { title: '', uuid: null }]);
   };
 
   const handleAddPosition = async (position) => {
     const positionToSend = {
       title: position.title,
       description: '',
+      electionUuid: electionId,
     };
+
     try {
-      const response = await fetch(`http://localhost:8080/api/electionPositions/${electionId}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(positionToSend),
-      });
+      let response;
+      if (position.uuid) {
+        console.log("uuid: ", position.uuid);
+        // Si la posición ya tiene un uuid, hacemos un PUT
+        response = await fetch(`${process.env.REACT_APP_API_URL}/api/electionPositions/${position.uuid}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization' : `Bearer ${sessionStorage.getItem('jwt')}`,
+          },
+          body: JSON.stringify(positionToSend),
+        });
+      } else {
+        // Si la posición no tiene uuid, hacemos un POST
+        response = await fetch(`${process.env.REACT_APP_API_URL}/api/electionPositions`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization' : `Bearer ${sessionStorage.getItem('jwt')}`,
+          },
+          body: JSON.stringify(positionToSend),
+        });
+      }
 
       if (response.ok) {
         const savedPosition = await response.json();

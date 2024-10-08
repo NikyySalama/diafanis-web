@@ -1,0 +1,74 @@
+.table-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 10px;
+}
+
+.table-section-header h3 {
+    margin: 0;
+    color: var(--primary-color);
+}
+
+.table-header-actions {
+    display: flex;
+    align-items: center;
+}
+
+.table-section-container {
+    background-color: var(--background-color); /* Fondo de la tabla */
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    max-height: calc(100vh - 200px);
+    overflow-y: auto;
+}
+
+/* Scrollbar personalizado */
+.table-section-container::-webkit-scrollbar {
+    width: 5px;
+}
+
+.table-section-container::-webkit-scrollbar-track {
+    background: #f1f1f1; /* Fondo del track */
+    border-radius: 10px; /* Bordes redondeados */
+}
+
+.table-section-container::-webkit-scrollbar-thumb {
+    background: #888; /* Color del thumb */
+    border-radius: 10px; /* Bordes redondeados */
+}
+
+.table-section-container::-webkit-scrollbar-thumb:hover {
+    background: #555; /* Color del thumb al pasar el mouse */
+}
+
+/* Filas alternas y hover */
+.table-row-data:nth-of-type(even) {
+    background-color: var(--secondary-color-light);
+}
+
+.table-row-data:hover {
+    background-color: var(--secondary-color-hover);
+    cursor: pointer;
+}
+
+/* Botones de acción (agregar/eliminar) */
+.table-section-header Button{
+    background-color: var(--button-main-color-light); /* Color primario para los botones */
+    color: var(--background-color);
+    border-radius: 100%;
+    padding: 4px;
+    min-width: 36px;
+    height: 36px;
+}
+
+.table-section-header Button:hover {
+    background-color: var(--button-main-color); /* Color primario para los botones */
+    color: var(--background-color);
+}
+
+.table-section-container .header-cell {
+    background-color: var(--primary-color-light4);
+    color: var(--background-color);
+    font-weight: 300;
+}

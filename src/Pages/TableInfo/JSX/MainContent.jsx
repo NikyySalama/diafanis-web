@@ -51,11 +51,11 @@ const MainContent = () => {
   const [display, setDisplay] = useState(null);
   
   useEffect(() => {
-    // Retrieve data from localStorage and set state
-    const storedPositions = localStorage.getItem('positions');
-    const storedTable = localStorage.getItem('tableInfo');
-    const storedForms = localStorage.getItem('formulas');
-    const storedDisplay = localStorage.getItem('display');
+    // Retrieve data from sessionStorage and set state
+    const storedPositions = sessionStorage.getItem('positions');
+    const storedTable = sessionStorage.getItem('tableInfo');
+    const storedForms = sessionStorage.getItem('formulas');
+    const storedDisplay = sessionStorage.getItem('display');
     // Parse and set state
     setPositions(storedPositions ? JSON.parse(storedPositions) : null);
     setTable(storedTable ? JSON.parse(storedTable) : null);
@@ -93,7 +93,7 @@ const MainContent = () => {
   }
 
   if (!positions || !table || !forms) {
-    return <Typography>Some required data is missing. Please check your localStorage.</Typography>;
+    return <Typography>Some required data is missing. Please check your sessionStorage.</Typography>;
   }
 
   return (

@@ -1,16 +1,31 @@
-import React, {useState} from "react"
-import './ElectionRegistration.css'
+import React, { useState, useEffect } from "react";
+import './ElectionRegistration.css';
 
-const ElectionRegistration = ({handleAddElection, handleContinue}) => {
+const ElectionRegistration = ({ handleAddElection, handleContinue, initialData }) => {
     const [formData, setFormData] = useState({
         title: '',
         description: '',
         startsAt: '',
         endsAt: '',
+        username: sessionStorage.getItem('user'),
     });
 
+    // Cuando initialData esté disponible, pre-rellena los campos del formulario
+    useEffect(() => {
+        if (initialData) {
+            setFormData({
+                title: initialData.title || '',
+                description: initialData.description || '',
+                startsAt: initialData.startsAt || '',
+                endsAt: initialData.endsAt || '',
+                username: sessionStorage.getItem('user'),
+            });
+            console.log(initialData);
+        }
+    }, [initialData]);
+
     const handleChange = (e) => {
-    const { name, value } = e.target;
+        const { name, value } = e.target;
         setFormData({
             ...formData,
             [name]: value,
@@ -19,15 +34,25 @@ const ElectionRegistration = ({handleAddElection, handleContinue}) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        const newElection = {
-            id: Date.now(),
+
+        if (new Date(formData.startsAt) < new Date()){
+            alert('La fecha y hora de inicio deben ser posteriores a la fecha y hora actual.');
+            return;
+        }
+        
+        if (new Date(formData.startsAt) >= new Date(formData.endsAt)) {
+            alert('La fecha y hora de inicio deben ser anteriores a la fecha y hora de fin.');
+            return;
+        }
+
+        const electionData = {
             ...formData,
         };
-        handleAddElection(newElection);
-        handleContinue();
+        handleAddElection(electionData); // Actualiza o crea la elección
+        handleContinue(); // Avanza a la siguiente etapa (posiciones)
     };
 
-    return(
+    return (
         <div className="election-registration">
             <form onSubmit={handleSubmit}>
                 <div>
@@ -76,7 +101,7 @@ const ElectionRegistration = ({handleAddElection, handleContinue}) => {
                 <button type="submit">Continuar</button>
             </form>
         </div>
-    )
-}
+    );
+};
 
-export default ElectionRegistration
+export default ElectionRegistration;

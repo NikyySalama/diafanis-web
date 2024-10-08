@@ -9,7 +9,7 @@ import Box from '@mui/material/Box';
 const Card = ({ id, title, imageUrl }) => {
   const navigate = useNavigate();
   const handleClick = () => {
-    localStorage.setItem('electionId', id); 
+    sessionStorage.setItem('electionId', id); 
     navigate(`/election/`);
   };
  

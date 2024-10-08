@@ -8,8 +8,12 @@
 
 .footer{
     background-color: #D3D3D3;
-    
+    position: fixed;
+    bottom: 0%;
+    left: 0%;
+    right: 0%;
     opacity: 70%;
+    min-width: 400em;
     display: flex;
     text-align: center;
     flex-direction: column;

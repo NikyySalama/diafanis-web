@@ -28,3 +28,12 @@
 .add-section-button:hover {
     box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.2);
 }
+
+.url-display {
+    white-space: nowrap;        /* Impide que el texto pase a otra línea */
+    overflow: hidden;           /* Oculta el desbordamiento */
+    text-overflow: ellipsis;    /* Muestra "..." al final si el texto es muy largo */
+    max-width: 100%;            /* Asegura que la URL no supere el ancho del modal */
+    display: block;             /* Asegura que se comporte como un bloque dentro del modal */
+    word-break: break-all;      /* Permite cortar palabras largas */
+}

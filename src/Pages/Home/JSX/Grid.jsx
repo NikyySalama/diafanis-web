@@ -11,12 +11,12 @@ const GridCard = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('http://localhost:8080/api/elections', {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/elections`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
           },
-          mode: 'cors',
+          
         });
 
         if (!response.ok) {
@@ -47,9 +47,15 @@ const GridCard = () => {
           </div>
         </div>
       ) : (
-        <div className='electionsEmpty'>
-           <Typography variant="h4">Lo sentimos, de momento no hay ninguna eleccion creada</Typography>
-        </div>
+        <Box   sx={{
+          height: '60em',
+          display: 'flex',
+          flexDirection: 'column', 
+          alignItems: 'center',    
+          justifyContent: 'center' 
+        }} >
+           <Typography color='var(--primary-color)' align='center' variant="h3">Lo sentimos, de momento no hay ninguna eleccion creada</Typography>
+        </Box>
       )
 };
 
