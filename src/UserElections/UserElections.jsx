@@ -65,7 +65,8 @@ const UserElections = () => {
             method: 'DELETE',
             headers: { 
               'Content-Type': 'application/json',
-              'Authorization' : `Bearer ${sessionStorage.getItem('jwt')}`, },
+              'Authorization' : `Bearer ${sessionStorage.getItem('jwt')}`,
+             },
           });
   
           if (!response.ok) {
