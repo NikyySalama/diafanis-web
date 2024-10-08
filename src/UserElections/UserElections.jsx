@@ -23,7 +23,7 @@ const UserElections = () => {
 
   const fetchElections = async () => {
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/elections`, {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/users/${sessionStorage.getItem('user')}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -32,7 +32,7 @@ const UserElections = () => {
 
       if (response.ok) {
         const data = await response.json();
-        const filteredElections = data.map((election) => ({
+        const filteredElections = data.elections.map((election) => ({
           title: election.title,
           description: election.description,
           startsAt: election.startsAt,
