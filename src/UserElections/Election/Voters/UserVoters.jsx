@@ -258,7 +258,7 @@ const UserVoters = () => {
                 rows={rows}
                 onRowClick={(row) => handleVoterClick(row)}
                 handleAddSelected={handleCreateVotersClick}
-                handleDeleteSelected={handleDeleteVoters}
+                handleDeleteSelected={() => {}}
             />
 
             {/* Modal de visualización */}
