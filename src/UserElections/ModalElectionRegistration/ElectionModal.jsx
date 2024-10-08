@@ -19,7 +19,7 @@ const ElectionModal = ({ show, onClose, onAddElection, initialData }) => {
 
   const handleAddElection = async (newElection) => {
     try {
-      const method = initialData ? 'PUT' : 'POST';
+      const method = initialData ? 'PATCH' : 'POST';
       const url = initialData
         ? `${process.env.REACT_APP_API_URL}/api/elections/${initialData.uuid}`
         : `${process.env.REACT_APP_API_URL}/api/elections`;

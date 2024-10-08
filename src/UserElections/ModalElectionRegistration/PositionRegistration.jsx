@@ -6,6 +6,7 @@ import ReplayIcon from '@mui/icons-material/Replay';
 const PositionRegistration = ({ onClose, electionId, initialPositions,token }) => {
   const [positions, setPositions] = useState([{ title: '', uuid: null }]);
   const [lastRemoved, setLastRemoved] = useState(null); // Para el undo
+  // TODO: const [removed, setRemoveds] = useState(null);
 
   // Cuando initialData esté disponible, pre-rellena los campos del formulario
   useEffect(() => {
@@ -39,6 +40,7 @@ const PositionRegistration = ({ onClose, electionId, initialPositions,token }) =
     try {
       let response;
       if (position.uuid) {
+        console.log("uuid: ", position.uuid);
         // Si la posición ya tiene un uuid, hacemos un PUT
         response = await fetch(`${process.env.REACT_APP_API_URL}/api/electionPositions/${position.uuid}`, {
           method: 'PUT',
