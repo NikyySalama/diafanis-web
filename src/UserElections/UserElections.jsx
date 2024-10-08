@@ -68,7 +68,7 @@ const UserElections = () => {
               'Authorization' : `Bearer ${sessionStorage.getItem('jwt')}`,
              },
           });
-  
+          console.log("papa");console.log(sessionStorage.getItem('jwt'));console.log("papa");
           if (!response.ok) {
             throw new Error(`Error en la respuesta del servidor: ${response.status}`);
           }
