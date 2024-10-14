@@ -46,11 +46,14 @@ test.describe('Testing Election Not Editable', () => {
     await page.click('text=Mesas');
 
     await page.waitForSelector('text=Rawson', { timeout: 20000 });
+    await page.click('text=Rawson');
+
+    await page.waitForSelector('text=Editar', { timeout: 20000 });
     page.on('dialog', async dialog => {
       expect(dialog.message()).toBe('La eleccion ya no es editable.');
       await dialog.accept();
     });
-    await page.click('text=Rawson');
+    await page.click('text=Editar');
   });
 
   test('No se puede editar un partido si la fecha de inicio de la eleccion ha pasado', async () => {
@@ -63,11 +66,15 @@ test.describe('Testing Election Not Editable', () => {
     await page.click('text=Partidos');
 
     await page.waitForSelector('text=La Libertad Avanza', { timeout: 20000 });
+    await page.click('text=La Libertad Avanza');
+
+    await page.waitForSelector('text=Editar', { timeout: 20000 });
     page.on('dialog', async dialog => {
       expect(dialog.message()).toBe('La eleccion ya no es editable.');
       await dialog.accept();
     });
-    await page.click('text=La Libertad Avanza');
+    await page.click('text=Editar');
+
   });
 
   test('No se puede editar una formula si la fecha de inicio de la eleccion ha pasado', async () => {
@@ -80,11 +87,14 @@ test.describe('Testing Election Not Editable', () => {
     await page.click('text=Formulas');
 
     await page.waitForSelector('text=La Libertad Avanza', { timeout: 20000 });
+    await page.click('text=La Libertad Avanza');
+
+    await page.waitForSelector('text=Editar', { timeout: 20000 });
     page.on('dialog', async dialog => {
       expect(dialog.message()).toBe('La eleccion ya no es editable.');
       await dialog.accept();
     });
-    await page.click('text=La Libertad Avanza');
+    await page.click('text=Editar');
   });
 
   test('No se puede borrar un partido si la fecha de inicio de la eleccion ha pasado', async () => {
