@@ -58,7 +58,7 @@ const MainContent = () => {
     if(election && election.uuid){
       const fetchData = async () => {
         try {
-          console.log("4314");
+
           console.log(election.uuid);
           const response = await fetch(`${process.env.REACT_APP_API_URL}/api/elections/${election.uuid}/results`, {
             method: 'GET',
