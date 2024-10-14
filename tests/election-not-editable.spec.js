@@ -17,7 +17,7 @@ test.beforeEach(async ({ browser }) => {
 });
 
 test.afterEach(async () => {
-    await context.close();
+    if (context) await context.close();
 });
 
 test.describe('Testing Election Not Editable', () => {
