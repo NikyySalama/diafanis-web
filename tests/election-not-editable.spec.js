@@ -1,27 +1,33 @@
 const { test, expect } = require('@playwright/test');
 
-let context;
-let page;
+test.beforeEach(async ({ browser }, testInfo) => {
+  const context = await browser.newContext(); // Contexto aislado
+  const page = await context.newPage(); // Página única por test
 
-test.beforeEach(async ({ browser }) => {
-    context = await browser.newContext();
-    page = await context.newPage();
+  await page.goto('http://localhost:3000');
+  await page.evaluate(() => {
+      sessionStorage.setItem('jwt', 'token');
+      sessionStorage.setItem('user', 'Nicole');
+  });
 
-    await page.goto('http://localhost:3000');
-    await page.evaluate(() => {
-        sessionStorage.setItem('jwt', 'token');
-        sessionStorage.setItem('user', 'Nicole');
-    });
+  await page.waitForTimeout(500);
 
-    await page.waitForTimeout(500);
+  // Almacenar referencias de contexto y página en el estado del test
+  testInfo.context = context;
+  testInfo.page = page;
 });
 
-test.afterEach(async () => {
-    if (context) await context.close();
+test.afterEach(async ({}, testInfo) => {
+  // Cerrar página y contexto después de cada test
+  if (testInfo.context) {
+      await testInfo.context.close();
+  }
 });
 
 test.describe('Testing Election Not Editable', () => {
-  test('No se puede editar una elección si la fecha de inicio ha pasado', async () => {
+  test('No se puede editar una elección si la fecha de inicio ha pasado', async ({}, testInfo) => {
+    const page = testInfo.page;
+
     await page.goto('http://localhost:3000/userElections');
 
     await page.waitForSelector('text=Eleccion Test No Editable', { timeout: 20000 });
@@ -36,7 +42,8 @@ test.describe('Testing Election Not Editable', () => {
     await page.click('[aria-label="edit"]');
   });
 
-  test('No se puede editar una mesa si la fecha de inicio de la eleccion ha pasado', async () => {
+  test('No se puede editar una mesa si la fecha de inicio de la eleccion ha pasado', async ({}, testInfo) => {
+    const page = testInfo.page;
     await page.goto('http://localhost:3000/userElections');
 
     await page.waitForSelector('text=Eleccion Test No Editable', { timeout: 20000 });
@@ -56,7 +63,8 @@ test.describe('Testing Election Not Editable', () => {
     await page.click('text=Editar');
   });
 
-  test('No se puede editar un partido si la fecha de inicio de la eleccion ha pasado', async () => {
+  test('No se puede editar un partido si la fecha de inicio de la eleccion ha pasado', async ({}, testInfo) => {
+    const page = testInfo.page;
     await page.goto('http://localhost:3000/userElections');
 
     await page.waitForSelector('text=Eleccion Test No Editable', { timeout: 20000 });
@@ -77,7 +85,8 @@ test.describe('Testing Election Not Editable', () => {
 
   });
 
-  test('No se puede editar una formula si la fecha de inicio de la eleccion ha pasado', async () => {
+  test('No se puede editar una formula si la fecha de inicio de la eleccion ha pasado', async ({}, testInfo) => {
+    const page = testInfo.page;
     await page.goto('http://localhost:3000/userElections');
 
     await page.waitForSelector('text=Eleccion Test No Editable', { timeout: 20000 });
@@ -97,7 +106,8 @@ test.describe('Testing Election Not Editable', () => {
     await page.click('text=Editar');
   });
 
-  test('No se puede borrar un partido si la fecha de inicio de la eleccion ha pasado', async () => {
+  test('No se puede borrar un partido si la fecha de inicio de la eleccion ha pasado', async ({}, testInfo) => {
+    const page = testInfo.page;
     await page.goto('http://localhost:3000/userElections');
 
     await page.waitForSelector('text=Eleccion Test No Editable', { timeout: 20000 });
@@ -117,7 +127,8 @@ test.describe('Testing Election Not Editable', () => {
     await page.click('[aria-label="Borrar Eleccion"]');
   });
 
-  test('No se puede borrar una mesa si la fecha de inicio de la eleccion ha pasado', async () => {
+  test('No se puede borrar una mesa si la fecha de inicio de la eleccion ha pasado', async ({}, testInfo) => {
+    const page = testInfo.page;
     await page.goto('http://localhost:3000/userElections');
 
     await page.waitForSelector('text=Eleccion Test No Editable', { timeout: 20000 });
