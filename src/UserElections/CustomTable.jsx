@@ -61,6 +61,7 @@ const CustomTable = ({ title, columns = [], rows = [], onRowClick, handleAddSele
           <Button
             variant="contained"
             onClick={handleAddSelected}
+            aria-label="Crear Eleccion"
           >
             <AddIcon />
           </Button>
