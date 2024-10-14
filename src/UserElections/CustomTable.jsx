@@ -69,6 +69,7 @@ const CustomTable = ({ title, columns = [], rows = [], onRowClick, handleAddSele
             variant="contained"
             onClick={() => handleDeleteSelected(selectedRows)}
             disabled={selectedRows.length === 0}
+            aria-label="Borrar Eleccion"
           >
             <DeleteIcon />
           </Button>
