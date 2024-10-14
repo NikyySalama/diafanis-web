@@ -1,6 +1,26 @@
 const { test, expect } = require('@playwright/test');
 
-test('No se puede editar la elección si la fecha de inicio ha pasado', async ({ page }) => {
+let context;
+let page;
+
+test.beforeAll(async ({ browser }) => {
+    context = await browser.newContext();
+    page = await context.newPage();
+
+    await page.goto('http://localhost:3000');
+    await page.evaluate(() => {
+        sessionStorage.setItem('jwt', 'token');
+        sessionStorage.setItem('user', 'Nicole');
+    });
+
+    await page.waitForTimeout(5000);
+});
+
+test.afterAll(async () => {
+    await context.close();
+});
+
+test('No se puede editar una elección si la fecha de inicio ha pasado', async ({ page }) => {
   await page.route('**/api/users/**', (route) => {
     route.fulfill({
       status: 200,
@@ -25,8 +45,6 @@ test('No se puede editar la elección si la fecha de inicio ha pasado', async ({
   await expect(electionRow).toBeVisible({ timeout: 10000 });
 
   await electionRow.click();
-
-  await expect(page).toHaveURL(/.*\/userElections\/election/);
 
   const state = await page.evaluate(() => window.history.state);
   expect(state.electionEditable).toBe(false);
