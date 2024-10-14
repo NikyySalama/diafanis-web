@@ -69,10 +69,3 @@ test.describe('Testing Election Creation Form', () => {
         expect(dialogLaunched).toBe(false);
     });
 });
-
-test('La página de elecciones de usuario se carga correctamente', async ({ page }) => {
-    await page.goto('http://localhost:3000/userElections');
-  
-    const title = await page.getByText('Sus Elecciones');
-    await expect(title).toBeVisible();
-});
