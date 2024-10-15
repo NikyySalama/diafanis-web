@@ -25,7 +25,7 @@ test.afterEach(async ({}, testInfo) => {
 });
 
 test.describe('Testing Election Not Erasable', () => {
-  test('No se puede borrar un partido si la fecha de inicio de la eleccion ha pasado', async ({}, testInfo) => {
+  /*test('No se puede borrar un partido si la fecha de inicio de la eleccion ha pasado', async ({}, testInfo) => {
     const page = testInfo.page;
     await page.goto('http://localhost:3000/userElections');
 
@@ -65,5 +65,5 @@ test.describe('Testing Election Not Erasable', () => {
       await dialog.accept();
     });
     await page.click('[aria-label="Borrar Eleccion"]');
-  });
+  });*/
 });

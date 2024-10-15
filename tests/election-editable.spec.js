@@ -1,25 +1,32 @@
 const { test, expect } = require('@playwright/test');
 
-let context;
-let page;
-
-test.beforeEach(async ({ browser }) => {
-    context = await browser.newContext();
-    page = await context.newPage();
+test.beforeEach(async ({ browser }, testInfo) => {
+    const context = await browser.newContext(); // Contexto aislado
+    const page = await context.newPage(); // Página única por test
 
     await page.goto('http://localhost:3000');
     await page.evaluate(() => {
         sessionStorage.setItem('jwt', 'token');
         sessionStorage.setItem('user', 'Nicole');
     });
+
+    await page.waitForTimeout(500);
+
+    // Almacenar referencias de contexto y página en el estado del test
+    testInfo.context = context;
+    testInfo.page = page;
 });
 
-test.afterEach(async () => {
-    if (context) await context.close();
+test.afterEach(async ({ }, testInfo) => {
+    if (testInfo.context) {
+        await testInfo.context.close();
+    }
 });
 
 test.describe('Testing Election Editable', () => {
-    test('Testeo de edicion de eleccion habilitada', async () => {
+    test('Testeo de edicion de eleccion habilitada', async ({}, testInfo) => {
+        const page = testInfo.page;
+
         await page.goto('http://localhost:3000/userElections');
 
         await page.waitForSelector('text=Eleccion Test Editable', { timeout: 20000 });
@@ -32,7 +39,9 @@ test.describe('Testing Election Editable', () => {
         await page.click('[aria-label="Close"]');
     });
 
-    test('Testeo de edicion de una mesa habilitado', async () => {
+    test('Testeo de edicion de una mesa habilitado', async ({}, testInfo) => {
+        const page = testInfo.page;
+
         await page.goto('http://localhost:3000/userElections');
 
         await page.waitForSelector('text=Eleccion Test No Editable', { timeout: 20000 });
@@ -53,7 +62,9 @@ test.describe('Testing Election Editable', () => {
         await page.click('[aria-label="Close"]');
     });
 
-    test('Testeo de edicion de un partido habilitado', async () => {
+    test('Testeo de edicion de un partido habilitado', async ({}, testInfo) => {
+        const page = testInfo.page;
+
         await page.goto('http://localhost:3000/userElections');
 
         await page.waitForSelector('text=Eleccion Test No Editable', { timeout: 20000 });
@@ -74,7 +85,9 @@ test.describe('Testing Election Editable', () => {
         await page.click('[aria-label="Close"]');
     });
 
-    test('Testeo de edicion de una formula habilitada', async () => {
+    test('Testeo de edicion de una formula habilitada', async ({}, testInfo) => {
+        const page = testInfo.page;
+
         await page.goto('http://localhost:3000/userElections');
 
         await page.waitForSelector('text=Eleccion Test No Editable', { timeout: 20000 });

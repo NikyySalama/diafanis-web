@@ -1,31 +1,38 @@
 const { test, expect } = require('@playwright/test');
 
-let context;
-let page;
-
-test.beforeAll(async ({ browser }) => {
-    context = await browser.newContext();
-    page = await context.newPage();
+test.beforeEach(async ({ browser }, testInfo) => {
+    const context = await browser.newContext();
+    const page = await context.newPage();
 
     await page.goto('http://localhost:3000');
     await page.evaluate(() => {
         sessionStorage.setItem('jwt', 'token');
         sessionStorage.setItem('user', 'Nicole');
     });
+    await page.waitForTimeout(500);
+
+    // Almacenar referencias de contexto y página en el estado del test
+    testInfo.context = context;
+    testInfo.page = page;
 });
 
-test.afterAll(async () => {
-    await context.close();
-});
+test.afterEach(async ({}, testInfo) => {
+    if (testInfo.context) {
+        await testInfo.context.close();
+    }
+  });
 
 test.describe('Testing Election Creation Form', () => {
-    test.beforeEach(async () => {
+    test.beforeEach(async ({}, testInfo) => {
+        const page = testInfo.page;
         await page.goto('http://localhost:3000/userElections');
         await page.waitForSelector('button[aria-label="Crear Eleccion"]');
         await page.click('button[aria-label="Crear Eleccion"]');
     });
 
-    test('Debería mostrar una alerta si las fechas son incorrectas', async () => {
+    test('Debería mostrar una alerta si las fechas son incorrectas', async ({}, testInfo) => {
+        const page = testInfo.page;
+
         page.on('dialog', async (dialog) => {
             expect(dialog.message()).toBe('La fecha de fin debe ser posterior a la fecha de inicio.');
             await dialog.dismiss();
@@ -38,7 +45,9 @@ test.describe('Testing Election Creation Form', () => {
         await page.click('button[type="submit"]');
     });
 
-    test('Debería mostrar una alerta si la fecha de inicio es anterior a la actual', async () => {
+    test('Debería mostrar una alerta si la fecha de inicio es anterior a la actual', async ({}, testInfo)  => {
+        const page = testInfo.page;
+
         page.on('dialog', async (dialog) => {
             expect(dialog.message()).toBe('La fecha y hora de inicio deben ser posteriores a la fecha y hora actual.');
             await dialog.dismiss();
@@ -51,7 +60,9 @@ test.describe('Testing Election Creation Form', () => {
         await page.click('button[type="submit"]');
     });
     
-    test('Se puede crear una nueva elección', async () => {
+    test('Se puede crear una nueva elección', async ({}, testInfo) => {
+        const page = testInfo.page;
+
         let dialogLaunched = false;
     
         page.on('dialog', async (dialog) => {

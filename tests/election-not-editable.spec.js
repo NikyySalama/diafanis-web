@@ -18,7 +18,6 @@ test.beforeEach(async ({ browser }, testInfo) => {
 });
 
 test.afterEach(async ({}, testInfo) => {
-  // Cerrar página y contexto después de cada test
   if (testInfo.context) {
       await testInfo.context.close();
   }
