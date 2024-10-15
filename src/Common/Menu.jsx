@@ -488,15 +488,17 @@ const Login = ({ open, setOpenState }) => {
         const data = await response.json();
         sessionStorage.setItem('jwt', data.token);
         sessionStorage.setItem('user', data.username);
+        handleCloseLogin();
         navigate(`/userElections`);
       } else {
+        handleCloseLogin();
         const errorMessage = await response.json();
         console.error('Error submitting form:', response.status, errorMessage);
       }
     } catch (error) {
+      handleCloseLogin();
       console.error('Network or server error:', error);
     }
-    handleCloseLogin();
   };
 
   return (
