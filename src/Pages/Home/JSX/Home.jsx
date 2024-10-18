@@ -7,12 +7,14 @@ import SubTitle from "./SubTitle";
 import Menu from "../../../Common/Menu";
 
 const Home = () => {
+  const [searchTerm, setSearchTerm] = useState('');
+
   return (
     <div className="home">
       <Menu />
       <HeadContent />
-      <SubTitle />
-      <GridCard />
+      <SubTitle searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+      <GridCard searchTerm={searchTerm} />
       <Footer />
     </div>
   );
