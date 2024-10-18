@@ -9,15 +9,15 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Checkbox from '@mui/material/Checkbox';
 import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField'; // Importamos el TextField
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import './CustomTable.css';
 
 const CustomTable = ({ title, columns = [], rows = [], onRowClick, handleAddSelected, handleDeleteSelected }) => {
   const theme = useTheme();
-  
-  // Estado para manejar las filas seleccionadas
   const [selectedRows, setSelectedRows] = useState([]);
+  const [searchTerm, setSearchTerm] = useState(''); // Estado para el término de búsqueda
 
   // Manejar la selección de todas las filas
   const handleSelectAllClick = (event) => {
@@ -50,14 +50,32 @@ const CustomTable = ({ title, columns = [], rows = [], onRowClick, handleAddSele
     setSelectedRows(newSelected);
   };
 
-  // Verificar si la fila está seleccionada
   const isSelected = (uuid) => selectedRows.indexOf(uuid) !== -1;
+
+  const normalizeString = (str) => {
+    return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  };
+
+  const filteredRows = rows.filter((row) => {
+    return columns.some((column) => {
+      const value = row[column.field]?.toString().toLowerCase() || '';
+      return normalizeString(value).includes(normalizeString(searchTerm));
+    });
+  });
 
   return (
     <>
       <div className='table-section-header'>
         <h2 className='my-section-title'>{title}</h2>
         <div className='table-header-actions'>
+          <TextField
+            label="Buscar..."
+            variant="outlined"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            size="small"
+            className='table-search-field'
+          />
           <Button
             variant="contained"
             onClick={handleAddSelected}
@@ -80,7 +98,6 @@ const CustomTable = ({ title, columns = [], rows = [], onRowClick, handleAddSele
         <Table stickyHeader sx={{ minWidth: 650 }} aria-label="customized table">
           <TableHead>
             <TableRow>
-              {/* Checkbox de selección de todas las filas */}
               <TableCell padding="checkbox" className="header-cell">
                 <Checkbox
                   indeterminate={selectedRows.length > 0 && selectedRows.length < rows.length}
@@ -90,21 +107,21 @@ const CustomTable = ({ title, columns = [], rows = [], onRowClick, handleAddSele
                 />
               </TableCell>
               {columns.map((column, index) => (
-                <TableCell key={index} align={column.align || 'left'}  className="header-cell">
+                <TableCell key={index} align={column.align || 'left'} className="header-cell">
                   {column.label}
                 </TableCell>
               ))}
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.length === 0 ? (
+            {filteredRows.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={columns.length + 1} align="center">
                   No hay datos disponibles
                 </TableCell>
               </TableRow>
             ) : (
-              rows.map((row, rowIndex) => {
+              filteredRows.map((row, rowIndex) => {
                 const isItemSelected = isSelected(row.uuid);
                 return (
                   <TableRow className='table-row-data'
@@ -114,15 +131,13 @@ const CustomTable = ({ title, columns = [], rows = [], onRowClick, handleAddSele
                     aria-checked={isItemSelected}
                     selected={isItemSelected}
                   >
-                    {/* Checkbox para cada fila */}
                     <TableCell padding="checkbox">
                       <Checkbox
                         checked={isItemSelected}
                         onClick={(event) => {
                           event.stopPropagation();
-                          handleRowClick(event, row.uuid)
-                        }
-                        }
+                          handleRowClick(event, row.uuid);
+                        }}
                         inputProps={{ 'aria-labelledby': `enhanced-table-checkbox-${rowIndex}` }}
                       />
                     </TableCell>
