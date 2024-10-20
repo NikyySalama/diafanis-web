@@ -3,7 +3,8 @@ import { useElection } from '../ElectionContext';
 import { Modal } from 'react-bootstrap';
 import CustomTable from '../../CustomTable';
 import '../ModalSection.css';
-
+import sanitizeInput from '../../../Common/validatorInput';
+import checkIMGByURL from '../../../Common/validatorURL';
 const UserParties = () => {
     const { electionId, electionEditable } = useElection();
     const [parties, setParties] = useState([]);
@@ -81,9 +82,9 @@ const UserParties = () => {
 
     const handleAddParty = async (newParty) => {
         const partyData = {
-            logoUrl: newParty.logoUrl,
-            colorHex: newParty.colorHex,
-            name: newParty.name,
+            logoUrl: checkIMGByURL(newParty.logoUrl)? newParty.logoUrl : "",
+            colorHex: sanitizeInput(newParty.colorHex),
+            name: sanitizeInput(newParty.name),
             electionUuid: electionId
         };
 
@@ -111,9 +112,9 @@ const UserParties = () => {
     const handleUpdateParty = async () => {
         const { logoUrl, colorHex, name, uuid } = formData;
         const partyData = {
-            logoUrl,
-            colorHex,
-            name,
+            logoUrl : checkIMGByURL(logoUrl)? logoUrl : "",
+            colorHex : sanitizeInput(colorHex),
+            name : sanitizeInput(name),
         };
 
         try {

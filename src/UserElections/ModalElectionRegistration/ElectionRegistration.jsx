@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import './ElectionRegistration.css';
-
+import sanitizeInput from "../../Common/validatorInput";
+import checkIMGByURL from "../../Common/validatorURL";
 const ElectionRegistration = ({ handleAddElection, handleContinue, initialData }) => {
     const [formData, setFormData] = useState({
         title: '',
@@ -26,9 +27,13 @@ const ElectionRegistration = ({ handleAddElection, handleContinue, initialData }
 
     const handleChange = (e) => {
         const { name, value } = e.target;
+        let valueSanitized = value;
+        if(name !== 'imagen' && name !== 'startsAt' && name !== 'endsAt'){
+            valueSanitized = sanitizeInput(value)
+        }
         setFormData({
             ...formData,
-            [name]: value,
+            [name]: valueSanitized,
         });
     };
 

@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import './PositionRegistration.css';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ReplayIcon from '@mui/icons-material/Replay';
-
+import sanitizeInput from '../../Common/validatorInput';
+import checkIMGByURL from '../../Common/validatorURL';
 const PositionRegistration = ({ onClose, electionId, initialPositions,token }) => {
   const [positions, setPositions] = useState([{ title: '', uuid: null }]);
   const [lastRemoved, setLastRemoved] = useState(null); // Para el undo
@@ -32,7 +33,7 @@ const PositionRegistration = ({ onClose, electionId, initialPositions,token }) =
 
   const handleAddPosition = async (position) => {
     const positionToSend = {
-      title: position.title,
+      title: sanitizeInput(position.title),
       description: '',
       electionUuid: electionId,
     };
