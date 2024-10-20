@@ -5,6 +5,8 @@ import CustomTable from '../../CustomTable';
 import AuthoritiesTable from './AuthoritiesTable';
 import * as XLSX from 'xlsx';
 import '../ModalSection.css';
+import checkIMGByURL from '../../../Common/validatorURL';
+import sanitizeInput from '../../../Common/validatorInput';
 
 const UserAuthorities = () => {
     const { electionId, electionEditable } = useElection();
@@ -74,6 +76,13 @@ const UserAuthorities = () => {
             return;
         }
 
+        const validExtensions = ['.xls', '.xlsx'];
+        const fileExtension = file.name.split('.').pop().toLowerCase();
+    
+        if (!validExtensions.includes(`.${fileExtension}`)) {
+            alert('Por favor suba un archivo Excel válido (.xls o .xlsx).');
+            return;
+        }
         const reader = new FileReader();
         reader.onload = (e) => {
             const data = new Uint8Array(e.target.result);
@@ -89,9 +98,14 @@ const UserAuthorities = () => {
                 alert('La estructura del archivo Excel no es correcta. Asegúrese de tener las columnas: name, lastName, imageUrl, docNumber.');
                 return;
             }
-
+            const sanitizedAuthoritiesData = authoritiesData.map(authority => ({
+                name: sanitizeInput(authority.name),
+                lastName: sanitizeInput(authority.lastName),
+                imageUrl: checkIMGByURL(authority.imageUrl) ? authority.imageUrl : '',
+                docNumber: sanitizeInput(authority.docNumber),
+            }));
             // Enviar los datos al endpoint
-            addAuthorities(authoritiesData);
+            addAuthorities(sanitizedAuthoritiesData);
         };
         reader.readAsArrayBuffer(file);
     };
