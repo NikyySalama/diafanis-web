@@ -14,8 +14,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import './CustomTable.css';
 
-const CustomTable = ({ title, columns = [], rows = [], onRowClick, handleAddSelected, handleDeleteSelected }) => {
-  const theme = useTheme();
+const CustomTable = ({ title, columns = [], rows = [], onRowClick, handleAddSelected, handleDeleteSelected, showImage }) => {
   const [selectedRows, setSelectedRows] = useState([]);
   const [searchTerm, setSearchTerm] = useState(''); // Estado para el término de búsqueda
 
@@ -106,6 +105,14 @@ const CustomTable = ({ title, columns = [], rows = [], onRowClick, handleAddSele
                   inputProps={{ 'aria-label': 'select all rows' }}
                 />
               </TableCell>
+
+              {/* Si showImage es true, no mostramos un encabezado adicional para la imagen */}
+              {showImage && (
+                <TableCell padding="none" className="header-cell">
+                  {/* Dejamos esta celda vacía ya que no debería tener título */}
+                </TableCell>
+              )}
+
               {columns.map((column, index) => (
                 <TableCell key={index} align={column.align || 'left'} className="header-cell">
                   {column.label}
@@ -141,6 +148,17 @@ const CustomTable = ({ title, columns = [], rows = [], onRowClick, handleAddSele
                         inputProps={{ 'aria-labelledby': `enhanced-table-checkbox-${rowIndex}` }}
                       />
                     </TableCell>
+
+                    {showImage && row.logoUrl && (
+                      <TableCell padding="checkbox">
+                        <img
+                          src={row.logoUrl}
+                          alt={row.name}
+                          style={{ width: '50px', height: '50px', borderRadius: '50%', objectFit: 'cover', marginTop: '4px', marginBottom: '4px' }}
+                        />
+                      </TableCell>
+                    )}
+
                     {columns.map((column, colIndex) => (
                       <TableCell key={colIndex} align={column.align || 'left'}>
                         {row[column.field] || 'N/A'}

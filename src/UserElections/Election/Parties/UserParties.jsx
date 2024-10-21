@@ -221,6 +221,7 @@ const UserParties = () => {
                 onRowClick={(row) => handlePartyClick(row)}
                 handleAddSelected={handleCreatePartyClick}
                 handleDeleteSelected={handleDeleteParties}
+                showImage={true}
             />
 
             {/* Modal de visualización */}

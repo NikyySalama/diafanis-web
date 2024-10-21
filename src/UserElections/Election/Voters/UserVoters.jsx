@@ -259,7 +259,7 @@ const UserVoters = () => {
         name: voter.name,
         lastName: voter.lastName,
         docNumber: voter.docNumber,
-        imageUrl: voter.imageUrl,
+        logoUrl: voter.imageUrl,
     }));
 
     return (
@@ -271,6 +271,7 @@ const UserVoters = () => {
                 onRowClick={(row) => handleVoterClick(row)}
                 handleAddSelected={handleCreateVotersClick}
                 handleDeleteSelected={() => {}}
+                showImage={true}
             />
 
             {/* Modal de visualización */}
