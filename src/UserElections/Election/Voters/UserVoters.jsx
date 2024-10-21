@@ -80,7 +80,7 @@ const UserVoters = () => {
             docNumber: row.docNumber || '', 
             name: row.name || '',
             lastName: row.lastName || '',
-            imageUrl: row.imageUrl || '',
+            imageUrl: row.logoUrl || '',
             uuid: row.uuid || ''
         });
         setShowViewModal(true); // Modal de visualización
@@ -198,6 +198,7 @@ const UserVoters = () => {
                     docNumber: sanitizeInput(formData.docNumber),
                     name: sanitizeInput(formData.name),
                     lastName: sanitizeInput(formData.lastName),
+                    imageUrl: sanitizeInput(formData.imageUrl)
                 }),
             });
 
@@ -282,6 +283,12 @@ const UserVoters = () => {
                 <Modal.Body>
                     <p>Nombre y apellido: {formData.name} {formData.lastName}</p>
                     <p>Documento: {formData.docNumber}</p>
+                    <p>Imagen: {formData.imageUrl}</p>
+                    {formData.imageUrl && (
+                        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
+                            <img src={formData.imageUrl} alt="Logo Preview" style={{ maxWidth: 'auto', maxHeight: '15rem' }} />
+                        </div>
+                    )}
                     {/*<button type="button" className="modal-button" onClick={handleEditVoterClick}>Editar</button>*/}
                 </Modal.Body>
             </Modal>
