@@ -24,6 +24,8 @@ const TextContainer = ({ title, content, icon }) => {
   };
 
   const copyToClipboard = async (content) => {
+    if(content == null)
+      return;
     try {
       await navigator.clipboard.writeText(content);
       setSnackbarMessage('Copiado al portapapeles');
