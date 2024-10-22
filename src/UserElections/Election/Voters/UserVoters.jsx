@@ -4,7 +4,8 @@ import { Modal } from 'react-bootstrap';
 import CustomTable from '../../CustomTable';
 import * as XLSX from 'xlsx';
 import '../ModalSection.css';
-
+import checkIMGByURL from '../../../Common/validatorURL';
+import sanitizeInput from '../../../Common/validatorInput';
 const UserVoters = () => {
     const { electionId, electionEditable } = useElection();
     const [voters, setVoters] = useState([]);
@@ -79,7 +80,7 @@ const UserVoters = () => {
             docNumber: row.docNumber || '', 
             name: row.name || '',
             lastName: row.lastName || '',
-            imageUrl: row.imageUrl || '',
+            imageUrl: row.logoUrl || '',
             uuid: row.uuid || ''
         });
         setShowViewModal(true); // Modal de visualización
@@ -121,7 +122,13 @@ const UserVoters = () => {
             alert('Por favor suba un archivo Excel.');
             return;
         }
-
+        const validExtensions = ['.xls', '.xlsx'];
+        const fileExtension = file.name.split('.').pop().toLowerCase();
+      
+        if (!validExtensions.includes(`.${fileExtension}`)) {
+            alert('Por favor suba un archivo Excel válido (.xls o .xlsx).');
+            return;
+        }
         const reader = new FileReader();
         reader.onload = (e) => {
             const data = new Uint8Array(e.target.result);
@@ -137,9 +144,14 @@ const UserVoters = () => {
                 alert('La estructura del archivo Excel no es correcta. Asegúrese de tener las columnas: name, lastName, imageUrl, docNumber.');
                 return;
             }
-
+            const sanitizedVotersData = votersData.map(voter => ({
+                name: sanitizeInput(voter.name),
+                lastName: sanitizeInput(voter.lastName),
+                imageUrl: checkIMGByURL(voter.imageUrl) ? voter.imageUrl : '',
+                docNumber: sanitizeInput(voter.docNumber),
+            }));
             // Enviar los datos al endpoint
-            addVoters(votersData);
+            addVoters(sanitizedVotersData);
         };
         reader.readAsArrayBuffer(file);
     };
@@ -183,9 +195,10 @@ const UserVoters = () => {
                     'Authorization' : `Bearer ${sessionStorage.getItem('jwt')}`,
                 },
                 body: JSON.stringify({
-                    docNumber: formData.docNumber,
-                    name: formData.name,
-                    lastName: formData.lastName,
+                    docNumber: sanitizeInput(formData.docNumber),
+                    name: sanitizeInput(formData.name),
+                    lastName: sanitizeInput(formData.lastName),
+                    imageUrl: sanitizeInput(formData.imageUrl)
                 }),
             });
 
@@ -247,7 +260,7 @@ const UserVoters = () => {
         name: voter.name,
         lastName: voter.lastName,
         docNumber: voter.docNumber,
-        imageUrl: voter.imageUrl,
+        logoUrl: voter.imageUrl,
     }));
 
     return (
@@ -259,6 +272,7 @@ const UserVoters = () => {
                 onRowClick={(row) => handleVoterClick(row)}
                 handleAddSelected={handleCreateVotersClick}
                 handleDeleteSelected={() => {}}
+                showImage={true}
             />
 
             {/* Modal de visualización */}
@@ -269,6 +283,12 @@ const UserVoters = () => {
                 <Modal.Body>
                     <p>Nombre y apellido: {formData.name} {formData.lastName}</p>
                     <p>Documento: {formData.docNumber}</p>
+                    <p>Imagen: {formData.imageUrl}</p>
+                    {formData.imageUrl && (
+                        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
+                            <img src={formData.imageUrl} alt="Logo Preview" style={{ maxWidth: 'auto', maxHeight: '15rem' }} />
+                        </div>
+                    )}
                     {/*<button type="button" className="modal-button" onClick={handleEditVoterClick}>Editar</button>*/}
                 </Modal.Body>
             </Modal>

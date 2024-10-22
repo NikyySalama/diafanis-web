@@ -8,7 +8,9 @@ import { FormControl, FormHelperText, InputAdornment, Modal, Box, IconButton, Bu
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import CheckIcon from '@mui/icons-material/Check';
-
+import checkIMGByURL from './validatorURL';
+import sanitizeInput from './validatorInput';
+import InputField from './InputField';
 
 const StepIndicator = ({ currentStep, totalSteps }) => {
   return (
@@ -94,9 +96,16 @@ const Signin = ({ openState, setOpenState }) => {
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
+    let valueSanitize = value;
+    if(name !== 'Imagen'){
+      valueSanitize = sanitizeInput(value);
+    }
+    else if(!checkIMGByURL(value)){
+      valueSanitize = '';
+    }
     setFormValues((prevValues) => ({
       ...prevValues,
-      [name]: value,
+      [name]: valueSanitize,
     }));
   };
 
@@ -386,24 +395,7 @@ const Signin = ({ openState, setOpenState }) => {
   );
 };
 
-const InputField = ({ label, placeholder, onChangeMethod, onBlurMethod, values, error, helperText, required }) => {
-  return (
-    <FormControl sx={{ m: 1, width: '21em' }} variant="standard" error={error} required={required}>
-      <InputLabel sx={{ color: 'grey' }} htmlFor={`standard-adornment-${label}`}>{label}</InputLabel>
-      <Input
-        id={`standard-adornment-${label}`}
-        type="text"
-        placeholder={placeholder}
-        name={label}
-        onChange={onChangeMethod}
-        onBlur={onBlurMethod}
-        value={values[label]}
-        autoComplete="off"
-      />
-      {helperText && <FormHelperText>{helperText}</FormHelperText>}
-    </FormControl>
-  );
-};
+
 
 const PasswordInput = ({ onChangeMethod, onBlurMethod, values, error, helperText, required }) => {
   const [showPassword, setShowPassword] = useState(false);
@@ -459,13 +451,11 @@ const Login = ({ open, setOpenState }) => {
     });
   };
 
-
-
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setFormValues((prevValues) => ({
       ...prevValues,
-      [name]: value,
+      [name]: sanitizeInput(value),
     }));
   };
 
@@ -572,7 +562,7 @@ const Login = ({ open, setOpenState }) => {
 };
 
 const UserData = ({ open, setOpenState }) => {
-  let user;
+  
 
   const [formValues, setFormValues] = useState({
     Nombre: '',
@@ -601,16 +591,24 @@ const UserData = ({ open, setOpenState }) => {
           Email: data.email || '',
           Imagen: data.imageUrl || '',
         });
-        user = data.username
+       
       }
     }
   }, [open]);
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
+    let valueSanitized = value;
+    if(name !== 'Imagen'){
+      valueSanitized = sanitizeInput(value);
+    }
+    else if(!checkIMGByURL(value)){
+      valueSanitized = '';
+    }
+
     setFormValues((prevValues) => ({
       ...prevValues,
-      [name]: value,
+      [name]: valueSanitized,
     }));
   };
 
@@ -628,7 +626,7 @@ const UserData = ({ open, setOpenState }) => {
           name: formValues.Nombre,
           email: formValues.Email,
           lastName: formValues.Apellido,
-          imageUrl: formValues.Email,
+          imageUrl: formValues.Imagen,
         }),
       });
 

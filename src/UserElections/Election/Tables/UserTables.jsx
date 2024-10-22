@@ -4,7 +4,8 @@ import CustomTable from '../../CustomTable';
 import { Modal } from 'react-bootstrap';
 import * as XLSX from 'xlsx';
 import '../ElectionSection.css';
-
+import sanitizeInput from '../../../Common/validatorInput';
+import checkIMGByURL from '../../../Common/validatorURL';
 const Tables = () => {
   const { electionId, electionEditable } = useElection();
   const [tables, setTables] = useState([]);
@@ -110,6 +111,13 @@ const Tables = () => {
 
   const handleFileUpload = (e) => {
     const file = e.target.files[0];
+    const validExtensions = ['.xls', '.xlsx'];
+    const fileExtension = file.name.split('.').pop().toLowerCase();
+
+    if (!validExtensions.includes(`.${fileExtension}`)) {
+        alert('Por favor suba un archivo Excel válido (.xls o .xlsx).');
+        return;
+    }
     const reader = new FileReader();
   
     reader.onload = (event) => {
@@ -130,8 +138,14 @@ const Tables = () => {
         e.target.value = '';
         return;
       }
-      const tablesData = XLSX.utils.sheet_to_json(sheet);
-      setTablesData(tablesData);
+      const sanitizedTablesData = XLSX.utils.sheet_to_json(sheet).map(row => ({
+        id: sanitizeInput(row.id),
+        country: sanitizeInput(row.country),
+        state: sanitizeInput(row.state),
+        city: sanitizeInput(row.city),
+        address: sanitizeInput(row.address),
+    }));
+      setTablesData(sanitizedTablesData);
       setIsFileValid(true);
     };
   

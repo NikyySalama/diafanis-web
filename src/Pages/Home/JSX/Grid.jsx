@@ -4,8 +4,7 @@ import Card from './Card';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 
-
-const GridCard = () => {
+const GridCard = ({ searchTerm }) => {
   const [cards, setCards] = useState([]);
 
   useEffect(() => {
@@ -16,47 +15,51 @@ const GridCard = () => {
           headers: {
             'Content-Type': 'application/json',
           },
-          
         });
 
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-                const data = await response.json(); // Convert the response to JSON
-                setCards(data); // Set the fetched data to the state
-            } catch (error) {
-                console.error('Error fetching data:', error); // Handle any errors
-            }
-        };
+        const data = await response.json();
+        setCards(data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
 
-        fetchData(); // Call the asynchronous fetch function
-    }, []); 
+    fetchData();
+  }, []);
 
-    const addCard= (newCard) => {
-        setCards([...cards,newCard]);
-    }    
+  const removeAccents = (str) => {
+    return str.normalize("NFD").replace(/[\u0300-\u036f]/g, ""); // Elimina diacríticos
+  };
 
-   
-    return cards && cards.length > 0 ? (
-        <div className='grid-container'>
-          <div className='grid'>
-            {cards.map((card, index) => (
-              <Card key={index} title={card.title} imageUrl={card.imageUrl || ""} id={card.uuid} />
-            ))}
-          </div>
-        </div>
-      ) : (
-        <Box   sx={{
-          height: '60em',
-          display: 'flex',
-          flexDirection: 'column', 
-          alignItems: 'center',    
-          justifyContent: 'center' 
-        }} >
-           <Typography color='var(--primary-color)' align='center' variant="h3">Lo sentimos, de momento no hay ninguna eleccion creada</Typography>
-        </Box>
-      )
+  const filteredCards = cards.filter(card => 
+    removeAccents(card.title.toLowerCase()).includes(removeAccents(searchTerm.toLowerCase()))
+  );
+
+  return filteredCards && filteredCards.length > 0 ? (
+    <div className='grid-container'>
+      <div className='grid'>
+        {filteredCards.map((card, index) => (
+          <Card key={index} title={card.title} imageUrl={card.imageUrl || ""} id={card.uuid} />
+        ))}
+      </div>
+    </div>
+  ) : (
+    <Box sx={{
+      height: '60em',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center'
+    }}>
+      <Typography color='var(--primary-color)' align='center' variant="h3">
+        {searchTerm ? `No se encontraron elecciones para "${searchTerm}"` : 'Lo sentimos, de momento no hay ninguna elección creada'}
+      </Typography>
+    </Box>
+  );
 };
 
 export default GridCard;

@@ -3,14 +3,15 @@ import { useElection } from '../ElectionContext';
 import { Modal } from 'react-bootstrap';
 import CustomTable from '../../CustomTable';
 import '../ModalSection.css';
-
+import sanitizeInput from '../../../Common/validatorInput';
+import checkIMGByURL from '../../../Common/validatorURL';
 const UserParties = () => {
     const { electionId, electionEditable } = useElection();
     const [parties, setParties] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const [showViewModal, setShowViewModal] = useState(false); // Para modal de visualización
     const [formData, setFormData] = useState({
-        logoUrl: '', 
+        logoUrl: '',
         colorHex: '',
         name: ''
     });
@@ -48,7 +49,7 @@ const UserParties = () => {
 
     const handlePartyClick = (row) => {
         setFormData({
-            logoUrl: row.logoUrl || '', 
+            logoUrl: row.logoUrl || '',
             colorHex: row.colorHex || '',
             name: row.name || '',
             uuid: row.uuid || ''
@@ -57,7 +58,7 @@ const UserParties = () => {
     };
 
     const handleEditPartyClick = () => {
-        if(electionEditable){
+        if (electionEditable) {
             setShowViewModal(false); // Cierra el modal de visualización
             setClickedParty(true);   // Marca que estamos editando
             setShowModal(true);      // Abre el modal de edición
@@ -81,9 +82,9 @@ const UserParties = () => {
 
     const handleAddParty = async (newParty) => {
         const partyData = {
-            logoUrl: newParty.logoUrl,
-            colorHex: newParty.colorHex,
-            name: newParty.name,
+            logoUrl: checkIMGByURL(newParty.logoUrl) ? newParty.logoUrl : "",
+            colorHex: sanitizeInput(newParty.colorHex),
+            name: sanitizeInput(newParty.name),
             electionUuid: electionId
         };
 
@@ -92,14 +93,14 @@ const UserParties = () => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization' : `Bearer ${sessionStorage.getItem('jwt')}`,
+                    'Authorization': `Bearer ${sessionStorage.getItem('jwt')}`,
                 },
                 body: JSON.stringify(partyData)
             });
 
             if (response.ok) {
                 const savedParty = await response.json();
-                fetchParties(); 
+                fetchParties();
             } else {
                 console.error('Error al guardar el partido:', response.statusText);
             }
@@ -111,9 +112,9 @@ const UserParties = () => {
     const handleUpdateParty = async () => {
         const { logoUrl, colorHex, name, uuid } = formData;
         const partyData = {
-            logoUrl,
-            colorHex,
-            name,
+            logoUrl: checkIMGByURL(logoUrl) ? logoUrl : "",
+            colorHex: sanitizeInput(colorHex),
+            name: sanitizeInput(name),
         };
 
         try {
@@ -121,14 +122,14 @@ const UserParties = () => {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization' : `Bearer ${sessionStorage.getItem('jwt')}`,
+                    'Authorization': `Bearer ${sessionStorage.getItem('jwt')}`,
                 },
                 body: JSON.stringify(partyData)
             });
 
             if (response.ok) {
                 const savedParty = await response.json();
-                fetchParties(); 
+                fetchParties();
             } else {
                 console.error('Error al guardar el partido:', response.statusText);
             }
@@ -157,29 +158,30 @@ const UserParties = () => {
             alert('La URL proporcionada no es una imagen válida.');
             return;
         }
-        if(clickedParty){
+        if (clickedParty) {
             handleUpdateParty();
         }
-        else{
+        else {
             handleAddParty(formData);
         }
         handleClose();
     };
 
     const handleDeleteParties = async (parties) => {
-        if(!electionEditable){
+        if (!electionEditable) {
             alert('La eleccion ya no es editable.');
             return;
         }
-         
+
         try {
             await Promise.all(
                 parties.map(async (party) => {
                     const response = await fetch(`${process.env.REACT_APP_API_URL}/api/parties/${party}`, {
                         method: 'DELETE',
-                        headers: { 
+                        headers: {
                             'Content-Type': 'application/json',
-                            'Authorization' : `Bearer ${sessionStorage.getItem('jwt')}`, },
+                            'Authorization': `Bearer ${sessionStorage.getItem('jwt')}`,
+                        },
                     });
 
                     if (!response.ok) {
@@ -191,7 +193,7 @@ const UserParties = () => {
         } catch (error) {
             console.error('Error al eliminar partidos', error);
         }
-    }; 
+    };
 
     const columns = [
         { label: 'Nombre', field: 'name', align: 'left' },
@@ -213,13 +215,14 @@ const UserParties = () => {
                 </button>*/}
             </div>
 
-            <CustomTable 
+            <CustomTable
                 title="Sus Partidos"
                 columns={columns}
                 rows={rows}
                 onRowClick={(row) => handlePartyClick(row)}
                 handleAddSelected={handleCreatePartyClick}
                 handleDeleteSelected={handleDeleteParties}
+                showImage={true}
             />
 
             {/* Modal de visualización */}
@@ -229,8 +232,27 @@ const UserParties = () => {
                 </Modal.Header>
                 <Modal.Body>
                     <p>Nombre: {formData.name}</p>
-                    <p>Logo URL: <span className="url-display">{formData.logoUrl}</span></p>  {/* Aplica el estilo aquí */}
-                    <p>Color: {formData.colorHex}</p>
+                    <p>Logo URL: <span className="url-display">{formData.logoUrl}</span></p>
+                    {formData.logoUrl && (
+                        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
+                            <img src={formData.logoUrl} alt="Logo Preview" style={{ maxWidth: '100px', maxHeight: '100px' }} />
+                        </div>
+                    )}
+                    {formData.colorHex && (
+                        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px'  }}>
+                            <p style={{ marginRight: '10px', marginBottom: '0' }}>Color:</p>
+                            <div
+                                style={{
+                                    width: '20px',
+                                    height: '20px',
+                                    backgroundColor: formData.colorHex,
+                                    marginRight: '10px',
+                                    border: '1px solid #000',
+                                }}
+                            ></div>
+                            <span>{formData.colorHex}</span>
+                        </div>
+                    )}
                     <button type="button" className="modal-button" onClick={handleEditPartyClick}>Editar</button>
                 </Modal.Body>
             </Modal>

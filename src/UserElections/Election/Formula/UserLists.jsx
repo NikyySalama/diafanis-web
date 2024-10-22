@@ -8,7 +8,8 @@ import CreateCandidatesModal from './CreateCandidatesModal'
 import EditFormulaModal from './EditFormulaModal'
 import FormulaInfoModal from './FormulaInfoModal';
 import { fetchParties, fetchFormulas, fetchPositions } from './fetchFormulaUtils';
-
+import sanitizeInput from '../../../Common/validatorInput';
+import checkIMGByURL from '../../../Common/validatorURL';
 const UserLists = () => {
   const { electionId, electionEditable } = useElection();
   const [parties, setParties] = useState([]);
@@ -63,7 +64,7 @@ const UserLists = () => {
     const { name, value } = e.target;
     if (name === 'partyUuid') {
       const selectedParty = parties.find(party => party.uuid === value);
-      setFormData({ ...formData, partyUuid: value, partyName: selectedParty?.name || '' });
+      setFormData({ ...formData, partyUuid: value, partyName: sanitizeInput(selectedParty?.name) || '' });
     } else {
       setFormData({ ...formData, [name]: value });
     }
@@ -77,6 +78,13 @@ const UserLists = () => {
 
   const handleFileUpload = (e, positionId) => {
     const file = e.target.files[0];
+    const validExtensions = ['.xls', '.xlsx'];
+    const fileExtension = file.name.split('.').pop().toLowerCase();
+      
+    if (!validExtensions.includes(`.${fileExtension}`)) {
+      alert('Por favor suba un archivo Excel válido (.xls o .xlsx).');
+      return;
+    }
     const reader = new FileReader();
 
     reader.onload = (event) => {
@@ -102,12 +110,12 @@ const UserLists = () => {
       }
 
       const candidates = data.map(row => ({
-        role: row.role || 'Desconocido',
-        docNumber: parseInt(row.DNI, 10) || 0,
+        role: sanitizeInput(row.role) || 'Desconocido',
+        docNumber: sanitizeInput(parseInt(row.DNI, 10)) || 0,
         docType: 'DNI',
-        name: row.name || 'Nombre Desconocido',
-        surname: row.lastName || 'Apellido Desconocido',
-        image: row.imageUrl || ''
+        name: sanitizeInput(row.name) || 'Nombre Desconocido',
+        surname: sanitizeInput(row.lastName) || 'Apellido Desconocido',
+        image: checkIMGByURL(row.imageUrl)? row.imageUrl : ''
       }));
 
       setPositionsData(prevData => {
@@ -136,7 +144,7 @@ const UserLists = () => {
           title: 'title',
           partyUuid: formData.partyUuid,
           electionPositionUuid: position.uuid,
-          idNumber: formData.id,
+          idNumber: sanitizeInput(formData.id),
           electionUuid: electionId,
         };
   
@@ -162,15 +170,15 @@ const UserLists = () => {
       for (let index = 0; index < uploadedFormulas.length; index++) {
         const uploadedFormula = uploadedFormulas[index];
         const candidates = positionsData[index].map((candidate, candidateIndex) => ({
-          role: candidate.role,
-          imageUrl: candidate.image,
-          zindex: candidateIndex,
+          role: sanitizeInput(candidate.role),
+          imageUrl: checkIMGByURL(candidate.image)? candidate.image : '', 
+          zindex: sanitizeInput(candidateIndex),
           data: {
-            docNumber: candidate.docNumber,
-            docType: candidate.docType,
-            name: candidate.name,
-            lastName: candidate.surname,
-            imageUrl: candidate.image,
+            docNumber: sanitizeInput(candidate.docNumber),
+            docType: sanitizeInput(candidate.docType),
+            name: sanitizeInput(candidate.name),
+            lastName: sanitizeInput(candidate.surname),
+            imageUrl: checkIMGByURL(candidate.image)? candidate.image : '', 
             formulaUuid: uploadedFormula.uuid,
           },
         }));
@@ -202,7 +210,7 @@ const UserLists = () => {
     if (!editFormulaData.uuid || !editFormulaData.partyUuid) return;
 
     const formulaDataToPatch = {
-      idNumber: editFormulaData.idNumber,
+      idNumber: sanitizeInput(editFormulaData.idNumber),
       partyUuid: editFormulaData.partyUuid,
     }
 

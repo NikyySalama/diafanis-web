@@ -12,11 +12,12 @@
 
 .info-container {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     width: 100%;
-    justify-content: space-between;
+  
     margin-top: 2.5em;
     margin-bottom: 1.25em;
+    
 }
 
 
@@ -28,7 +29,7 @@
     border-radius: 0.25em;
     background-color: #fff;
     overflow: hidden;
-    margin: 0 0.625em;
+    margin: 1em 0.625em;
 }
 
 .text-container .title-field {
