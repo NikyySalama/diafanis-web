@@ -10,6 +10,8 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import CheckIcon from '@mui/icons-material/Check';
 import checkIMGByURL from './validatorURL';
 import sanitizeInput from './validatorInput';
+import InputField from './InputField';
+
 const StepIndicator = ({ currentStep, totalSteps }) => {
   return (
     <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
@@ -393,24 +395,7 @@ const Signin = ({ openState, setOpenState }) => {
   );
 };
 
-const InputField = ({ label, placeholder, onChangeMethod, onBlurMethod, values, error, helperText, required }) => {
-  return (
-    <FormControl sx={{ m: 1, width: '21em' }} variant="standard" error={error} required={required}>
-      <InputLabel sx={{ color: 'grey' }} htmlFor={`standard-adornment-${label}`}>{label}</InputLabel>
-      <Input
-        id={`standard-adornment-${label}`}
-        type="text"
-        placeholder={placeholder}
-        name={label}
-        onChange={onChangeMethod}
-        onBlur={onBlurMethod}
-        value={values[label]}
-        autoComplete="off"
-      />
-      {helperText && <FormHelperText>{helperText}</FormHelperText>}
-    </FormControl>
-  );
-};
+
 
 const PasswordInput = ({ onChangeMethod, onBlurMethod, values, error, helperText, required }) => {
   const [showPassword, setShowPassword] = useState(false);
