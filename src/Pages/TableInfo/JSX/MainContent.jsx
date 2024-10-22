@@ -14,7 +14,6 @@ import Snackbar from '@mui/material/Snackbar';
 import InputField from '../../../Common/InputField';
 
 import forge from 'node-forge';
-import { tab } from '@testing-library/user-event/dist/tab';
 const TextContainer = ({ title, content, icon }) => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
@@ -126,7 +125,7 @@ const CarouselComponent = ({ table, positions, forms, display }) => {
         </Carousel.Slide>
       ))}
     </Carousel>
-    {table.results &&
+    {display &&
     
     <Button
     sx={{
