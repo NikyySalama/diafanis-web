@@ -124,25 +124,29 @@ const CarouselComponent = ({ table, positions, forms, display }) => {
         </Carousel.Slide>
       ))}
     </Carousel>
+    {table.results &&
+    
     <Button
-            sx={{
-              color: 'var(--background-color)',
-              backgroundColor: 'var(--primary-color)',
-              height: '3em',
-              padding: '0.5em 1em',
-              marginLeft: '17em',
-              marginTop: '1em',
-              cursor: 'pointer',
-              fontSize: '1em',
-              fontFamily: 'Inter',
-              fontWeight: 700,
-              border: '0.25px solid black',
-            }}
-            variant="contained"
-            onClick={() => copyToClipboard(JSON.stringify(table.results))}
-          >
-            Copiar resultados
-          </Button>
+    sx={{
+      color: 'var(--background-color)',
+      backgroundColor: 'var(--primary-color)',
+      height: '3em',
+      padding: '0.5em 1em',
+      marginLeft: '17em',
+      marginTop: '1em',
+      cursor: 'pointer',
+      fontSize: '1em',
+      fontFamily: 'Inter',
+      fontWeight: 700,
+      border: '0.25px solid black',
+    }}
+    variant="contained"
+    onClick={() => copyToClipboard(JSON.stringify(table.results))}
+  >
+    Copiar resultados
+  </Button>
+    }
+   
     <Snackbar
         open={snackbarOpen}
         autoHideDuration={1000}
