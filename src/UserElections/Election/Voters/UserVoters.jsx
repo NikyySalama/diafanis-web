@@ -221,7 +221,7 @@ const UserVoters = () => {
         }));
     };
 
-    const handleDeleteVoters = async (voters) => {
+    const handleDeleteVoters = async (votersUuids) => { // TODO: mirar con backend el problema de borrado
         if(!electionEditable){
             alert('La eleccion ya no es editable.');
             return;
@@ -229,8 +229,8 @@ const UserVoters = () => {
          
         try {
             await Promise.all(
-                voters.map(async (voter) => {
-                    const response = await fetch(`${process.env.REACT_APP_API_URL}/api/persons/${voter}`, {
+                votersUuids.map(async (voterUuid) => {
+                    const response = await fetch(`${process.env.REACT_APP_API_URL}/api/persons/${electionId}/${voterUuid}`, {
                         method: 'DELETE',
                         headers: { 
                             'Content-Type': 'application/json',
@@ -256,7 +256,7 @@ const UserVoters = () => {
     ];
 
     const rows = voters.map(voter => ({
-        uuid: voter.uuid, // Necesario si estás usando selección
+        uuid: voter.docNumber, // Necesario si estás usando selección
         name: voter.name,
         lastName: voter.lastName,
         docNumber: voter.docNumber,
@@ -271,7 +271,7 @@ const UserVoters = () => {
                 rows={rows}
                 onRowClick={(row) => handleVoterClick(row)}
                 handleAddSelected={handleCreateVotersClick}
-                handleDeleteSelected={() => {}}
+                handleDeleteSelected={handleDeleteVoters}
                 showImage={true}
             />
 
