@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useElection } from '../ElectionContext';
 import { Modal } from 'react-bootstrap';
-import CustomTable from '../../CustomTable';
 import AuthoritiesTable from './AuthoritiesTable';
 import * as XLSX from 'xlsx';
 import '../ModalSection.css';
@@ -157,13 +156,6 @@ const UserAuthorities = () => {
 
     return (
         <div>
-            {/*<CustomTable 
-                title="Sus Autoridades de Mesa"
-                columns={columns}
-                rows={rows}
-                handleAddSelected={handleCreateAuthoritiesClick}
-            />*/}
-
             <AuthoritiesTable 
                 title="Sus Autoridades de Mesa"
                 columns={columns}
