@@ -9,7 +9,7 @@ const checkIMGByURL = async (url) => {
         return false; 
     }
     try {
-        const response = await fetch(url, { method: 'HEAD' });
+        const response = await fetch(url, { method: 'HEAD',mode: 'no-cors' });
         const contentType = response.headers.get('Content-Type');
         return contentType && contentType.startsWith('image/');
     } catch (error) {
