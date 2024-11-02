@@ -31,27 +31,38 @@ const AuthoritiesTable = ({ title, columns = [], rows = [], handleAddSelected, h
 
     const handleSelectRow = (uuid) => {
         const isSelected = selectedRows.includes(uuid);
+        const authorities = rows.find(row => row.uuid === uuid).authorities.map(auth => auth.docNumber);
         const newSelectedRows = isSelected
             ? selectedRows.filter(id => id !== uuid)
             : [...selectedRows, uuid];
         setSelectedRows(newSelectedRows);
-
-        // Seleccionar/desmarcar todas las autoridades si la fila se selecciona/deselecciona
+    
         setSelectedAuthorities(prev => ({
             ...prev,
-            [uuid]: isSelected ? [] : rows.find(row => row.uuid === uuid).authorities.map(auth => auth.docNumber),
+            [uuid]: isSelected ? [] : authorities,
         }));
     };
-
+    
     const handleAuthoritySelect = (rowUuid, docNumber) => {
         setSelectedAuthorities(prev => {
             const currentSelected = prev[rowUuid] || [];
             const isSelected = currentSelected.includes(docNumber);
+            const newSelectedAuthorities = isSelected
+                ? currentSelected.filter(id => id !== docNumber)
+                : [...currentSelected, docNumber];
+    
+            const allAuthoritiesSelected =
+                newSelectedAuthorities.length === rows.find(row => row.uuid === rowUuid).authorities.length;
+    
+            setSelectedRows(prevRows => 
+                allAuthoritiesSelected 
+                    ? [...prevRows, rowUuid] 
+                    : prevRows.filter(id => id !== rowUuid)
+            );
+    
             return {
                 ...prev,
-                [rowUuid]: isSelected
-                    ? currentSelected.filter(id => id !== docNumber)
-                    : [...currentSelected, docNumber],
+                [rowUuid]: newSelectedAuthorities,
             };
         });
     };
@@ -72,7 +83,7 @@ const AuthoritiesTable = ({ title, columns = [], rows = [], handleAddSelected, h
                     </Button>
                     <Button
                         variant="contained"
-                        disabled={selectedRows.length === 0}
+                        disabled={selectedRows.length === 0 && Object.values(selectedAuthorities).every(authorityList => authorityList.length === 0)}
                         onClick={() => handleDeleteSelected(selectedRows)}
                     >
                         <DeleteIcon />
@@ -88,9 +99,19 @@ const AuthoritiesTable = ({ title, columns = [], rows = [], handleAddSelected, h
                                     indeterminate={selectedRows.length > 0 && selectedRows.length < rows.length}
                                     checked={rows.length > 0 && selectedRows.length === rows.length}
                                     onChange={(e) => {
-                                        setSelectedRows(
-                                            e.target.checked ? rows.map(row => row.uuid) : []
-                                        );
+                                        if (e.target.checked) {
+                                            const allRowIds = rows.map(row => row.uuid);
+                                            setSelectedRows(allRowIds);
+                                            
+                                            const allAuthorities = rows.reduce((acc, row) => {
+                                                acc[row.uuid] = row.authorities.map(auth => auth.docNumber);
+                                                return acc;
+                                            }, {});
+                                            setSelectedAuthorities(allAuthorities);
+                                        } else {
+                                            setSelectedRows([]);
+                                            setSelectedAuthorities({});
+                                        }
                                     }}
                                 />
                             </TableCell>
@@ -144,26 +165,6 @@ const AuthoritiesTable = ({ title, columns = [], rows = [], handleAddSelected, h
                                                         <Table size="small" aria-label="authorities">
                                                             <TableHead>
                                                                 <TableRow>
-                                                                    {/*<TableCell padding="checkbox">
-                                                                        <Checkbox
-                                                                            indeterminate={
-                                                                                selectedAuthorities[row.uuid]?.length > 0 &&
-                                                                                selectedAuthorities[row.uuid]?.length < row.authorities.length
-                                                                            }
-                                                                            checked={
-                                                                                row.authorities.length > 0 &&
-                                                                                selectedAuthorities[row.uuid]?.length === row.authorities.length
-                                                                            }
-                                                                            onChange={(e) => {
-                                                                                setSelectedAuthorities(prev => ({
-                                                                                    ...prev,
-                                                                                    [row.uuid]: e.target.checked
-                                                                                        ? row.authorities.map(auth => auth.docNumber)
-                                                                                        : [],
-                                                                                }));
-                                                                            }}
-                                                                        />
-                                                                    </TableCell>*/}
                                                                     <TableCell />
                                                                     <TableCell style={{ fontWeight: 'bold' }}>Doc Number</TableCell>
                                                                     <TableCell style={{ fontWeight: 'bold' }}>Nombre</TableCell>
