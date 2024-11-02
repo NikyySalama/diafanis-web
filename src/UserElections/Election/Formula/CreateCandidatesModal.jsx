@@ -14,7 +14,7 @@ const CreateCandidatesModal = ({ show, onHide, handleFileUpload, handleSubmit, p
 
     return (
         <>
-            <Modal show={show} onHide={onHide}>
+            <Modal show={show} onHide={onHide} centered>
                 <Modal.Header closeButton>
                     <Modal.Title>Posiciones y Candidatos</Modal.Title>
                     
@@ -49,7 +49,7 @@ const CreateCandidatesModal = ({ show, onHide, handleFileUpload, handleSubmit, p
             </Modal>
 
             {/* Modal de ayuda */}
-            <Modal show={showHelp} onHide={toggleHelpModal}>
+            <Modal show={showHelp} onHide={toggleHelpModal} centered>
                 <Modal.Header closeButton>
                     <Modal.Title>Instrucciones para el archivo Excel</Modal.Title>
                 </Modal.Header>

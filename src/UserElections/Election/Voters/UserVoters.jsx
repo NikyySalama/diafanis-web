@@ -284,7 +284,7 @@ const UserVoters = () => {
             />
 
             {/* Modal de visualización */}
-            <Modal show={showViewModal} onHide={handleClose}>
+            <Modal show={showViewModal} onHide={handleClose} centered>
                 <Modal.Header closeButton>
                     <Modal.Title>Detalles del Votante</Modal.Title>
                 </Modal.Header>
@@ -302,7 +302,7 @@ const UserVoters = () => {
             </Modal>
 
             {/* Modal para agregar votantes */}
-            <Modal show={showModal} onHide={handleClose}>
+            <Modal show={showModal} onHide={handleClose} centered>
                 <Modal.Header closeButton>
                     <Modal.Title>Agregar Votantes</Modal.Title>
                     <OverlayTrigger placement="right" overlay={renderTooltip}>
@@ -336,7 +336,7 @@ const UserVoters = () => {
                 </Modal.Footer>
             </Modal>
 
-            <Modal show={showHelp} onHide={toggleHelpModal}>
+            <Modal show={showHelp} onHide={toggleHelpModal} centered>
                 <Modal.Header closeButton>
                     <Modal.Title>Instrucciones para el archivo Excel</Modal.Title>
                 </Modal.Header>
@@ -360,7 +360,7 @@ const UserVoters = () => {
             </Modal>
 
             {/* Modal para editar votante */}
-            <Modal show={showEditVoterModal} onHide={handleClose}>
+            <Modal show={showEditVoterModal} onHide={handleClose} centered>
                 <Modal.Header closeButton>
                     <Modal.Title>Editar Votante</Modal.Title>
                 </Modal.Header>

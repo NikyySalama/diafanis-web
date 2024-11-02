@@ -226,7 +226,7 @@ const UserParties = () => {
             />
 
             {/* Modal de visualización */}
-            <Modal show={showViewModal} onHide={handleClose}>
+            <Modal show={showViewModal} onHide={handleClose} centered>
                 <Modal.Header closeButton>
                     <Modal.Title>Detalles del Partido</Modal.Title>
                 </Modal.Header>
@@ -258,7 +258,7 @@ const UserParties = () => {
             </Modal>
 
             {/* Modal de edición/creación */}
-            <Modal show={showModal} onHide={handleClose}>
+            <Modal show={showModal} onHide={handleClose} centered>
                 <Modal.Header closeButton>
                     <Modal.Title>{clickedParty ? 'Editar Partido' : 'Agregar Partido'}</Modal.Title>
                 </Modal.Header>

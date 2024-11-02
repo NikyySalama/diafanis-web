@@ -2,7 +2,7 @@ import React from 'react';
 import { Modal } from 'react-bootstrap';
 
 const CreateListModal = ({ show, onHide, formData, handleChange, handleSubmit, parties }) => (
-    <Modal show={show} onHide={onHide}>
+    <Modal show={show} onHide={onHide} centered>
     <Modal.Header closeButton>
       <Modal.Title>Datos de la Lista</Modal.Title>
     </Modal.Header>

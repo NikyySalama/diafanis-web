@@ -2,7 +2,7 @@ import React from 'react';
 import { Modal } from 'react-bootstrap';
 
 const EditFormulaModal = ({ show, onHide, setEditFormulaData, handleSubmit, editFormulaData, parties }) => (
-    <Modal show={show} onHide={onHide}>
+    <Modal show={show} onHide={onHide} centered>
         <Modal.Header closeButton>
           <Modal.Title>Editar Fórmula</Modal.Title>
         </Modal.Header>

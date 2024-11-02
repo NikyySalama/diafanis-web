@@ -192,7 +192,7 @@ const UserAuthorities = () => {
             />
 
             {/* Modal para agregar autoridades */}
-            <Modal show={showModal} onHide={handleClose}>
+            <Modal show={showModal} onHide={handleClose} centered>
                 <Modal.Header closeButton>
                     <Modal.Title>Agregar Autoridades de Mesa</Modal.Title>
                     <OverlayTrigger placement="right" overlay={renderTooltip}>
@@ -226,7 +226,7 @@ const UserAuthorities = () => {
                 </Modal.Footer>
             </Modal>
 
-            <Modal show={showHelp} onHide={toggleHelpModal}>
+            <Modal show={showHelp} onHide={toggleHelpModal} centered>
                 <Modal.Header closeButton>
                     <Modal.Title>Instrucciones para el archivo Excel</Modal.Title>
                 </Modal.Header>

@@ -274,7 +274,7 @@ const Tables = () => {
         handleDeleteSelected={handleDeleteTables}
       />
 
-      <Modal show={showUploadModal} onHide={handleCloseUploadModal}>
+      <Modal show={showUploadModal} onHide={handleCloseUploadModal} centered>
         <Modal.Header closeButton>
           <Modal.Title>Cargar Datos de Mesas</Modal.Title>
           <OverlayTrigger placement="right" overlay={renderTooltip}>
@@ -304,7 +304,7 @@ const Tables = () => {
         </Modal.Body>
       </Modal>
 
-      <Modal show={showHelp} onHide={toggleHelpModal}>
+      <Modal show={showHelp} onHide={toggleHelpModal} centered>
         <Modal.Header closeButton>
           <Modal.Title>Instrucciones para el archivo Excel</Modal.Title>
         </Modal.Header>
@@ -328,7 +328,7 @@ const Tables = () => {
         </Modal.Body>
       </Modal>
 
-      <Modal show={showViewTableModal} onHide={handleCloseViewTableModal}>
+      <Modal show={showViewTableModal} onHide={handleCloseViewTableModal} centered>
         <Modal.Header closeButton>
           <Modal.Title>Ver Mesa</Modal.Title>
         </Modal.Header>
@@ -346,7 +346,7 @@ const Tables = () => {
       </Modal>
 
       {/* Modal para editar mesa seleccionada */}
-      <Modal show={showUploadTableModal} onHide={handleCloseEditTableModal}>
+      <Modal show={showUploadTableModal} onHide={handleCloseEditTableModal} centered>
         <Modal.Header closeButton>
           <Modal.Title>Editar Mesa</Modal.Title>
         </Modal.Header>
