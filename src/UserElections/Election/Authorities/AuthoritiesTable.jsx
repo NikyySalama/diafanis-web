@@ -17,8 +17,6 @@ import Checkbox from '@mui/material/Checkbox';
 import '../../CustomTable.css';
 
 const AuthoritiesTable = ({ title, columns = [], rows = [], handleAddSelected, handleDeleteSelected }) => {
-    const theme = useTheme();
-
     const [expandedRows, setExpandedRows] = useState([]);
     const [selectedRows, setSelectedRows] = useState([]);
     const [selectedAuthorities, setSelectedAuthorities] = useState({});
@@ -84,7 +82,7 @@ const AuthoritiesTable = ({ title, columns = [], rows = [], handleAddSelected, h
                     <Button
                         variant="contained"
                         disabled={selectedRows.length === 0 && Object.values(selectedAuthorities).every(authorityList => authorityList.length === 0)}
-                        onClick={() => handleDeleteSelected(selectedRows)}
+                        onClick={() => handleDeleteSelected(selectedAuthorities)}
                     >
                         <DeleteIcon />
                     </Button>

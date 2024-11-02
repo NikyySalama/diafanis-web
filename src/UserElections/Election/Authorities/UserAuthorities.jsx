@@ -11,13 +11,6 @@ const UserAuthorities = () => {
     const { electionId, electionEditable } = useElection();
     const [showModal, setShowModal] = useState(false);
     const [tables, setTables] = useState([]);
-    const [formData, setFormData] = useState({
-        docNumber: '', 
-        name: '',
-        lastName: '',
-        imageUrl: ''
-    });
-    const [clickedTable, setClickedTable] = useState(false);
     const [selectedTable, setSelectedTable] = useState('');
     const [file, setFile] = useState(null);
 
@@ -32,7 +25,7 @@ const UserAuthorities = () => {
           if (response.ok) {
             const data = await response.json();
             console.log("mesas: ", data);
-            setTables(data); // Guardamos las mesas tal como llegan
+            setTables(data);
             console.log("mesas", data);
           } else {
             console.error('Error al obtener las mesas', response.statusText);
@@ -92,7 +85,6 @@ const UserAuthorities = () => {
 
             const authoritiesData = jsonData.slice(1);
 
-            // Validar estructura del archivo
             if (!jsonData.length || !jsonData[0].name || !jsonData[0].lastName || !jsonData[0].imageUrl || !jsonData[0].docNumber) {
                 alert('La estructura del archivo Excel no es correcta. Asegúrese de tener las columnas: name, lastName, imageUrl, docNumber.');
                 return;
@@ -103,7 +95,6 @@ const UserAuthorities = () => {
                 imageUrl: checkIMGByURL(authority.imageUrl) ? authority.imageUrl : '',
                 docNumber: sanitizeInput(authority.docNumber),
             }));
-            // Enviar los datos al endpoint
             addAuthorities(sanitizedAuthoritiesData);
         };
         reader.readAsArrayBuffer(file);
@@ -138,6 +129,33 @@ const UserAuthorities = () => {
         }
     };
 
+    const handleDeleteAuthoritiesSelected = async (selectedAuthorities) => {
+        console.log('autoridades de mesa: ', selectedAuthorities);
+        try {
+            for (const [rowUuid, docNumbers] of Object.entries(selectedAuthorities)) {
+                for (const docNumber of docNumbers) {
+                    console.log('dni', docNumber);
+                    const response = await fetch(`${process.env.REACT_APP_API_URL}/api/persons/${electionId}/${docNumber}`, {
+                        method: 'PATCH',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${sessionStorage.getItem('jwt')}`,
+                        },
+                        body: JSON.stringify({ authorityTableUuid: null }),
+                    });
+    
+                    if (!response.ok) {
+                        console.error(`Error al eliminar la autoridad con docNumber ${docNumber}:`, response.statusText);
+                    }
+                }
+            }
+    
+            fetchTables();
+        } catch (error) {
+            console.error('Error en la solicitud de eliminación de autoridades', error);
+        }
+    };           
+
     const columns = [
         { label: 'Numero', field: 'id', align: 'left' },
         { label: 'Ciudad', field: 'city', align: 'left' },
@@ -161,6 +179,7 @@ const UserAuthorities = () => {
                 columns={columns}
                 rows={rows}
                 handleAddSelected={handleCreateAuthoritiesClick}
+                handleDeleteSelected={handleDeleteAuthoritiesSelected}
             />
 
             {/* Modal para agregar autoridades */}
