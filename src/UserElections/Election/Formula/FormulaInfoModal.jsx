@@ -21,7 +21,7 @@ const FormulaInfoModal = ({ show, onHide, handleEdit, editFormulaData, parties }
                     {editFormulaData.candidates.map((candidate, index) => (
                         <div key={index} className="candidate-info">
                             <p><strong>Nombre y Apellido:</strong> {candidate.data?.name || 'Nombre no disponible'} {candidate.data?.lastName || 'Apellido no disponible'}</p>
-                            <p><strong>DNI:</strong> {candidate.data?.docNumber || 'DNI no disponible'}</p>
+                            <p><strong>Document Number:</strong> {candidate.data?.docNumber || 'Document Number no disponible'}</p>
                             <p><strong>Rol:</strong> {candidate.role || 'Rol no disponible'}</p>
                         </div>
                     ))}

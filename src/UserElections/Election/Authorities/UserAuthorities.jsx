@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useElection } from '../ElectionContext';
-import { Modal } from 'react-bootstrap';
+import { Modal, Tooltip, OverlayTrigger } from 'react-bootstrap';
 import AuthoritiesTable from './AuthoritiesTable';
 import * as XLSX from 'xlsx';
 import '../ModalSection.css';
@@ -13,6 +13,15 @@ const UserAuthorities = () => {
     const [tables, setTables] = useState([]);
     const [selectedTable, setSelectedTable] = useState('');
     const [file, setFile] = useState(null);
+    const [showHelp, setShowHelp] = useState(false);
+
+    const toggleHelpModal = () => setShowHelp(!showHelp);
+
+    const renderTooltip = (props) => (
+        <Tooltip id="button-tooltip" {...props}>
+            Ayuda
+        </Tooltip>
+    );
 
     const fetchTables = async () => {
         try {
@@ -186,6 +195,14 @@ const UserAuthorities = () => {
             <Modal show={showModal} onHide={handleClose}>
                 <Modal.Header closeButton>
                     <Modal.Title>Agregar Autoridades de Mesa</Modal.Title>
+                    <OverlayTrigger placement="right" overlay={renderTooltip}>
+                        <span
+                            style={{ cursor: "pointer", color: "#cccccc", marginLeft: '10px', fontSize:'20px' }}
+                            onClick={toggleHelpModal}
+                        >
+                          ?
+                        </span>
+                    </OverlayTrigger>
                 </Modal.Header>
                 <Modal.Body>
                     <div>
@@ -207,6 +224,30 @@ const UserAuthorities = () => {
                 <Modal.Footer>
                     <button type="button" className="modal-button" onClick={handleSubmit}>Subir Autoridades</button>
                 </Modal.Footer>
+            </Modal>
+
+            <Modal show={showHelp} onHide={toggleHelpModal}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Instrucciones para el archivo Excel</Modal.Title>
+                </Modal.Header>
+                
+                <Modal.Body>
+                    <p>El archivo Excel debe contener las siguientes columnas en este orden incluyendo en su primer fila el nombre de cada columna:</p>
+                    <ul>
+                        <li>docNumber</li>
+                        <li>name</li>
+                        <li>lastName</li>
+                        <li>imageUrl</li>
+                        <li>role</li>
+                    </ul>
+                    <p>Ejemplo de formato:</p>
+                    
+                    <img 
+                        src="/assets/example-voters.png" 
+                        alt="Ejemplo de Excel" 
+                        style={{ width: '100%', maxHeight: '200px' }}
+                    />
+                </Modal.Body>
             </Modal>
         </div>
     );

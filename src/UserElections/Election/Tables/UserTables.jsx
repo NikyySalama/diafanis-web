@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { useElection } from '../ElectionContext';
 import CustomTable from '../../CustomTable';
-import { Modal } from 'react-bootstrap';
+import { Modal, Tooltip, OverlayTrigger } from 'react-bootstrap';
 import * as XLSX from 'xlsx';
 import '../ElectionSection.css';
 import sanitizeInput from '../../../Common/validatorInput';
-import checkIMGByURL from '../../../Common/validatorURL';
+
 const Tables = () => {
   const { electionId, electionEditable } = useElection();
   const [tables, setTables] = useState([]);
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [showUploadTableModal, setShowUploadTableModal] = useState(false);
-  const [showViewTableModal, setShowViewTableModal] = useState(false); // Estado para mostrar la vista sin editar
+  const [showViewTableModal, setShowViewTableModal] = useState(false);
   const [tablesData, setTablesData] = useState([]);
   const [isFileValid, setIsFileValid] = useState(false);
   const [tableData, setTableData] = useState({
@@ -21,6 +21,15 @@ const Tables = () => {
     address: '',
     uuid: '',
   });
+  const [showHelp, setShowHelp] = useState(false);
+
+  const toggleHelpModal = () => setShowHelp(!showHelp);
+
+  const renderTooltip = (props) => (
+      <Tooltip id="button-tooltip" {...props}>
+          Ayuda
+      </Tooltip>
+  );
 
   useEffect(() => {
     fetchTables();
@@ -268,6 +277,14 @@ const Tables = () => {
       <Modal show={showUploadModal} onHide={handleCloseUploadModal}>
         <Modal.Header closeButton>
           <Modal.Title>Cargar Datos de Mesas</Modal.Title>
+          <OverlayTrigger placement="right" overlay={renderTooltip}>
+            <span
+              style={{ cursor: "pointer", color: "#cccccc", marginLeft: '10px', fontSize: '20px' }}
+              onClick={toggleHelpModal}
+            >
+              ?
+            </span>
+          </OverlayTrigger>
         </Modal.Header>
         <Modal.Body>
           <form onSubmit={handleTablesSubmit}>
@@ -284,6 +301,30 @@ const Tables = () => {
               Guardar
             </button>
           </form>
+        </Modal.Body>
+      </Modal>
+
+      <Modal show={showHelp} onHide={toggleHelpModal}>
+        <Modal.Header closeButton>
+          <Modal.Title>Instrucciones para el archivo Excel</Modal.Title>
+        </Modal.Header>
+
+        <Modal.Body>
+          <p>El archivo Excel debe contener las siguientes columnas en este orden incluyendo en su primer fila el nombre de cada columna:</p>
+          <ul>
+            <li>id</li>
+            <li>country</li>
+            <li>state</li>
+            <li>city</li>
+            <li>address</li>
+          </ul>
+          <p>Ejemplo de formato:</p>
+
+          <img
+            src="/assets/example-table.png"
+            alt="Ejemplo de Excel"
+            style={{ width: '100%', maxHeight: '200px' }}
+          />
         </Modal.Body>
       </Modal>
 
