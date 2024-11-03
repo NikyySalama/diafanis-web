@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import GridCard from "./Grid";
 import HeadContent from "./HeadContent";
 import Footer from "../../../Common/Footer";
@@ -8,11 +8,12 @@ import Menu from "../../../Common/Menu";
 
 const Home = () => {
   const [searchTerm, setSearchTerm] = useState('');
+  const homeRef = useRef(null);
 
   return (
-    <div className="home">
+    <div className="home" ref={homeRef}>
       <Menu />
-      <HeadContent />
+      <HeadContent scrollContainerRef={homeRef} />
       <SubTitle searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
       <GridCard searchTerm={searchTerm} />
       <Footer />
