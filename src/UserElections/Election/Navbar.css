@@ -17,6 +17,10 @@
     margin-left: 10px;
 }
 
+.navbar-logo:hover {
+    cursor: pointer;
+}
+
 .go-back-button {
     background-color: var(--secondary-color);
     border: 0px;
@@ -70,7 +74,7 @@
 
 .sidebar .navbar-title {
     font-size: 30px;
-    margin-bottom: 20px;
+    margin-bottom: 5px;
     color: var(--primary-color);
     font-weight: 600;
 }
@@ -81,22 +85,34 @@
 }
 
 .sidebar .nav-item {
-    padding: 10px 0;
+    padding-top: 15px;
     color: #243f68;
     cursor: pointer;
     font-size: 16px;
     position: relative;
+    font-weight: bold;
+    letter-spacing: 1px;
 }
 
 .sidebar .nav-item::after {
     content: "";
     display: block;
     height: 1px;
-    background: linear-gradient(to right, transparent, #8e96a1, transparent);
-    margin-top: 5px;
+    background: linear-gradient(to right, #cbcfd3, #8e96a1, #cbcfd3);
+    margin-top: 10px;
 }
 
 .sidebar .nav-item.active {
-    font-weight: bold;
     color: #4b9cd3;
+    position: relative;
+}
+
+.sidebar .nav-item.active::before {
+    content: "";
+    position: absolute;
+    left: -20px;
+    top: 5px;
+    height: 90%;
+    width: 5px;
+    background-color: #4b9cd3;
 }

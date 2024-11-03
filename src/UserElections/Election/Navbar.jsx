@@ -2,7 +2,14 @@ import React, { useState, useEffect } from 'react';
 import './Navbar.css';
 import { CssBaseline } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import isotipo from '../../Common//Isotipo.png' 
+import isotipo from '../../Common/Isotipo.png';
+
+import InfoOutlined from '@mui/icons-material/InfoOutlined';
+import GroupsOutlined from '@mui/icons-material/GroupsOutlined';
+import HowToVoteOutlined from '@mui/icons-material/HowToVoteOutlined';
+import TableChartOutlined from '@mui/icons-material/TableChartOutlined';
+import PersonOutline from '@mui/icons-material/PersonOutline';
+import GavelOutlined from '@mui/icons-material/GavelOutlined';
 
 const Navbar = ({ setActiveSection, title }) => {
   const [activeItem, setActiveItem] = useState('info');
@@ -34,6 +41,10 @@ const Navbar = ({ setActiveSection, title }) => {
     setIsSidebarOpen(false);
   };
 
+  const handleGoHome = () => {
+    navigate('/');
+  }
+
   return (
     <>
       <CssBaseline />
@@ -42,7 +53,7 @@ const Navbar = ({ setActiveSection, title }) => {
         <button className="hamburger-button" onClick={toggleSidebar}>
           &#9776;
         </button>
-        <img className="navbar-logo" src={isotipo}></img>
+        <img className="navbar-logo" src={isotipo} alt="Isotipo" onClick={handleGoHome} />
         <button className="go-back-button" onClick={handleGoBack}>
           Volver
         </button>
@@ -54,16 +65,28 @@ const Navbar = ({ setActiveSection, title }) => {
           <p className="navbar-title">{title}</p>
         </div>
         <ul className="nav-items">
-          <li className={`nav-item ${activeItem === 'info' ? 'active' : ''}`} onClick={() => handleItemClick('info')}>Info</li>
-          <li className={`nav-item ${activeItem === 'parties' ? 'active' : ''}`} onClick={() => handleItemClick('parties')}>Partidos</li>
-          <li className={`nav-item ${activeItem === 'lists' ? 'active' : ''}`} onClick={() => handleItemClick('lists')}>Formulas</li>
-          <li className={`nav-item ${activeItem === 'tables' ? 'active' : ''}`} onClick={() => handleItemClick('tables')}>Mesas</li>
-          <li className={`nav-item ${activeItem === 'voters' ? 'active' : ''}`} onClick={() => handleItemClick('voters')}>Votantes</li>
-          <li className={`nav-item ${activeItem === 'authorities' ? 'active' : ''}`} onClick={() => handleItemClick('authorities')}>Autoridades</li>
+          <li className={`nav-item ${activeItem === 'info' ? 'active' : ''}`} onClick={() => handleItemClick('info')}>
+            <InfoOutlined className="nav-icon" /> Info
+          </li>
+          <li className={`nav-item ${activeItem === 'parties' ? 'active' : ''}`} onClick={() => handleItemClick('parties')}>
+            <GroupsOutlined className="nav-icon" /> Partidos
+          </li>
+          <li className={`nav-item ${activeItem === 'lists' ? 'active' : ''}`} onClick={() => handleItemClick('lists')}>
+            <HowToVoteOutlined className="nav-icon" /> Formulas
+          </li>
+          <li className={`nav-item ${activeItem === 'tables' ? 'active' : ''}`} onClick={() => handleItemClick('tables')}>
+            <TableChartOutlined className="nav-icon" /> Mesas
+          </li>
+          <li className={`nav-item ${activeItem === 'voters' ? 'active' : ''}`} onClick={() => handleItemClick('voters')}>
+            <PersonOutline className="nav-icon" /> Votantes
+          </li>
+          <li className={`nav-item ${activeItem === 'authorities' ? 'active' : ''}`} onClick={() => handleItemClick('authorities')}>
+            <GavelOutlined className="nav-icon" /> Autoridades
+          </li>
         </ul>
       </div>
 
-      {/* Fondo oscuro para cerrar el sidebar al hacer clic fuera de él */}
+      {/* Fondo oscuro */}
       {isSidebarOpen && <div className="overlay" onClick={closeSidebar}></div>}
     </>
   );
