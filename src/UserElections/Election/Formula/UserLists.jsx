@@ -273,7 +273,7 @@ const UserLists = () => {
   return (
     <div className="my-section">
       <CustomTable 
-        title="Sus Fórmulas" 
+        title="Fórmulas" 
         columns={columns} 
         rows={formulas} 
         onRowClick={handleEditFormulaClick} 

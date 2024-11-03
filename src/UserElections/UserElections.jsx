@@ -101,7 +101,7 @@ const UserElections = () => {
       </div>
 
         <CustomTable
-          title="Sus Elecciones"
+          title="Elecciones"
           columns={columns}
           rows={elections}
           onRowClick={(row) => handleElectionClicked(row.title, row.uuid, row.startsAt)}

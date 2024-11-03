@@ -31,7 +31,7 @@ const theme = createTheme({
           '--secondary-color-light': '#ecebf7',
           '--secondary-color-hover': '#cbc7fc',
           '--background-color' : '#FFFFFF',
-          '--navbar-height' : '55px',
+          '--navbar-height' : '65px',
           '--button-main-color' : '#020246',
           '--button-main-color-light' : '#1f1f91',
         },

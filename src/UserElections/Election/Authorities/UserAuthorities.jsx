@@ -184,7 +184,7 @@ const UserAuthorities = () => {
     return (
         <div>
             <AuthoritiesTable 
-                title="Sus Autoridades de Mesa"
+                title="Autoridades de Mesa"
                 columns={columns}
                 rows={rows}
                 handleAddSelected={handleCreateAuthoritiesClick}

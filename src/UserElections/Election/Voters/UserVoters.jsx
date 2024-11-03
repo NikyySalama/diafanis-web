@@ -274,7 +274,7 @@ const UserVoters = () => {
     return (
         <div>
             <CustomTable 
-                title="Sus Votantes"
+                title="Votantes"
                 columns={columns}
                 rows={rows}
                 onRowClick={(row) => handleVoterClick(row)}
