@@ -19,11 +19,26 @@ const UserParties = () => {
         name: ''
     });
     const [clickedParty, setClickedParty] = useState(false);
+    const [pieData, setPieData] = useState([]);
 
     useEffect(() => {
         const fetchData = async () => {
             const data = await fetchParties(electionId);
-            setParties(data);
+            const processedData = data.map(party => ({
+                ...party,
+                aff: party.formulas 
+                    ? party.formulas.reduce((sum, formula) => sum + (formula.candidates?.length || 0), 0)
+                    : 0
+            }));
+            setParties(processedData);
+            console.log(processedData);
+
+            const chartData = processedData.map(party => ({
+                name: party.name,
+                color: party.colorHex,
+                value: party.aff
+            }));
+            setPieData(chartData);
         };
         
         fetchData();
@@ -88,7 +103,8 @@ const UserParties = () => {
 
             if (response.ok) {
                 const savedParty = await response.json();
-                fetchParties();
+                const updatedParties = await fetchParties(electionId);
+                setParties(updatedParties);
             } else {
                 console.error('Error al guardar el partido:', response.statusText);
             }
@@ -168,7 +184,7 @@ const UserParties = () => {
                 </div>
                 <div style={{ padding: '20px', width: '40vw' }}>
                     <h3>Distribución de Afiliación por Partido</h3>
-                    <CustomPieChart/>
+                    <CustomPieChart pieData={pieData}/>
                 </div>
             </div>
 
