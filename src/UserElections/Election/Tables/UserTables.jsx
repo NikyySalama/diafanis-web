@@ -62,7 +62,7 @@ const Tables = () => {
       address: table.address
     };
     const tableToSend = {
-      name: table.id,
+      idNumber: table.id,
       electionUuid: electionId,
       location: location
     };

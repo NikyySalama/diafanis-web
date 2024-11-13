@@ -6,6 +6,8 @@ import * as XLSX from 'xlsx';
 import '../ModalSection.css';
 import checkIMGByURL from '../../../Common/validatorURL';
 import sanitizeInput from '../../../Common/validatorInput';
+import { fetchTables } from '../TableUtils';
+import { addAuthorities } from './AuthoritiesUtils';
 
 const UserAuthorities = () => {
     const { electionId, electionEditable } = useElection();
@@ -23,30 +25,16 @@ const UserAuthorities = () => {
         </Tooltip>
     );
 
-    const fetchTables = async () => {
-        try {
-          const response = await fetch(`${process.env.REACT_APP_API_URL}/api/elections/${electionId}/tables`, {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json'
-            }
-          });
-          if (response.ok) {
-            const data = await response.json();
-            console.log("mesas: ", data);
-            setTables(data);
-            console.log("mesas", data);
-          } else {
-            console.error('Error al obtener las mesas', response.statusText);
-          }
-        } catch (error) {
-          console.error('Error en la solicitud de mesas', error);
-        }
-    };
-
     useEffect(() => {
-        fetchTables();
-    }, []);
+        const fetchData = async () => {
+            const success = await fetchTables(electionId, setTables);
+            if (!success) {
+                alert("No se pudieron obtener las mesas, por favor intente de nuevo.");
+            }
+        };
+    
+        fetchData();
+    }, []);    
 
     const handleCreateAuthoritiesClick = () => {
         setShowModal(true);
@@ -104,38 +92,12 @@ const UserAuthorities = () => {
                 imageUrl: checkIMGByURL(authority.imageUrl) ? authority.imageUrl : '',
                 docNumber: sanitizeInput(authority.docNumber),
             }));
-            addAuthorities(sanitizedAuthoritiesData);
-        };
-        reader.readAsArrayBuffer(file);
-    };
-
-    const addAuthorities = async (authoritiesData) => {
-        try {
-            const updatedAuthoritiesData = authoritiesData.map(authority => ({
-                ...authority,
-                docType: 'DNI',
-                electorTableUuid: selectedTable,
-                electionUuid: electionId
-            }));
-    
-            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/tables/${selectedTable}/authorities`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization' : `Bearer ${sessionStorage.getItem('jwt')}`,
-                },
-                body: JSON.stringify(updatedAuthoritiesData),
-            });
-    
-            if (response.ok) {
+            if (addAuthorities(electionId, selectedTable, sanitizedAuthoritiesData)){
                 fetchTables();
                 handleClose();
-            } else {
-                console.error('Error al subir las autoridades', response.statusText);
             }
-        } catch (error) {
-            console.error('Error en la solicitud de autoridades', error);
-        }
+        };
+        reader.readAsArrayBuffer(file);
     };
 
     const handleDeleteAuthoritiesSelected = async (selectedAuthorities) => {
