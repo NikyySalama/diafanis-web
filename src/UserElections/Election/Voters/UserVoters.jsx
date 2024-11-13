@@ -6,6 +6,8 @@ import * as XLSX from 'xlsx';
 import '../ModalSection.css';
 import checkIMGByURL from '../../../Common/validatorURL';
 import sanitizeInput from '../../../Common/validatorInput';
+import { fetchTables } from '../Tables/TableUtils';
+
 const UserVoters = () => {
     const { electionId, electionEditable } = useElection();
     const [voters, setVoters] = useState([]);
@@ -53,30 +55,15 @@ const UserVoters = () => {
         }
     };
 
-    const fetchTables = async () => {
-        try {
-          const response = await fetch(`${process.env.REACT_APP_API_URL}/api/elections/${electionId}/tables`, {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json'
-            }
-          });
-          if (response.ok) {
-            const data = await response.json();
-            console.log("mesas: ", data);
-            setTables(data); // Guardamos las mesas tal como llegan
-          } else {
-            console.error('Error al obtener las mesas', response.statusText);
-          }
-        } catch (error) {
-          console.error('Error en la solicitud de mesas', error);
-        }
-    };
-
     useEffect(() => {
         fetchVoters();
-        fetchTables();
-    }, []);
+        const fetchData = async () => {
+            const data = await fetchTables(electionId);
+            setTables(data);
+        };
+        
+        fetchData();
+    }, [electionId]);
 
     const handleCreateVotersClick = () => {
         setClickedVoter(false); // Para asegurarse de que no esté editando
