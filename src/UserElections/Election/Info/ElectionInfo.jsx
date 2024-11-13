@@ -74,15 +74,16 @@ const ElectionInfo = () => {
                 </IconButton>
             </div>
             <h2>Información de la elección</h2>
-            <p>Título: {info.title}</p>
-            <p>Descripción: {info.description}</p>
-            <p>Comienza: {formatDate(info.startsAt)}</p>
-            <p>Termina: {formatDate(info.endsAt)}</p>
-            <p>Posiciones:</p>
-            <ul>
+            <p><span className="label">Título:</span> <span className="value">{info.title}</span></p>
+            <p><span className="label">Descripción:</span> <span className="value">{info.description}</span></p>
+            <p><span className="label">Comienza:</span> <span className="value">{formatDate(info.startsAt)}</span></p>
+            <p><span className="label">Termina:</span> <span className="value">{formatDate(info.endsAt)}</span></p>
+            <p><span className="label">Posiciones:</span></p>
+            <ul className="position-list">
                 {info.positions && info.positions.map((position) => (
-                    <li key={position.uuid}>
-                        {position.title} {position.description ? `- ${position.description}` : ''}
+                    <li key={position.uuid} className="position-item">
+                        <span className="position-title">{position.title}</span>
+                        {position.description && <span className="position-description"> - {position.description}</span>}
                     </li>
                 ))}
             </ul>
