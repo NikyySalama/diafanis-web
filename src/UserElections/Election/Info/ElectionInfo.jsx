@@ -5,6 +5,19 @@ import EditIcon from '@mui/icons-material/Edit';
 import ElectionModal from '../../ModalElectionRegistration/ElectionModal';
 import './ElectionInfo.css';
 
+const formatDate = (dateString) => {
+    if (!dateString) return 'Fecha no disponible';
+
+    const date = new Date(dateString);
+    const optionsDate = { year: 'numeric', month: 'long', day: 'numeric' };
+    const optionsTime = { hour: '2-digit', minute: '2-digit' };
+
+    const formattedDate = date.toLocaleDateString('es-ES', optionsDate);
+    const formattedTime = date.toLocaleTimeString('es-ES', optionsTime);
+
+    return `${formattedDate} a las ${formattedTime}`;
+};
+
 const ElectionInfo = () => {
     const { electionId, electionEditable } = useElection();
     const [info, setInfo] = useState([]);
@@ -63,8 +76,8 @@ const ElectionInfo = () => {
             <h2>Información de la elección</h2>
             <p>Título: {info.title}</p>
             <p>Descripción: {info.description}</p>
-            <p>Comienza: {info.startsAt}</p>
-            <p>Termina: {info.endsAt}</p>
+            <p>Comienza: {formatDate(info.startsAt)}</p>
+            <p>Termina: {formatDate(info.endsAt)}</p>
             <p>Posiciones:</p>
             <ul>
                 {info.positions && info.positions.map((position) => (
