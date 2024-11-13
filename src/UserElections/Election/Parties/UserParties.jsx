@@ -5,11 +5,13 @@ import CustomTable from '../../CustomTable';
 import '../ModalSection.css';
 import sanitizeInput from '../../../Common/validatorInput';
 import checkIMGByURL from '../../../Common/validatorURL';
+import CustomPieChart from './CustomPieChart';
+
 const UserParties = () => {
     const { electionId, electionEditable } = useElection();
     const [parties, setParties] = useState([]);
     const [showModal, setShowModal] = useState(false);
-    const [showViewModal, setShowViewModal] = useState(false); // Para modal de visualización
+    const [showViewModal, setShowViewModal] = useState(false);
     const [formData, setFormData] = useState({
         logoUrl: '',
         colorHex: '',
@@ -206,17 +208,30 @@ const UserParties = () => {
         colorHex: party.colorHex
     }));
 
+    const pieData = parties.map((party) => ({
+        name: party.name,
+        value: Math.floor(Math.random() * 100) + 1 // Genera un valor aleatorio para cada partido
+    }));
+
     return (
         <div className="user-lists">
-            <CustomTable
-                title="Partidos"
-                columns={columns}
-                rows={rows}
-                onRowClick={(row) => handlePartyClick(row)}
-                handleAddSelected={handleCreatePartyClick}
-                handleDeleteSelected={handleDeleteParties}
-                showImage={true}
-            />
+            <div style={{ display: 'flex' }}>
+                <div style={{ width: '60vw' }}>
+                    <CustomTable
+                        title="Partidos"
+                        columns={columns}
+                        rows={rows}
+                        onRowClick={(row) => handlePartyClick(row)}
+                        handleAddSelected={handleCreatePartyClick}
+                        handleDeleteSelected={handleDeleteParties}
+                        showImage={true}
+                    />
+                </div>
+                <div style={{ padding: '20px', width: '40vw' }}>
+                    <h3>Distribución de Afiliación por Partido</h3>
+                    <CustomPieChart/>
+                </div>
+            </div>
 
             {/* Modal de visualización */}
             <Modal show={showViewModal} onHide={handleClose} centered>

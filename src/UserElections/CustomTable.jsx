@@ -93,8 +93,9 @@ const CustomTable = ({ title, columns = [], rows = [], onRowClick, handleAddSele
       <TableContainer
         className='table-section-container'
         component={Paper}
+        style={{ width: '100%' }}
       >
-        <Table stickyHeader sx={{ minWidth: 650 }} aria-label="customized table">
+        <Table stickyHeader sx={{ width: '100%' }} aria-label="customized table" >
           <TableHead>
             <TableRow>
               <TableCell padding="checkbox" className="header-cell">
