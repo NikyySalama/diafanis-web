@@ -6,7 +6,7 @@ import * as XLSX from 'xlsx';
 import '../ModalSection.css';
 import checkIMGByURL from '../../../Common/validatorURL';
 import sanitizeInput from '../../../Common/validatorInput';
-import { fetchTables } from '../TableUtils';
+import { fetchTables } from '../Tables/TableUtils';
 import { addAuthorities } from './AuthoritiesUtils';
 
 const UserAuthorities = () => {
@@ -27,14 +27,12 @@ const UserAuthorities = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            const success = await fetchTables(electionId, setTables);
-            if (!success) {
-                alert("No se pudieron obtener las mesas, por favor intente de nuevo.");
-            }
+            const data = await fetchTables(electionId);
+            setTables(data);
         };
-    
+        
         fetchData();
-    }, []);    
+    }, [electionId]);    
 
     const handleCreateAuthoritiesClick = () => {
         setShowModal(true);

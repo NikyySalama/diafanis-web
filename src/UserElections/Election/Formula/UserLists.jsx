@@ -7,9 +7,11 @@ import CreateListModal from './CreateListModal';
 import CreateCandidatesModal from './CreateCandidatesModal'
 import EditFormulaModal from './EditFormulaModal'
 import FormulaInfoModal from './FormulaInfoModal';
-import { fetchParties, fetchFormulas, fetchPositions } from './fetchFormulaUtils';
+import { fetchFormulas, fetchPositions } from './fetchFormulaUtils';
 import sanitizeInput from '../../../Common/validatorInput';
 import checkIMGByURL from '../../../Common/validatorURL';
+import { fetchParties } from '../Parties/PartiesUtils';
+
 const UserLists = () => {
   const { electionId, electionEditable } = useElection();
   const [parties, setParties] = useState([]);

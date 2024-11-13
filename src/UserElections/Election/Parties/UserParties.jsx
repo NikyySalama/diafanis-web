@@ -6,6 +6,7 @@ import '../ModalSection.css';
 import sanitizeInput from '../../../Common/validatorInput';
 import checkIMGByURL from '../../../Common/validatorURL';
 import CustomPieChart from './CustomPieChart';
+import { fetchParties, handleAddParty, handleDeletePartiesUtils } from './PartiesUtils';
 
 const UserParties = () => {
     const { electionId, electionEditable } = useElection();
@@ -19,29 +20,14 @@ const UserParties = () => {
     });
     const [clickedParty, setClickedParty] = useState(false);
 
-    const fetchParties = async () => {
-        try {
-            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/elections/${electionId}/parties`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                setParties(data);
-            } else {
-                console.error('Error al obtener los partidos', response.statusText);
-            }
-        } catch (error) {
-            console.error('Error en la solicitud de partidos', error);
-        }
-    };
-
     useEffect(() => {
-        fetchParties();
-    }, []);
+        const fetchData = async () => {
+            const data = await fetchParties(electionId);
+            setParties(data);
+        };
+        
+        fetchData();
+    }, [electionId]); 
 
     const handleCreatePartyClick = () => {
         setFormData({ logoUrl: '', colorHex: '', name: '' });
@@ -80,35 +66,6 @@ const UserParties = () => {
             ...formData,
             [name]: value
         });
-    };
-
-    const handleAddParty = async (newParty) => {
-        const partyData = {
-            logoUrl: checkIMGByURL(newParty.logoUrl) ? newParty.logoUrl : "",
-            colorHex: sanitizeInput(newParty.colorHex),
-            name: sanitizeInput(newParty.name),
-            electionUuid: electionId
-        };
-
-        try {
-            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/parties`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${sessionStorage.getItem('jwt')}`,
-                },
-                body: JSON.stringify(partyData)
-            });
-
-            if (response.ok) {
-                const savedParty = await response.json();
-                fetchParties();
-            } else {
-                console.error('Error al guardar el partido:', response.statusText);
-            }
-        } catch (error) {
-            console.error('Error en la solicitud:', error);
-        }
     };
 
     const handleUpdateParty = async () => {
@@ -160,11 +117,18 @@ const UserParties = () => {
             alert('La URL proporcionada no es una imagen válida.');
             return;
         }
+
+        let result;
+
         if (clickedParty) {
             handleUpdateParty();
         }
         else {
-            handleAddParty(formData);
+            result = await handleAddParty(formData, electionId);
+        }
+        if (result) {
+            const updatedParties = await fetchParties(electionId);
+            setParties(updatedParties);
         }
         handleClose();
     };
@@ -174,27 +138,7 @@ const UserParties = () => {
             alert('La eleccion ya no es editable.');
             return;
         }
-
-        try {
-            await Promise.all(
-                parties.map(async (party) => {
-                    const response = await fetch(`${process.env.REACT_APP_API_URL}/api/parties/${party}`, {
-                        method: 'DELETE',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${sessionStorage.getItem('jwt')}`,
-                        },
-                    });
-
-                    if (!response.ok) {
-                        throw new Error(`Error en la respuesta del servidor: ${response.status}`);
-                    }
-                })
-            );
-            fetchParties();
-        } catch (error) {
-            console.error('Error al eliminar partidos', error);
-        }
+        handleDeletePartiesUtils(parties);
     };
 
     const columns = [
@@ -206,11 +150,6 @@ const UserParties = () => {
         name: party.name,
         logoUrl: party.logoUrl,
         colorHex: party.colorHex
-    }));
-
-    const pieData = parties.map((party) => ({
-        name: party.name,
-        value: Math.floor(Math.random() * 100) + 1 // Genera un valor aleatorio para cada partido
     }));
 
     return (

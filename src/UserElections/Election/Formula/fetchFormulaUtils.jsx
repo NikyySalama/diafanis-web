@@ -1,18 +1,3 @@
-export const fetchParties = async (electionId) => {
-    try {
-        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/elections/${electionId}/parties`);
-        if (response.ok) {
-            return await response.json();
-        } else {
-            console.error('Error al obtener los partidos');
-            return [];
-        }
-    } catch (error) {
-        console.error('Error en la solicitud de partidos', error);
-        return [];
-    }
-};
-
 export const fetchFormulas = async (electionId) => {
     try {
         const response = await fetch(`${process.env.REACT_APP_API_URL}/api/elections/${electionId}/electionPositions`);
