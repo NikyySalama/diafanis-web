@@ -5,6 +5,7 @@ import { Modal, Tooltip, OverlayTrigger } from 'react-bootstrap';
 import * as XLSX from 'xlsx';
 import '../ElectionSection.css';
 import sanitizeInput from '../../../Common/validatorInput';
+import { fetchTables, postTable } from './TableUtils';
 
 const Tables = () => {
   const { electionId, electionEditable } = useElection();
@@ -32,60 +33,13 @@ const Tables = () => {
   );
 
   useEffect(() => {
-    fetchTables();
-  }, []);
-
-  const fetchTables = async () => {
-    try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/elections/${electionId}/tables`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
-      if (response.ok) {
-        const data = await response.json();
-        setTables(data); // Guardamos las mesas tal como llegan
-      } else {
-        console.error('Error al obtener las mesas', response.statusText);
-      }
-    } catch (error) {
-      console.error('Error en la solicitud de mesas', error);
-    }
-  };
-
-  const postTable = async (table) => {
-    const location = {
-      country: table.country,
-      state: table.state,
-      city: table.city,
-      address: table.address
+    const fetchData = async () => {
+        const data = await fetchTables(electionId);
+        setTables(data);
     };
-    const tableToSend = {
-      idNumber: table.id,
-      electionUuid: electionId,
-      location: location
-    };
-    try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/tables`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization' : `Bearer ${sessionStorage.getItem('jwt')}`,
-        },
-        body: JSON.stringify(tableToSend)
-      });
-      if (response.ok) {
-        const savedTable = await response.json();
-        console.log('Mesa guardada:', savedTable);
-        fetchTables();
-      } else {
-        console.error('Error al guardar la mesa:', response.statusText);
-      }
-    } catch (error) {
-      console.error('Error en la solicitud:', error);
-    }
-  };
+    
+    fetchData();
+  }, [electionId]);
 
   const handleCreateTableClick = () => {
     setShowUploadModal(true);
@@ -183,7 +137,8 @@ const Tables = () => {
 
         if (response.ok) {
             const savedTable = await response.json();
-            fetchTables(); 
+            const updatedTables = await fetchTables(electionId);
+            setTables(updatedTables); 
         } else {
             console.error('Error al actualizar la mesa:', response.statusText);
         }
@@ -193,11 +148,20 @@ const Tables = () => {
     setShowUploadTableModal(false);
   };
 
-  const handleTablesSubmit = (e) => {
+  const handleTablesSubmit = async (e) => {
     e.preventDefault();
     handleCloseUploadModal();
-    tablesData.forEach(tableData => postTable(tableData));
-    fetchTables();
+
+    const results = await Promise.all(
+        tablesData.map(tableData => postTable(tableData, electionId))
+    );
+
+    if (results.includes(true)) {
+        const updatedTables = await fetchTables(electionId);
+        setTables(updatedTables);
+    } else {
+        console.log("No se pudieron guardar las mesas.");
+    }
   };
 
   const handleInputChange = (e) => {
@@ -239,7 +203,8 @@ const Tables = () => {
           }
         })
       );
-      fetchTables();
+      const updatedTables = await fetchTables(electionId);
+      setTables(updatedTables);
     } catch (error) {
       console.error('Error al eliminar mesas', error);
     }
