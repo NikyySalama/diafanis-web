@@ -82,7 +82,7 @@ const ElectionInfo = () => {
             <ul>
                 {info.positions && info.positions.map((position) => (
                     <li key={position.uuid}>
-                        {position.title} - {position.description}
+                        {position.title} {position.description ? `- ${position.description}` : ''}
                     </li>
                 ))}
             </ul>
