@@ -5,7 +5,7 @@ import CustomTable from '../../CustomTable';
 import '../ModalSection.css';
 import sanitizeInput from '../../../Common/validatorInput';
 import checkIMGByURL from '../../../Common/validatorURL';
-import CustomPieChart from './CustomPieChart';
+import CustomPieChart from '../../CustomPieChart';
 import { fetchParties, handleAddParty, handleDeletePartiesUtils } from './PartiesUtils';
 
 const UserParties = () => {

@@ -11,6 +11,7 @@ import { fetchFormulas, fetchPositions } from './fetchFormulaUtils';
 import sanitizeInput from '../../../Common/validatorInput';
 import checkIMGByURL from '../../../Common/validatorURL';
 import { fetchParties } from '../Parties/PartiesUtils';
+import CustomPieChart from '../../CustomPieChart';
 
 const UserLists = () => {
   const { electionId, electionEditable } = useElection();
@@ -24,16 +25,33 @@ const UserLists = () => {
   const [showFormulaInfoModal, setShowFormulaInfoModal] = useState(false);
   const [formData, setFormData] = useState({ partyUuid: '', partyName: '', id: '' });
   const [editFormulaData, setEditFormulaData] = useState({
-    idNumber: '', 
+    idNumber: '',
     partyUuid: '',
     candidates: [],
     uuid: ''
   });
+  const [pieData, setPieData] = useState([]);
+
+  const getRandomColor = () => {
+    const getColorValue = () => Math.floor(Math.random() * 156) + 50; // Rango entre 50 y 205 para evitar colores extremos
+    return `rgb(${getColorValue()}, ${getColorValue()}, ${getColorValue()})`;
+  };
 
   useEffect(() => {
     fetchData();
     fetchPartiesData();
   }, []);
+
+
+  useEffect(() => {
+    const chartData = positions.map(position => ({
+      name: position.title,
+      color: getRandomColor(),
+      value: formulas.filter(formula => formula.title === position.title).length
+    }));
+    setPieData(chartData);
+    console.log('pie data: ', chartData);
+  }, [positions, formulas]);
 
   const fetchData = async () => {
     try {
@@ -82,7 +100,7 @@ const UserLists = () => {
     const file = e.target.files[0];
     const validExtensions = ['.xls', '.xlsx'];
     const fileExtension = file.name.split('.').pop().toLowerCase();
-      
+
     if (!validExtensions.includes(`.${fileExtension}`)) {
       alert('Por favor suba un archivo Excel válido (.xls o .xlsx).');
       return;
@@ -117,7 +135,7 @@ const UserLists = () => {
         docType: 'DNI',
         name: sanitizeInput(row.name) || 'Nombre Desconocido',
         surname: sanitizeInput(row.lastName) || 'Apellido Desconocido',
-        image: checkIMGByURL(row.imageUrl)? row.imageUrl : ''
+        image: checkIMGByURL(row.imageUrl) ? row.imageUrl : ''
       }));
 
       setPositionsData(prevData => {
@@ -132,13 +150,13 @@ const UserLists = () => {
 
   const handlePositionsSubmit = async (e) => {
     e.preventDefault();
-  
+
     // Verificar si hay algún archivo no subido
     if (positions.some((_, index) => !positionsData[index]?.length)) {
       alert('Por favor, suba un archivo para cada posición.');
       return;
     }
-  
+
     try {
       // Primero, subir las fórmulas y recolectar sus UUIDs
       const formulaPromises = positions.map((position, index) => {
@@ -149,13 +167,13 @@ const UserLists = () => {
           idNumber: sanitizeInput(formData.id),
           electionUuid: electionId,
         };
-  
+
         return fetch(`${process.env.REACT_APP_API_URL}/api/electiveFormulas`, {
           method: 'POST',
-          headers: { 
+          headers: {
             'Content-Type': 'application/json',
-            'Authorization' : `Bearer ${sessionStorage.getItem('jwt')}`,
-           },
+            'Authorization': `Bearer ${sessionStorage.getItem('jwt')}`,
+          },
           body: JSON.stringify(formulaData),
         }).then(async (response) => {
           if (!response.ok) {
@@ -165,47 +183,47 @@ const UserLists = () => {
           return text ? JSON.parse(text) : {};
         });
       });
-  
+
       // Esperar a que todas las fórmulas se suban y obtener sus UUIDs
       const uploadedFormulas = await Promise.all(formulaPromises);
-  
+
       for (let index = 0; index < uploadedFormulas.length; index++) {
         const uploadedFormula = uploadedFormulas[index];
         const candidates = positionsData[index].map((candidate, candidateIndex) => ({
           role: sanitizeInput(candidate.role),
-          imageUrl: checkIMGByURL(candidate.image)? candidate.image : '', 
+          imageUrl: checkIMGByURL(candidate.image) ? candidate.image : '',
           zindex: sanitizeInput(candidateIndex),
           data: {
             docNumber: sanitizeInput(candidate.docNumber),
             docType: sanitizeInput(candidate.docType),
             name: sanitizeInput(candidate.name),
             lastName: sanitizeInput(candidate.surname),
-            imageUrl: checkIMGByURL(candidate.image)? candidate.image : '', 
+            imageUrl: checkIMGByURL(candidate.image) ? candidate.image : '',
             formulaUuid: uploadedFormula.uuid,
           },
         }));
-        
+
         const response = await fetch(`${process.env.REACT_APP_API_URL}/api/electiveFormulas/${uploadedFormula.uuid}/candidates`, {
           method: 'POST',
-          headers: { 
+          headers: {
             'Content-Type': 'application/json',
-            'Authorization' : `Bearer ${sessionStorage.getItem('jwt')}`,
-           },
+            'Authorization': `Bearer ${sessionStorage.getItem('jwt')}`,
+          },
           body: JSON.stringify(candidates),
         });
-  
+
         if (!response.ok) {
           throw new Error(`Error en el envío de candidatos: ${response.status}`);
         }
       }
-  
+
       // Cerrar el modal si todo salió bien
       setShowPositionsModal(false);
       fetchData();
     } catch (error) {
       console.error('Error en el envío de fórmulas o candidatos:', error);
     }
-  };  
+  };
 
   const handleUpdateFormula = async (e) => {
     e.preventDefault();
@@ -219,9 +237,10 @@ const UserLists = () => {
     try {
       const response = await fetch(`${process.env.REACT_APP_API_URL}/api/electiveFormulas/${editFormulaData.uuid}`, {
         method: 'PATCH',
-        headers: { 
+        headers: {
           'Content-Type': 'application/json',
-          'Authorization' : `Bearer ${sessionStorage.getItem('jwt')}`, },
+          'Authorization': `Bearer ${sessionStorage.getItem('jwt')}`,
+        },
         body: JSON.stringify(formulaDataToPatch),
       });
 
@@ -240,7 +259,7 @@ const UserLists = () => {
   };
 
   const handleDeleteLists = async (formulas) => {
-    if(!electionEditable){
+    if (!electionEditable) {
       alert('La eleccion ya no es editable.');
       return;
     }
@@ -250,11 +269,12 @@ const UserLists = () => {
         formulas.map(async (formula) => {
           const response = await fetch(`${process.env.REACT_APP_API_URL}/api/electiveFormulas/${formula}`, {
             method: 'DELETE',
-            headers: { 
+            headers: {
               'Content-Type': 'application/json',
-              'Authorization' : `Bearer ${sessionStorage.getItem('jwt')}`, },
+              'Authorization': `Bearer ${sessionStorage.getItem('jwt')}`,
+            },
           });
-  
+
           if (!response.ok) {
             throw new Error(`Error en la respuesta del servidor: ${response.status}`);
           }
@@ -274,14 +294,27 @@ const UserLists = () => {
 
   return (
     <div className="my-section">
-      <CustomTable 
-        title="Fórmulas" 
-        columns={columns} 
-        rows={formulas} 
-        onRowClick={handleEditFormulaClick} 
-        handleAddSelected={handleCreateListClick}
-        handleDeleteSelected={handleDeleteLists}
-      />
+      <div style={{ display: 'flex' }}>
+        <div style={{ width: '60vw' }}>
+          <CustomTable
+            title="Fórmulas"
+            columns={columns}
+            rows={formulas}
+            onRowClick={handleEditFormulaClick}
+            handleAddSelected={handleCreateListClick}
+            handleDeleteSelected={handleDeleteLists}
+          />
+        </div>
+        <div style={{ paddingLeft: '20px', width: '40vw' }}>
+          <div style={{
+            borderRadius: '15px',
+            padding: '10px'
+          }}>
+            <h3>Distribución de Fórmulas por Posición</h3>
+            <CustomPieChart pieData={pieData} />
+          </div>
+        </div>
+      </div>
 
       <CreateListModal
         show={showModal}
@@ -304,8 +337,8 @@ const UserLists = () => {
         show={showFormulaInfoModal}
         onHide={() => setShowFormulaInfoModal(false)}
         handleEdit={() => {
-          if(electionEditable){
-            setShowEditFormulaModal(true); 
+          if (electionEditable) {
+            setShowEditFormulaModal(true);
             setShowFormulaInfoModal(false);
           }
           else
