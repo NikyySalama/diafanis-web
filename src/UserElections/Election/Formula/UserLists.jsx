@@ -153,77 +153,82 @@ const UserLists = () => {
 
     // Verificar si hay algún archivo no subido
     if (positions.some((_, index) => !positionsData[index]?.length)) {
-      alert('Por favor, suba un archivo para cada posición.');
-      return;
+        alert('Por favor, suba un archivo para cada posición.');
+        return;
     }
 
     try {
-      // Primero, subir las fórmulas y recolectar sus UUIDs
-      const formulaPromises = positions.map((position, index) => {
-        const formulaData = {
-          title: 'title',
-          partyUuid: formData.partyUuid,
-          electionPositionUuid: position.uuid,
-          idNumber: sanitizeInput(formData.id),
-          electionUuid: electionId,
-        };
+        // Primero, subir las fórmulas y recolectar sus UUIDs
+        const formulaPromises = positions.map((position, index) => {
+            const formulaData = {
+                title: 'title',
+                partyUuid: formData.partyUuid,
+                electionPositionUuid: position.uuid,
+                idNumber: sanitizeInput(formData.id),
+                electionUuid: electionId,
+            };
 
-        return fetch(`${process.env.REACT_APP_API_URL}/api/electiveFormulas`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${sessionStorage.getItem('jwt')}`,
-          },
-          body: JSON.stringify(formulaData),
-        }).then(async (response) => {
-          if (!response.ok) {
-            throw new Error(`Error en la respuesta del servidor: ${response.status}`);
-          }
-          const text = await response.text();
-          return text ? JSON.parse(text) : {};
-        });
-      });
-
-      // Esperar a que todas las fórmulas se suban y obtener sus UUIDs
-      const uploadedFormulas = await Promise.all(formulaPromises);
-
-      for (let index = 0; index < uploadedFormulas.length; index++) {
-        const uploadedFormula = uploadedFormulas[index];
-        const candidates = positionsData[index].map((candidate, candidateIndex) => ({
-          role: sanitizeInput(candidate.role),
-          imageUrl: checkIMGByURL(candidate.image) ? candidate.image : '',
-          zindex: sanitizeInput(candidateIndex),
-          data: {
-            docNumber: sanitizeInput(candidate.docNumber),
-            docType: sanitizeInput(candidate.docType),
-            name: sanitizeInput(candidate.name),
-            lastName: sanitizeInput(candidate.surname),
-            imageUrl: checkIMGByURL(candidate.image) ? candidate.image : '',
-            formulaUuid: uploadedFormula.uuid,
-          },
-        }));
-
-        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/electiveFormulas/${uploadedFormula.uuid}/candidates`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${sessionStorage.getItem('jwt')}`,
-          },
-          body: JSON.stringify(candidates),
+            return fetch(`${process.env.REACT_APP_API_URL}/api/electiveFormulas`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${sessionStorage.getItem('jwt')}`,
+                },
+                body: JSON.stringify(formulaData),
+            }).then(async (response) => {
+                if (!response.ok) {
+                    throw new Error(`Error en la respuesta del servidor: ${response.status}`);
+                }
+                const text = await response.text();
+                return text ? JSON.parse(text) : {};
+            });
         });
 
-        if (!response.ok) {
-          throw new Error(`Error en el envío de candidatos: ${response.status}`);
-        }
-      }
+        // Esperar a que todas las fórmulas se suban y obtener sus UUIDs
+        const uploadedFormulas = await Promise.all(formulaPromises);
 
-      // Cerrar el modal si todo salió bien
-      setShowPositionsModal(false);
-      fetchData();
+        // Enviar candidatos asociados a cada fórmula
+        const candidatePromises = uploadedFormulas.map((uploadedFormula, index) => {
+            const candidates = positionsData[index].map((candidate, candidateIndex) => ({
+                role: sanitizeInput(candidate.role),
+                imageUrl: checkIMGByURL(candidate.image) ? candidate.image : '',
+                zindex: sanitizeInput(candidateIndex),
+                data: {
+                    docNumber: sanitizeInput(candidate.docNumber),
+                    docType: sanitizeInput(candidate.docType),
+                    name: sanitizeInput(candidate.name),
+                    lastName: sanitizeInput(candidate.surname),
+                    imageUrl: checkIMGByURL(candidate.image) ? candidate.image : '',
+                    formulaUuid: uploadedFormula.uuid,
+                },
+            }));
+
+            return fetch(`${process.env.REACT_APP_API_URL}/api/electiveFormulas/${uploadedFormula.uuid}/candidates`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${sessionStorage.getItem('jwt')}`,
+                },
+                body: JSON.stringify(candidates),
+            }).then(async (response) => {
+                if (!response.ok) {
+                    throw new Error(`Error en el envío de candidatos: ${response.status}`);
+                }
+                return response.json(); // o response.text() según la API
+            });
+        });
+
+        // Esperar a que todos los candidatos se envíen
+        await Promise.all(candidatePromises);
+
+        // Cerrar el modal si todo salió bien
+        setShowPositionsModal(false);
+        fetchData();
     } catch (error) {
-      console.error('Error en el envío de fórmulas o candidatos:', error);
+        console.error('Error en el envío de fórmulas o candidatos:', error);
     }
-  };
+};
+
 
   const handleUpdateFormula = async (e) => {
     e.preventDefault();
