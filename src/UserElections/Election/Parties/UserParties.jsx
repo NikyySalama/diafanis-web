@@ -153,7 +153,17 @@ const UserParties = () => {
             alert('La eleccion ya no es editable.');
             return;
         }
-        handleDeletePartiesUtils(parties);
+        try {
+            const newParties = await handleDeletePartiesUtils(parties, electionId);
+    
+            if (newParties && Array.isArray(newParties)) {
+                setParties(newParties);
+            } else {
+                console.error('Error: los partidos actualizados no se obtuvieron correctamente.');
+            }
+        } catch (error) {
+            console.error('Error al eliminar partidos:', error);
+        }
     };
 
     const columns = [

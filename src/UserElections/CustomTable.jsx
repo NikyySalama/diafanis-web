@@ -124,7 +124,7 @@ const CustomTable = ({ title, columns = [], rows = [], onRowClick, handleAddSele
           <TableBody>
             {filteredRows.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={columns.length + 1} align="center">
+                <TableCell colSpan={columns.length + 2} align="center">
                   No hay datos disponibles
                 </TableCell>
               </TableRow>

@@ -48,7 +48,7 @@ export const handleAddParty = async (newParty, electionId) => {
     }
 };
 
-export const handleDeletePartiesUtils = async (parties) => {
+export const handleDeletePartiesUtils = async (parties, electionId) => {
     try {
         await Promise.all(
             parties.map(async (party) => {
@@ -65,8 +65,10 @@ export const handleDeletePartiesUtils = async (parties) => {
                 }
             })
         );
-        fetchParties();
+        const updatedParties = await fetchParties(electionId);
+        return updatedParties;
     } catch (error) {
         console.error('Error al eliminar partidos', error);
+        return [];
     }
 };
