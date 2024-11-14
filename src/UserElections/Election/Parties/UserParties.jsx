@@ -182,9 +182,14 @@ const UserParties = () => {
                         showImage={true}
                     />
                 </div>
-                <div style={{ padding: '20px', width: '40vw' }}>
+                <div style={{ paddingLeft: '20px', width: '40vw' }}>
+                    <div style={{
+                        borderRadius: '15px',
+                        padding: '10px'
+                    }}>
                     <h3>Distribución de Afiliación por Partido</h3>
-                    <CustomPieChart pieData={pieData}/>
+                        <CustomPieChart pieData={pieData}/>
+                    </div>
                 </div>
             </div>
 
