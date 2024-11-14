@@ -1,6 +1,6 @@
 .buttons {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-between; /* Asegura que los botones estén en extremos opuestos */
     align-items: center; /* Alinea verticalmente los botones */
     margin-top: 10px; /* Espacio entre los botones y la lista de posiciones */
 }
@@ -8,37 +8,66 @@
 .add-position-button,
 .register-button,
 .undo-button {
-    padding: 10px; /* Asegúrate de que todos los botones tengan el mismo padding */
-    border-radius: 4px;
+    padding-top: 0.3rem; /* Asegúrate de que todos los botones tengan el mismo padding */
+    padding-bottom: 0.3rem;
+    padding-left: 0.6rem;
+    padding-right: 0.6rem;
+    border-radius: 10px;
     cursor: pointer;
 }
 
 .add-position-button {
-    background-color: #64abf8;
+    background-color: #4756df;
     color: #fff;
     border: none;
 }
 
 .add-position-button:hover {
-    background-color: #3697ff;
+    background-color: #2333c4;
 }
 
 .register-button {
-    background-color: #697bca;
+    background-color: #5c98dd;
     color: #fff;
     border: none;
+    margin-left: auto; /* Alinea el botón "Registrar" a la derecha */
 }
 
 .register-button:hover {
-    background-color: #465fce;
+    background-color: #2977dd;
 }
 
 .undo-button {
-    background-color: #28a745;
+    position: absolute;
+    bottom: -50px; /* Posición inicial debajo del modal */
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #585c597c;
     color: #fff;
     border: none;
+    display: inline-flex;
+    align-items: center;
+    opacity: 0;
+    animation: slideIn 0.5s forwards, fadeOut 0.5s 4s forwards; /* Animación para entrada y salida */
 }
 
 .undo-button:hover {
-    background-color: #218838;
+    background-color: #585c59;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, 100%); /* Comienza desde abajo */
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, 0); /* Se posiciona en su lugar */
+    }
+}
+
+@keyframes fadeOut {
+    to {
+        opacity: 0;
+    }
 }

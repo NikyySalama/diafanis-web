@@ -3,11 +3,10 @@ import './PositionRegistration.css';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ReplayIcon from '@mui/icons-material/Replay';
 import sanitizeInput from '../../Common/validatorInput';
-import checkIMGByURL from '../../Common/validatorURL';
-const PositionRegistration = ({ onClose, electionId, initialPositions,token }) => {
+
+const PositionRegistration = ({ onClose, electionId, initialPositions }) => {
   const [positions, setPositions] = useState([{ title: '', uuid: null }]);
   const [lastRemoved, setLastRemoved] = useState(null); // Para el undo
-  // TODO: const [removed, setRemoveds] = useState(null);
 
   // Cuando initialData esté disponible, pre-rellena los campos del formulario
   useEffect(() => {
@@ -84,6 +83,10 @@ const PositionRegistration = ({ onClose, electionId, initialPositions,token }) =
     const removedPosition = updatedPositions.splice(index, 1)[0]; // Guarda la posición eliminada
     setPositions(updatedPositions);
     setLastRemoved(removedPosition);
+
+    setTimeout(() => {
+      setLastRemoved(null);
+    }, 5000);
   };
 
   const handleUndo = () => {
@@ -115,21 +118,20 @@ const PositionRegistration = ({ onClose, electionId, initialPositions,token }) =
         ))}
 
         <div className='buttons'>
-          <div>
-            <button className='add-position-button' type="button" onClick={addPosition}>
-              + Nueva Posición
-            </button>
-            <button className='register-button' type="submit">
-              Registrar
-            </button>
-          </div>
-          {lastRemoved && (
-            <button className='undo-button' type="button" onClick={handleUndo}>
-              <ReplayIcon style={{marginRight: '5px'}}/>
-              Undo Last Delete
-            </button>
-          )}
+          <button className='add-position-button' type="button" onClick={addPosition}>
+            + Nueva Posición
+          </button>
+          <button className='register-button' type="submit">
+            Registrar
+          </button>
         </div>
+
+        {lastRemoved && (
+          <button className='undo-button' type="button" onClick={handleUndo}>
+            <ReplayIcon style={{marginRight: '5px'}}/>
+            Undo Last Delete
+          </button>
+        )}
       </form>
     </div>
   );
