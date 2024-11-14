@@ -15,8 +15,6 @@ const ElectionModal = ({ show, onClose, onAddElection, initialData }) => {
     setAddedElection(null);
   };
 
-  console.log("data", initialData);
-
   const handleAddElection = async (newElection) => {
     try {
       const method = initialData ? 'PATCH' : 'POST';
@@ -35,7 +33,6 @@ const ElectionModal = ({ show, onClose, onAddElection, initialData }) => {
 
       if (response.ok) {
         const savedElection = await response.json();
-        console.log('Elección guardada:', savedElection);
         onAddElection(); // Actualizar la lista de elecciones
         setAddedElection(savedElection);
       } else {

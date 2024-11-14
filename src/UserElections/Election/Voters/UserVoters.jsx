@@ -160,7 +160,6 @@ const UserVoters = () => {
                 electionUuid: electionId
             }));
     
-            console.log("voters: ", updatedVotersData);
             const response = await fetch(`${process.env.REACT_APP_API_URL}/api/tables/${selectedTable}/electors`, {
                 method: 'POST',
                 headers: {

@@ -31,7 +31,6 @@ const UserParties = () => {
                     : 0
             }));
             setParties(processedData);
-            console.log(processedData);
 
             const chartData = processedData.map(party => ({
                 name: party.name,

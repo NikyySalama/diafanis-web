@@ -21,7 +21,6 @@ const ElectionRegistration = ({ handleAddElection, handleContinue, initialData }
                 endsAt: initialData.endsAt || '',
                 username: sessionStorage.getItem('user'),
             });
-            console.log(initialData);
         }
     }, [initialData]);
 

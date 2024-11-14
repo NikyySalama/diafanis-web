@@ -5,7 +5,6 @@ const FormulaInfoModal = ({ show, onHide, handleEdit, editFormulaData, parties }
 
     const selectedParty = parties.find(party => party.uuid === editFormulaData.partyUuid);
     const partyName = selectedParty ? selectedParty.name : 'Nombre no encontrado';
-    console.log(editFormulaData);
     return (
         <Modal show={show} onHide={onHide} centered>
             <Modal.Header closeButton>

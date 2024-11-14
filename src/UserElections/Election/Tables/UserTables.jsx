@@ -6,6 +6,7 @@ import * as XLSX from 'xlsx';
 import '../ElectionSection.css';
 import sanitizeInput from '../../../Common/validatorInput';
 import { fetchTables, postTable } from './TableUtils';
+import CustomPieChart from '../../CustomPieChart';
 
 const Tables = () => {
   const { electionId, electionEditable } = useElection();
@@ -23,6 +24,7 @@ const Tables = () => {
     uuid: '',
   });
   const [showHelp, setShowHelp] = useState(false);
+  const [pieData, setPieData] = useState([]);
 
   const toggleHelpModal = () => setShowHelp(!showHelp);
 
@@ -32,12 +34,40 @@ const Tables = () => {
       </Tooltip>
   );
 
+  const getRandomColor = () => {
+    const colorValues = [
+        Math.floor(Math.random() * 76) + 180, // Rango entre 180 y 255
+        Math.floor(Math.random() * 51) + 110, // Rango entre 110 y 160
+        Math.floor(Math.random() * 21),       // Rango entre 0 y 20
+    ];
+    
+    // Mezclar el orden de los valores de color
+    for (let i = colorValues.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [colorValues[i], colorValues[j]] = [colorValues[j], colorValues[i]];
+    }
+    
+    return `rgb(${colorValues[0]}, ${colorValues[1]}, ${colorValues[2]})`;
+  };
+
   useEffect(() => {
     const fetchData = async () => {
         const data = await fetchTables(electionId);
         setTables(data);
-    };
+
+        const stateCounts = data.reduce((acc, table) => {
+          acc[table.location.state] = (acc[table.location.state] || 0) + 1;
+          return acc;
+        }, {});
     
+        const chartData = Object.entries(stateCounts).map(([state, count]) => ({
+          name: state,
+          color: getRandomColor(),
+          value: count
+        }));
+    
+        setPieData(chartData);
+    };
     fetchData();
   }, [electionId]);
 
@@ -225,14 +255,27 @@ const Tables = () => {
 
   return (
     <div className='my-section'>
-      <CustomTable 
-        title="Mesas" 
-        columns={columns} 
-        rows={rows} 
-        onRowClick={handleTableClick} 
-        handleAddSelected={handleCreateTableClick}
-        handleDeleteSelected={handleDeleteTables}
-      />
+      <div style={{ display: 'flex' }}>
+        <div style={{ width: '60vw' }}>
+          <CustomTable 
+            title="Mesas" 
+            columns={columns} 
+            rows={rows} 
+            onRowClick={handleTableClick} 
+            handleAddSelected={handleCreateTableClick}
+            handleDeleteSelected={handleDeleteTables}
+          />
+        </div>
+        <div style={{ paddingLeft: '20px', width: '40vw' }}>
+          <div style={{
+            borderRadius: '15px',
+            padding: '10px'
+          }}>
+            <h3>Distribución de Mesas por Provincia</h3>
+            <CustomPieChart pieData={pieData} />
+          </div>
+        </div>
+      </div>
 
       <Modal show={showUploadModal} onHide={handleCloseUploadModal} centered>
         <Modal.Header closeButton>

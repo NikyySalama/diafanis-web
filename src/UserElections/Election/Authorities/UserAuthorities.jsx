@@ -103,7 +103,6 @@ const UserAuthorities = () => {
         try {
             for (const [rowUuid, docNumbers] of Object.entries(selectedAuthorities)) {
                 for (const docNumber of docNumbers) {
-                    console.log('dni', docNumber);
                     const response = await fetch(`${process.env.REACT_APP_API_URL}/api/persons/${electionId}/${docNumber}`, {
                         method: 'PATCH',
                         headers: {

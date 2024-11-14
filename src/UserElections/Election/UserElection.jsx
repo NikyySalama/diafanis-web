@@ -20,9 +20,6 @@ const Election = () => {
     } = location.state || {};
 
     const [activeSection, setActiveSection] = useState('info');
-    
-    console.log(electionId);
-
     // Memoiza la sección renderizada para evitar renderizados innecesarios
     const renderSection = useMemo(() => {
         switch (activeSection) {
