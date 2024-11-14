@@ -7,7 +7,7 @@ import '../ModalSection.css';
 import checkIMGByURL from '../../../Common/validatorURL';
 import sanitizeInput from '../../../Common/validatorInput';
 import { fetchTables } from '../Tables/TableUtils';
-import { addAuthorities } from './AuthoritiesUtils';
+//import { addAuthorities } from './AuthoritiesUtils';
 
 const UserAuthorities = () => {
     const { electionId, electionEditable } = useElection();
@@ -52,6 +52,36 @@ const UserAuthorities = () => {
         setFile(e.target.files[0]);
     };
 
+    const addAuthorities = async (authoritiesData) => {
+        try {
+            const updatedAuthoritiesData = authoritiesData.map(authority => ({
+                ...authority,
+                docType: 'DNI',
+                electorTableUuid: selectedTable,
+                electionUuid: electionId
+            }));
+    
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/tables/${selectedTable}/authorities`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization' : `Bearer ${sessionStorage.getItem('jwt')}`,
+                },
+                body: JSON.stringify(updatedAuthoritiesData),
+            });
+    
+            if (response.ok) {
+                return true;
+            } else {
+                console.error('Error al subir las autoridades', response.statusText);
+                return false;
+            }
+        } catch (error) {
+            console.error('Error en la solicitud de autoridades', error);
+            return false;
+        }
+    };
+
     const handleSubmit = async () => {
         if (!selectedTable) {
             alert('Por favor seleccione una mesa.');
@@ -71,7 +101,7 @@ const UserAuthorities = () => {
             return;
         }
         const reader = new FileReader();
-        reader.onload = (e) => {
+        reader.onload = async (e) => {
             const data = new Uint8Array(e.target.result);
             const workbook = XLSX.read(data, { type: 'array' });
             const sheetName = workbook.SheetNames[0];
@@ -90,10 +120,11 @@ const UserAuthorities = () => {
                 imageUrl: checkIMGByURL(authority.imageUrl) ? authority.imageUrl : '',
                 docNumber: sanitizeInput(authority.docNumber),
             }));
-            if (addAuthorities(electionId, selectedTable, sanitizedAuthoritiesData)){
-                fetchTables();
-                handleClose();
-            }
+
+            await addAuthorities(sanitizedAuthoritiesData);
+            const updatedTables = await fetchTables(electionId);
+            setTables(updatedTables); 
+            handleClose();
         };
         reader.readAsArrayBuffer(file);
     };
@@ -117,8 +148,8 @@ const UserAuthorities = () => {
                     }
                 }
             }
-    
-            fetchTables();
+            const updatedTables = await fetchTables(electionId);
+            setTables(updatedTables);
         } catch (error) {
             console.error('Error en la solicitud de eliminación de autoridades', error);
         }
