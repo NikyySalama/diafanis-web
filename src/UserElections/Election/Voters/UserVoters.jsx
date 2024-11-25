@@ -277,7 +277,16 @@ const UserVoters = () => {
                 <Modal.Body>
                     <p>Nombre y apellido: {formData.name} {formData.lastName}</p>
                     <p>Documento: {formData.docNumber}</p>
-                    <p>Imagen: {formData.imageUrl}</p>
+                    <p>
+                        Imagen: {formData.imageUrl ? (
+                            <>
+                                {formData.imageUrl.length > 40
+                                    ? `${formData.imageUrl.substring(0, 40)}...`
+                                    : formData.imageUrl
+                                }
+                            </>
+                        ) : "No disponible"}
+                    </p>
                     {formData.imageUrl && (
                         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
                             <img src={formData.imageUrl} alt="Logo Preview" style={{ maxWidth: 'auto', maxHeight: '15rem' }} />
