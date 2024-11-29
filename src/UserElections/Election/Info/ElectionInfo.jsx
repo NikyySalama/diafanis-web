@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useElection } from '../ElectionContext';
-import { IconButton } from '@mui/material'; 
+import { IconButton } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
@@ -80,27 +80,29 @@ const ElectionInfo = () => {
                 <span>{info.title}</span>
             </h4>
             <p>
-                <span>{info.description}</span>
+                <span className='position-description'>{info.description}</span>
             </p>
             <div className="date-info">
                 <div className="date-block">
-                    <CalendarTodayIcon className="icon" />
-                    <div>
-                        <p className="date-label">Comienza</p>
-                        <p>{start.date}</p>
-                        <p>
-                            <AccessTimeIcon className="time-icon" /> {start.time}
-                        </p>
+                    <p className="date-label">Comienza</p>
+                    <div className="icon-text">
+                        <CalendarTodayIcon className="icon" />
+                        <span>{start.date}</span>
+                    </div>
+                    <div className="icon-text">
+                        <AccessTimeIcon className="time-icon" />
+                        <span>{start.time}</span>
                     </div>
                 </div>
                 <div className="date-block">
-                    <CalendarTodayIcon className="icon" />
-                    <div>
-                        <p className="date-label">Termina</p>
-                        <p>{end.date}</p>
-                        <p>
-                            <AccessTimeIcon className="time-icon" /> {end.time}
-                        </p>
+                    <p className="date-label">Termina</p>
+                    <div className="icon-text">
+                        <CalendarTodayIcon className="icon" />
+                        <span>{end.date}</span>
+                    </div>
+                    <div className="icon-text">
+                        <AccessTimeIcon className="time-icon" />
+                        <span>{end.time}</span>
                     </div>
                 </div>
             </div>
