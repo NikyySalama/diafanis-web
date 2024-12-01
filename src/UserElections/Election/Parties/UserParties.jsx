@@ -208,8 +208,8 @@ const UserParties = () => {
                     <Modal.Title>Detalles del Partido</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <p>Nombre: {formData.name}</p>
-                    <p>Logo URL: <span className="url-display">{formData.logoUrl}</span></p>
+                    <p>{formData.name}</p>
+                    <span className="url-display">{formData.logoUrl}</span>
                     {formData.logoUrl && (
                         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
                             <img src={formData.logoUrl} alt="Logo Preview" style={{ maxWidth: '100px', maxHeight: '100px' }} />
@@ -227,7 +227,6 @@ const UserParties = () => {
                                     border: '1px solid #000',
                                 }}
                             ></div>
-                            <span>{formData.colorHex}</span>
                         </div>
                     )}
                     <button type="button" className="modal-button" onClick={handleEditPartyClick}>Editar</button>
