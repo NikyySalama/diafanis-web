@@ -349,15 +349,22 @@ const Tables = () => {
 
       <Modal show={showViewTableModal} onHide={handleCloseViewTableModal} centered>
         <Modal.Header closeButton>
-          <Modal.Title>Ver Mesa</Modal.Title>
+          <Modal.Title>Detalles de la Mesa</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <div>
-            <p><strong>País:</strong> {tableData.country}</p>
-            <p><strong>Estado:</strong> {tableData.state}</p>
-            <p><strong>Ciudad:</strong> {tableData.city}</p>
-            <p><strong>Dirección:</strong> {tableData.address}</p>
-          </div>
+        <div className="info-card">
+          <h5>📍Ubicación</h5>
+          {(`${tableData.address}, ${tableData.city}, ${tableData.state}, ${tableData.country}`).length > 60 ? (
+            // Si la longitud excede los 60 caracteres, mostramos en dos líneas
+            <>
+              <p>{tableData.address}, {tableData.city}</p>
+              <p>{tableData.state}, {tableData.country}</p>
+            </>
+          ) : (
+            // Si no, mostramos todo en una sola línea
+            <p style={{fontWeight:'300'}}>{tableData.address}, {tableData.city}, {tableData.state}, {tableData.country}</p>
+          )}
+        </div>
           <button type="button" className="modal-button" onClick={handleEditTableClick}>
             Editar
           </button>
