@@ -21,23 +21,30 @@ const UserParties = () => {
     const [clickedParty, setClickedParty] = useState(false);
     const [pieData, setPieData] = useState([]);
 
+    const calculateAff = (parties) => {
+        return parties.map((party) => ({
+            ...party,
+            aff: party.formulas 
+                ? party.formulas.reduce((sum, formula) => sum + (formula.candidates?.length || 0), 0)
+                : 0,
+        }));
+    };
+
+    const calculatePieData = (parties) => {
+        const processedParties = calculateAff(parties); // Recalcula `aff` antes de generar el pieData
+        return processedParties.map((party) => ({
+            name: party.name,
+            color: party.colorHex,
+            value: party.aff || 0,
+        }));
+    }; 
+
     useEffect(() => {
         const fetchData = async () => {
             const data = await fetchParties(electionId);
-            const processedData = data.map(party => ({
-                ...party,
-                aff: party.formulas 
-                    ? party.formulas.reduce((sum, formula) => sum + (formula.candidates?.length || 0), 0)
-                    : 0
-            }));
-            setParties(processedData);
-
-            const chartData = processedData.map(party => ({
-                name: party.name,
-                color: party.colorHex,
-                value: party.aff
-            }));
-            setPieData(chartData);
+            const processedParties = calculateAff(data); // Recalcular `aff`
+            setParties(processedParties);
+            setPieData(calculatePieData(processedParties));
         };
         
         fetchData();
@@ -89,7 +96,7 @@ const UserParties = () => {
             colorHex: sanitizeInput(colorHex),
             name: sanitizeInput(name),
         };
-
+    
         try {
             const response = await fetch(`${process.env.REACT_APP_API_URL}/api/parties/${uuid}`, {
                 method: 'PATCH',
@@ -97,13 +104,21 @@ const UserParties = () => {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${sessionStorage.getItem('jwt')}`,
                 },
-                body: JSON.stringify(partyData)
+                body: JSON.stringify(partyData),
             });
-
+    
             if (response.ok) {
                 const savedParty = await response.json();
-                const updatedParties = await fetchParties(electionId);
+    
+                // Actualizar el estado de `parties`
+                const updatedParties = parties.map((party) =>
+                    party.uuid === uuid ? { ...party, ...partyData } : party
+                );
                 setParties(updatedParties);
+    
+                // Actualizar el estado de `pieData` solo para la entrada modificada
+                const updatedPieData = calculatePieData(updatedParties);
+                setPieData(updatedPieData);
             } else {
                 console.error('Error al guardar el partido:', response.statusText);
             }
@@ -111,7 +126,7 @@ const UserParties = () => {
             console.error('Error en la solicitud:', error);
         }
         setClickedParty(false);
-    };
+    };    
 
     const validateImageUrl = async (url) => {
         try {
@@ -143,21 +158,25 @@ const UserParties = () => {
         }
         if (result) {
             const updatedParties = await fetchParties(electionId);
-            setParties(updatedParties);
+            const recalculatedParties = calculateAff(updatedParties); // Recalcular `aff`
+            setParties(recalculatedParties);
+            setPieData(calculatePieData(recalculatedParties));
         }
         handleClose();
     };
 
-    const handleDeleteParties = async (parties) => {
+    const handleDeleteParties = async (partiesToDelete) => {
         if (!electionEditable) {
-            alert('La eleccion ya no es editable.');
+            alert('La elección ya no es editable.');
             return;
         }
-        try {
-            const newParties = await handleDeletePartiesUtils(parties, electionId);
     
-            if (newParties && Array.isArray(newParties)) {
-                setParties(newParties);
+        try {
+            const updatedParties = await handleDeletePartiesUtils(partiesToDelete, electionId);
+            if (updatedParties && Array.isArray(updatedParties)) {
+                const recalculatedParties = calculateAff(updatedParties); // Recalcular `aff`
+                setParties(recalculatedParties);
+                setPieData(calculatePieData(recalculatedParties)); // Actualizar el gráfico
             } else {
                 console.error('Error: los partidos actualizados no se obtuvieron correctamente.');
             }
