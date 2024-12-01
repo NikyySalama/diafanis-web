@@ -39,7 +39,6 @@ const CreateCandidatesModal = ({ show, onHide, handleFileUpload, handleSubmit, p
                                     name={`position${index}`}
                                     accept=".xlsx, .xls"
                                     onChange={(e) => handleFileUpload(e, index)}
-                                    required
                                 />
                             </div>
                         ))}

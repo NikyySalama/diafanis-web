@@ -133,7 +133,7 @@ const UserLists = () => {
         docType: 'DNI',
         name: sanitizeInput(row.name) || 'Nombre Desconocido',
         surname: sanitizeInput(row.lastName) || 'Apellido Desconocido',
-        image: checkIMGByURL(row.imageUrl) ? row.imageUrl : ''
+        image: row.imageUrl ? row.imageUrl : ''
       }));
 
       setPositionsData(prevData => {
@@ -148,16 +148,18 @@ const UserLists = () => {
 
   const handlePositionsSubmit = async (e) => {
     e.preventDefault();
-
-    // Verificar si hay algún archivo no subido
-    if (positions.some((_, index) => !positionsData[index]?.length)) {
-      alert('Por favor, suba un archivo para cada posición.');
+  
+    // Verificar si hay al menos una posición con datos
+    const validPositions = positions.filter((_, index) => positionsData[index]?.length);
+    if (validPositions.length == 0) {
+      alert('Por favor, complete alguna posición.');
       return;
     }
-
+  
     try {
-      // Primero, subir las fórmulas y recolectar sus UUIDs
-      const formulaPromises = positions.map((position, index) => {
+      // Subir las fórmulas y recolectar sus UUIDs para las posiciones válidas
+      const formulaPromises = validPositions.map((position, index) => {
+        const validIndex = positions.findIndex((pos) => pos.uuid === position.uuid); // Para mapear al índice correcto
         const formulaData = {
           title: 'title',
           partyUuid: formData.partyUuid,
@@ -165,7 +167,7 @@ const UserLists = () => {
           idNumber: sanitizeInput(formData.id),
           electionUuid: electionId,
         };
-
+  
         return fetch(`${process.env.REACT_APP_API_URL}/api/electiveFormulas`, {
           method: 'POST',
           headers: {
@@ -178,15 +180,15 @@ const UserLists = () => {
             throw new Error(`Error en la respuesta del servidor: ${response.status}`);
           }
           const text = await response.text();
-          return text ? JSON.parse(text) : {};
+          return text ? { ...JSON.parse(text), index: validIndex } : { index: validIndex };
         });
       });
-
+  
       // Esperar a que todas las fórmulas se suban y obtener sus UUIDs
       const uploadedFormulas = await Promise.all(formulaPromises);
-
+  
       // Enviar candidatos asociados a cada fórmula
-      const candidatePromises = uploadedFormulas.map((uploadedFormula, index) => {
+      const candidatePromises = uploadedFormulas.map(({ uuid, index }) => {
         const candidates = positionsData[index].map((candidate, candidateIndex) => ({
           role: sanitizeInput(candidate.role),
           imageUrl: checkIMGByURL(candidate.image) ? candidate.image : '',
@@ -197,11 +199,11 @@ const UserLists = () => {
             name: sanitizeInput(candidate.name),
             lastName: sanitizeInput(candidate.surname),
             imageUrl: checkIMGByURL(candidate.image) ? candidate.image : '',
-            formulaUuid: uploadedFormula.uuid,
+            formulaUuid: uuid,
           },
         }));
-
-        return fetch(`${process.env.REACT_APP_API_URL}/api/electiveFormulas/${uploadedFormula.uuid}/candidates`, {
+  
+        return fetch(`${process.env.REACT_APP_API_URL}/api/electiveFormulas/${uuid}/candidates`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -212,20 +214,20 @@ const UserLists = () => {
           if (!response.ok) {
             throw new Error(`Error en el envío de candidatos: ${response.status}`);
           }
-          return response.json(); // o response.text() según la API
+          return response.json();
         });
       });
-
+  
       // Esperar a que todos los candidatos se envíen
       await Promise.all(candidatePromises);
-
+  
       // Cerrar el modal si todo salió bien
       setShowPositionsModal(false);
       fetchData();
     } catch (error) {
       console.error('Error en el envío de fórmulas o candidatos:', error);
     }
-  };
+  };  
 
   const handleUpdateFormula = async (e) => {
     e.preventDefault();
