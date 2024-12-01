@@ -32,10 +32,37 @@ const UserLists = () => {
   });
   const [pieData, setPieData] = useState([]);
 
-  const getRandomColor = () => {
-    const getColorValue = () => Math.floor(Math.random() * 106) + 100; // Rango entre 50 y 205 para evitar colores extremos
-    return `rgb(${getColorValue()}, ${getColorValue()}, ${getColorValue()})`;
-  };
+  const getRandomColor = (index) => {
+    const baseColors = [
+      'rgb(255, 90, 50)', // Naranja
+      'rgb(28, 89, 255)', // Azul
+      'rgb(255, 206, 86)', // Amarillo
+      'rgb(75, 192, 192)', // Turquesa
+      'rgb(153, 102, 255)', // Púrpura
+      'rgb(255, 159, 64)', // Naranja claro
+      'rgb(180, 180, 180)', // Gris oscuro
+      'rgb(255, 51, 51)',  // Rojo claro
+      'rgb(102, 204, 0)',  // Verde claro
+      'rgb(0, 153, 255)',  // Azul claro
+      'rgb(204, 51, 255)', // Fuccia
+      'rgb(105, 255, 200)',
+      'rgb(128, 128, 128)', // Gris
+      'rgb(51, 204, 255)', // Turquesa claro
+      'rgb(102, 51, 255)'  // Azul violeta
+    ];
+  
+    const darkenColor = (rgb) => {
+      const [r, g, b] = rgb
+        .match(/\d+/g)
+        .map((value) => Math.max(0, parseInt(value) - 50)); // Restar 40 a cada componente
+      return `rgb(${r}, ${g}, ${b})`;
+    };
+  
+    const baseIndex = index % baseColors.length;
+    const baseColor = baseColors[baseIndex];
+  
+    return index >= baseColors.length ? darkenColor(baseColor) : baseColor;
+  };  
 
   useEffect(() => {
     fetchData();
@@ -44,9 +71,9 @@ const UserLists = () => {
 
 
   useEffect(() => {
-    const chartData = positions.map(position => ({
+    const chartData = positions.map((position, index) => ({
       name: position.title,
-      color: getRandomColor(),
+      color: getRandomColor(index),
       value: formulas.filter(formula => formula.title === position.title).length
     }));
     setPieData(chartData);
