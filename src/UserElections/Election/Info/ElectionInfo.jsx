@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useElection } from '../ElectionContext';
-import { IconButton } from '@mui/material';
+import { Box, Typography, Divider, List, ListItem, IconButton } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
@@ -45,10 +45,10 @@ const ElectionInfo = () => {
                 };
                 setInfo(dataFiltered);
             } else {
-                console.error('Error al obtener los partidos', response.statusText);
+                console.error('Error al obtener los datos de la elección', response.statusText);
             }
         } catch (error) {
-            console.error('Error en la solicitud de partidos', error);
+            console.error('Error en la solicitud', error);
         }
     };
 
@@ -69,68 +69,82 @@ const ElectionInfo = () => {
     const end = formatDate(info.endsAt);
 
     return (
-        <div className="election-info">
-            <div className="header-container">
-                <h2>Información de la elección</h2>
+        <Box
+            sx={{
+                padding: 4,
+                maxWidth: 600,
+                margin: 'auto',
+                backgroundColor: '#f9f9f9',
+                borderRadius: 2,
+                boxShadow: 3,
+            }}
+        >
+            <Box display="flex" justifyContent="space-between" alignItems="center">
+                <Typography variant="h5" fontWeight="bold">
+                    Información de la elección
+                </Typography>
                 <IconButton aria-label="edit" onClick={openModal}>
                     <EditIcon />
                 </IconButton>
-            </div>
-            <h4>
-                <span>{info.title}</span>
-            </h4>
-            <p>
-                <span className='position-description'>{info.description}</span>
-            </p>
-            <div className="date-info">
-                <div className="date-block">
-                    <p className="date-label">Comienza</p>
-                    <div className="icon-text">
-                        <CalendarTodayIcon className="icon" />
-                        <span>{start.date}</span>
-                    </div>
-                    <div className="icon-text">
-                        <AccessTimeIcon className="time-icon" />
-                        <span>{start.time}</span>
-                    </div>
-                </div>
-                <div className="date-block">
-                    <p className="date-label">Termina</p>
-                    <div className="icon-text">
-                        <CalendarTodayIcon className="icon" />
-                        <span>{end.date}</span>
-                    </div>
-                    <div className="icon-text">
-                        <AccessTimeIcon className="time-icon" />
-                        <span>{end.time}</span>
-                    </div>
-                </div>
-            </div>
-            <p>
-                <span className="label">Posiciones:</span>
-            </p>
-            <ul className="position-list">
-                {info.positions &&
-                    info.positions.map((position) => (
-                        <li key={position.uuid} className="position-item">
-                            <span className="position-title">{position.title}</span>
-                            {position.description && (
-                                <span className="position-description">
-                                    {' '}
-                                    - {position.description}
-                                </span>
-                            )}
-                        </li>
-                    ))}
-            </ul>
-
+            </Box>
+            <Typography variant="h6" color="textSecondary" gutterBottom>
+                {info.title || 'Título no disponible'}
+            </Typography>
+            <Typography variant="body1" gutterBottom>
+                {info.description || 'Descripción no disponible'}
+            </Typography>
+            <Divider sx={{ marginY: 2 }} />
+            <Box>
+                <Typography marginBottom={1} variant="subtitle1" fontWeight="bold">
+                    Comienza
+                </Typography>
+                <Box marginBottom={1} display="flex" alignItems="center" gap={1}>
+                    <CalendarTodayIcon />
+                    <Typography>{start.date}</Typography>
+                </Box>
+                <Box display="flex" alignItems="center" gap={1}>
+                    <AccessTimeIcon />
+                    <Typography>{start.time}</Typography>
+                </Box>
+            </Box>
+            <Box marginTop={2}>
+                <Typography marginBottom={1} variant="subtitle1" fontWeight="bold">
+                    Termina
+                </Typography>
+                <Box marginBottom={1} display="flex" alignItems="center" gap={1}>
+                    <CalendarTodayIcon />
+                    <Typography>{end.date}</Typography>
+                </Box>
+                <Box display="flex" alignItems="center" gap={1}>
+                    <AccessTimeIcon />
+                    <Typography>{end.time}</Typography>
+                </Box>
+            </Box>
+            <Box marginTop={2}>
+                <Typography variant="subtitle1" fontWeight="bold">
+                    Posiciones
+                </Typography>
+                <List disablePadding>
+                    {info.positions ? (
+                        info.positions.map((position) => (
+                            <ListItem key={position.uuid}>
+                                <Typography>
+                                    {position.title} {position.description && `- ${position.description}`}
+                                </Typography>
+                            </ListItem>
+                        ))
+                    ) : (
+                        <Typography>No hay posiciones disponibles.</Typography>
+                    )}
+                </List>
+            </Box>
             <ElectionModal
                 show={isModalOpen}
                 onClose={closeModal}
                 onAddElection={fetchInfo}
                 initialData={info}
             />
-        </div>
+        </Box>
     );
 };
 
