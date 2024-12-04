@@ -152,7 +152,7 @@ const AmountModal = ({ open, onClose, onConfirm }) => {
             <>
               <Grid container spacing={4}>
                 {[
-                  { name:'Votantes' ,label: 'Persons', value: persons, setter: setPersons,max: maxValues.persons },
+                  { name:'Personas' ,label: 'Persons', value: persons, setter: setPersons,max: maxValues.persons },
                   { name:'Formulas por partido',label: 'Formulas By Party', value: formulasByParty, setter: setFormulasByParty, max: maxValues.formulasByParty },
                   { name:'Partidos',label: 'Parties', value: parties, setter: setParties, max: maxValues.parties },
                   { name:'Posiciones',label: 'Positions', value: positions, setter: setPositions, max: maxValues.positions },
@@ -212,7 +212,7 @@ const AmountModal = ({ open, onClose, onConfirm }) => {
              <Grid container spacing={2} sx={{ mt: 2,mb:5 }}>
                 <Grid  size={6}>
                   <Paper elevation={3} sx={{ p: 2,display: 'flex', justifyContent: 'center' }}>
-                    <Typography>Maxima cantidad de votantes: {persons[1]}</Typography>
+                    <Typography>Maxima cantidad de personas: {persons[1]}</Typography>
                   </Paper>
                 </Grid>
                 <Grid  size={6}>

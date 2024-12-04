@@ -13,7 +13,7 @@ import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
-import PaymentModal from './PaymentModal'; 
+import PaymentModal from './ModalElectionRegistration/PaymentModal'; 
 import './CustomTable.css';
 
 const CustomTable = ({ title, columns = [], rows = [], onRowClick, handleAddSelected, handleDeleteSelected, showImage }) => {
