@@ -189,7 +189,7 @@ const UserAuthorities = () => {
                         <span
                             style={{
                                 cursor: "pointer",
-                                color: "#cccccc",
+                                color: "#6c757d",
                                 marginLeft: "10px",
                                 fontSize: "20px",
                             }}

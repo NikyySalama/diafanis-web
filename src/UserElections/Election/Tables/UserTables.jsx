@@ -298,7 +298,7 @@ const Tables = () => {
           <Modal.Title>Cargar Datos de Mesas</Modal.Title>
           <OverlayTrigger placement="right" overlay={renderTooltip}>
             <span
-              style={{ cursor: "pointer", color: "#cccccc", marginLeft: '10px', fontSize: '20px' }}
+              style={{ cursor: "pointer", color: "#6c757d", marginLeft: '10px', fontSize: '20px' }}
               onClick={toggleHelpModal}
             >
               ?
@@ -307,16 +307,17 @@ const Tables = () => {
         </Modal.Header>
         <Modal.Body>
           <form onSubmit={handleTablesSubmit}>
-            <div className="form-group">
-              <label>Subir archivo Excel con Mesas:</label>
+            <div className="mb-3">
+              <label className="form-label">Subir archivo Excel con Mesas:</label>
               <input
                 type="file"
                 accept=".xlsx, .xls"
                 onChange={handleFileUpload}
+                className="form-control"
                 required
               />
             </div>
-            <button type="submit" className="modal-button" disabled={!isFileValid}>
+            <button type="submit" className="btn btn-primary w-100" disabled={!isFileValid}>
               Guardar
             </button>
           </form>
