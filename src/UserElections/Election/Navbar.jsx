@@ -25,12 +25,19 @@ const Navbar = ({ setActiveSection, title }) => {
     if (!isLoggedIn) {
       navigate('/');
     }
+    
+    const savedSection = localStorage.getItem('activeSection');
+    if (savedSection) {
+      setActiveSection(savedSection);
+      setActiveItem(savedSection);
+    }
   }, [navigate]);
 
   const handleItemClick = (section) => {
     setActiveSection(section);
     setActiveItem(section);
     setIsSidebarOpen(false);
+    localStorage.setItem('activeSection', section);
   };
 
   const toggleSidebar = () => {
