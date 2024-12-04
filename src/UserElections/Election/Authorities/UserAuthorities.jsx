@@ -30,9 +30,9 @@ const UserAuthorities = () => {
             const data = await fetchTables(electionId);
             setTables(data);
         };
-        
+
         fetchData();
-    }, [electionId]);    
+    }, [electionId]);
 
     const handleCreateAuthoritiesClick = () => {
         setShowModal(true);
@@ -60,16 +60,16 @@ const UserAuthorities = () => {
                 electorTableUuid: selectedTable,
                 electionUuid: electionId
             }));
-    
+
             const response = await fetch(`${process.env.REACT_APP_API_URL}/api/tables/${selectedTable}/authorities`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization' : `Bearer ${sessionStorage.getItem('jwt')}`,
+                    'Authorization': `Bearer ${sessionStorage.getItem('jwt')}`,
                 },
                 body: JSON.stringify(updatedAuthoritiesData),
             });
-    
+
             if (response.ok) {
                 return true;
             } else {
@@ -95,7 +95,7 @@ const UserAuthorities = () => {
 
         const validExtensions = ['.xls', '.xlsx'];
         const fileExtension = file.name.split('.').pop().toLowerCase();
-    
+
         if (!validExtensions.includes(`.${fileExtension}`)) {
             alert('Por favor suba un archivo Excel válido (.xls o .xlsx).');
             return;
@@ -123,7 +123,7 @@ const UserAuthorities = () => {
 
             await addAuthorities(sanitizedAuthoritiesData);
             const updatedTables = await fetchTables(electionId);
-            setTables(updatedTables); 
+            setTables(updatedTables);
             handleClose();
         };
         reader.readAsArrayBuffer(file);
@@ -142,7 +142,7 @@ const UserAuthorities = () => {
                         },
                         body: JSON.stringify({ authorityTableUuid: null }),
                     });
-    
+
                     if (!response.ok) {
                         console.error(`Error al eliminar la autoridad con docNumber ${docNumber}:`, response.statusText);
                     }
@@ -153,7 +153,7 @@ const UserAuthorities = () => {
         } catch (error) {
             console.error('Error en la solicitud de eliminación de autoridades', error);
         }
-    };           
+    };
 
     const columns = [
         { label: 'Numero', field: 'id', align: 'left' },
@@ -173,7 +173,7 @@ const UserAuthorities = () => {
 
     return (
         <div>
-            <AuthoritiesTable 
+            <AuthoritiesTable
                 title="Autoridades de Mesa"
                 columns={columns}
                 rows={rows}
@@ -187,40 +187,70 @@ const UserAuthorities = () => {
                     <Modal.Title>Agregar Autoridades de Mesa</Modal.Title>
                     <OverlayTrigger placement="right" overlay={renderTooltip}>
                         <span
-                            style={{ cursor: "pointer", color: "#cccccc", marginLeft: '10px', fontSize:'20px' }}
+                            style={{
+                                cursor: "pointer",
+                                color: "#cccccc",
+                                marginLeft: "10px",
+                                fontSize: "20px",
+                            }}
                             onClick={toggleHelpModal}
                         >
-                          ?
+                            ?
                         </span>
                     </OverlayTrigger>
                 </Modal.Header>
+
                 <Modal.Body>
-                    <div>
-                        <label>Seleccione una Mesa:</label>
-                        <select value={selectedTable} onChange={handleTableChange}>
-                            <option value="">Seleccione...</option>
-                            {tables.map((table) => (
-                                <option key={table.uuid} value={table.uuid}>
-                                    {table.location.city} - {table.location.address}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-                    <div>
-                        <label>Subir archivo Excel:</label>
-                        <input type="file" accept=".xlsx, .xls" onChange={handleFileChange} />
-                    </div>
+                    <form onSubmit={handleSubmit}>
+                        {/* Campo de selección de mesa */}
+                        <div className="mb-3">
+                            <label htmlFor="tableSelect" className="form-label">
+                                Seleccione una Mesa:
+                            </label>
+                            <select
+                                id="tableSelect"
+                                value={selectedTable}
+                                onChange={handleTableChange}
+                                className="form-select"
+                                required
+                            >
+                                <option value="">Seleccione...</option>
+                                {tables.map((table) => (
+                                    <option key={table.uuid} value={table.uuid}>
+                                        {table.location.city} - {table.location.address}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+
+                        {/* Campo de carga de archivo */}
+                        <div className="mb-3">
+                            <label htmlFor="fileUpload" className="form-label">
+                                Subir archivo Excel:
+                            </label>
+                            <input
+                                type="file"
+                                id="fileUpload"
+                                className="form-control"
+                                accept=".xlsx, .xls"
+                                onChange={handleFileChange}
+                                required
+                            />
+                        </div>
+
+                        {/* Botón de envío */}
+                        <button type="submit" className="btn btn-primary w-100">
+                            Subir Autoridades
+                        </button>
+                    </form>
                 </Modal.Body>
-                <Modal.Footer>
-                    <button type="button" className="modal-button" onClick={handleSubmit}>Subir Autoridades</button>
-                </Modal.Footer>
             </Modal>
 
             <Modal show={showHelp} onHide={toggleHelpModal} centered>
                 <Modal.Header closeButton>
                     <Modal.Title>Instrucciones para el archivo Excel</Modal.Title>
                 </Modal.Header>
-                
+
                 <Modal.Body>
                     <p>El archivo Excel debe contener las siguientes columnas en este orden incluyendo en su primer fila el nombre de cada columna:</p>
                     <ul>
@@ -231,10 +261,10 @@ const UserAuthorities = () => {
                         <li>role</li>
                     </ul>
                     <p>Ejemplo de formato:</p>
-                    
-                    <img 
-                        src="/assets/example-voters.png" 
-                        alt="Ejemplo de Excel" 
+
+                    <img
+                        src="/assets/example-voters.png"
+                        alt="Ejemplo de Excel"
                         style={{ width: '100%', maxHeight: '200px' }}
                     />
                 </Modal.Body>
