@@ -77,6 +77,7 @@ const PositionRegistration = ({ onClose, electionId, initialPositions,token }) =
   const handleSubmit = (e) => {
     e.preventDefault();
     positions.forEach((position) => handleAddPosition(position));
+    sessionStorage.setItem('electionInProgress', 'false');
     onClose();
   };
 

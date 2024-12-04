@@ -21,6 +21,7 @@ const ElectionInfo = () => {
 
             if (response.ok) {
                 const data = await response.json();
+             
                 const dataFiltered = {
                     uuid: data.uuid,
                     title: data.title,
@@ -28,8 +29,13 @@ const ElectionInfo = () => {
                     imageUrl: data.imageUrl,
                     endsAt: data.endsAt,
                     startsAt: data.startsAt,
-                    positions: data.electionPositions
+                    positions: data.electionPositions,
+                    planLimit: data.planLimit,
+                    paymentId: 8789798797,
+                    username : data.username,
+
                 }
+                console.log('Datos filtrados:', dataFiltered);
                 setInfo(dataFiltered);
             } else {
                 console.error('Error al obtener los partidos', response.statusText);
@@ -46,6 +52,7 @@ const ElectionInfo = () => {
     }, [electionId]);
 
     const openModal = () => {
+       
         if(electionEditable)
             setIsModalOpen(true);
         else

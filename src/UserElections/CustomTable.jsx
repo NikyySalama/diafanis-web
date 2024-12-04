@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { useTheme } from '@mui/material/styles';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -9,16 +10,26 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Checkbox from '@mui/material/Checkbox';
 import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField'; // Importamos el TextField
+import TextField from '@mui/material/TextField';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
+import PaymentModal from './PaymentModal'; 
 import './CustomTable.css';
 
 const CustomTable = ({ title, columns = [], rows = [], onRowClick, handleAddSelected, handleDeleteSelected, showImage }) => {
   const [selectedRows, setSelectedRows] = useState([]);
-  const [searchTerm, setSearchTerm] = useState(''); // Estado para el término de búsqueda
+  const [searchTerm, setSearchTerm] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false); // State to manage modal visibility
+  const location = useLocation();
 
-  // Manejar la selección de todas las filas
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const paymentId = queryParams.get('paymentId');
+    if (paymentId) {
+      handleAddSelected();
+    }
+  }, [location.search, handleAddSelected]);
+
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
       const newSelected = rows.map((row) => row.uuid);
@@ -28,7 +39,6 @@ const CustomTable = ({ title, columns = [], rows = [], onRowClick, handleAddSele
     setSelectedRows([]);
   };
 
-  // Manejar la selección individual de cada fila
   const handleRowClick = (event, uuid) => {
     const selectedIndex = selectedRows.indexOf(uuid);
     let newSelected = [];
@@ -62,6 +72,24 @@ const CustomTable = ({ title, columns = [], rows = [], onRowClick, handleAddSele
     });
   });
 
+  const handleAddClick = () => {
+    const queryParams = new URLSearchParams(location.search);
+    const paymentId = queryParams.get('payment_id');
+    if ((paymentId !== null && paymentId !== sessionStorage.getItem('paymentId'))) { sessionStorage.setItem('electionInProgress', 'true') }
+
+    if (!(paymentId === null)) { sessionStorage.setItem('paymentId', paymentId) }
+
+    if (sessionStorage.getItem('peeking an election') === 'false' && (!paymentId || (sessionStorage.getItem('electionInProgress') === 'false'))) {
+      setIsModalOpen(true);
+    } else {
+      handleAddSelected();
+    }
+  };
+
+  const handleModalConfirm = (amount) => {
+    handleAddSelected();
+  };
+
   return (
     <>
       <div className='table-section-header'>
@@ -77,7 +105,7 @@ const CustomTable = ({ title, columns = [], rows = [], onRowClick, handleAddSele
           />
           <Button
             variant="contained"
-            onClick={handleAddSelected}
+            onClick={handleAddClick}
           >
             <AddIcon />
           </Button>
@@ -106,10 +134,8 @@ const CustomTable = ({ title, columns = [], rows = [], onRowClick, handleAddSele
                 />
               </TableCell>
 
-              {/* Si showImage es true, no mostramos un encabezado adicional para la imagen */}
               {showImage && (
                 <TableCell padding="none" className="header-cell">
-                  {/* Dejamos esta celda vacía ya que no debería tener título */}
                 </TableCell>
               )}
 
@@ -171,6 +197,11 @@ const CustomTable = ({ title, columns = [], rows = [], onRowClick, handleAddSele
           </TableBody>
         </Table>
       </TableContainer>
+      <PaymentModal
+        open={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onConfirm={handleModalConfirm}
+      />
     </>
   );
 };

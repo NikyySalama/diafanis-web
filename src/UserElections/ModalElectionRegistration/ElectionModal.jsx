@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Modal } from 'react-bootstrap';
 import ElectionRegistration from './ElectionRegistration';
 import PositionRegistration from './PositionRegistration';
+import { Title } from '@mantine/core';
 
 const ElectionModal = ({ show, onClose, onAddElection, initialData }) => {
   const [modalContent, setModalContent] = useState('election');
@@ -23,20 +24,29 @@ const ElectionModal = ({ show, onClose, onAddElection, initialData }) => {
       const url = initialData
         ? `${process.env.REACT_APP_API_URL}/api/elections/${initialData.uuid}`
         : `${process.env.REACT_APP_API_URL}/api/elections`;
-      
+     
+        console.log("initialData", initialData);
+      if(initialData){
+        sessionStorage.setItem('updatingElection', 'true');
+      }
+      else{
+        sessionStorage.setItem('updatingElection', 'false');
+      }
       const response = await fetch(url, {
         method,
         headers: {
           'Content-Type': 'application/json',
           'Authorization' : `Bearer ${sessionStorage.getItem('jwt')}`,
         },
-        body: JSON.stringify(newElection)
+        body: JSON.stringify(newElection),
+        
+        
       });
-
+      
       if (response.ok) {
         const savedElection = await response.json();
         console.log('Elección guardada:', savedElection);
-        onAddElection(); // Actualizar la lista de elecciones
+        onAddElection(); // Actualizar la lista de eleccionesi
         setAddedElection(savedElection);
       } else {
         console.error('Error al guardar la elección:', response.statusText);
