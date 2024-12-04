@@ -14,7 +14,6 @@ import Snackbar from '@mui/material/Snackbar';
 import InputField from '../../../Common/InputField';
 
 import forge from 'node-forge';
-import { tab } from '@testing-library/user-event/dist/tab';
 const TextContainer = ({ title, content, icon }) => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
@@ -24,6 +23,8 @@ const TextContainer = ({ title, content, icon }) => {
   };
 
   const copyToClipboard = async (content) => {
+    if(content == null)
+      return;
     try {
       await navigator.clipboard.writeText(content);
       setSnackbarMessage('Copiado al portapapeles');
@@ -124,25 +125,29 @@ const CarouselComponent = ({ table, positions, forms, display }) => {
         </Carousel.Slide>
       ))}
     </Carousel>
+    {display &&
+    
     <Button
-            sx={{
-              color: 'var(--background-color)',
-              backgroundColor: 'var(--primary-color)',
-              height: '3em',
-              padding: '0.5em 1em',
-              marginLeft: '17em',
-              marginTop: '1em',
-              cursor: 'pointer',
-              fontSize: '1em',
-              fontFamily: 'Inter',
-              fontWeight: 700,
-              border: '0.25px solid black',
-            }}
-            variant="contained"
-            onClick={() => copyToClipboard(JSON.stringify(table.results))}
-          >
-            Copiar resultados
-          </Button>
+    sx={{
+      color: 'var(--background-color)',
+      backgroundColor: 'var(--primary-color)',
+      height: '3em',
+      padding: '0.5em 1em',
+      marginLeft: '17em',
+      marginTop: '1em',
+      cursor: 'pointer',
+      fontSize: '1em',
+      fontFamily: 'Inter',
+      fontWeight: 700,
+      border: '0.25px solid black',
+    }}
+    variant="contained"
+    onClick={() => copyToClipboard(JSON.stringify(table.results))}
+  >
+    Copiar resultados
+  </Button>
+    }
+   
     <Snackbar
         open={snackbarOpen}
         autoHideDuration={1000}

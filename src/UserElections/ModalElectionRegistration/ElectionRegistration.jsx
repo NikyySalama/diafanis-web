@@ -9,17 +9,23 @@ const ElectionRegistration = ({ handleAddElection, handleContinue, initialData }
         startsAt: '',
         endsAt: '',
         username: sessionStorage.getItem('user'),
+        planLimit: JSON.parse(sessionStorage.getItem('planLimit')),
+        paymentId : sessionStorage.getItem('paymentId'),
     });
 
+ 
     // Cuando initialData esté disponible, pre-rellena los campos del formulario
     useEffect(() => {
+
         if (initialData) {
             setFormData({
                 title: initialData.title || '',
                 description: initialData.description || '',
                 startsAt: initialData.startsAt || '',
                 endsAt: initialData.endsAt || '',
-                username: sessionStorage.getItem('user'),
+                username: initialData.username,
+                planLimit: initialData.planLimit,
+                paymentId: initialData.paymentId,
             });
         }
     }, [initialData]);
@@ -52,6 +58,7 @@ const ElectionRegistration = ({ handleAddElection, handleContinue, initialData }
         const electionData = {
             ...formData,
         };
+        
         handleAddElection(electionData); // Actualiza o crea la elección
         handleContinue(); // Avanza a la siguiente etapa (posiciones)
     };

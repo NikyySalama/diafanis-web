@@ -34,6 +34,7 @@ const ElectionInfo = () => {
 
             if (response.ok) {
                 const data = await response.json();
+             
                 const dataFiltered = {
                     uuid: data.uuid,
                     title: data.title,
@@ -42,7 +43,12 @@ const ElectionInfo = () => {
                     endsAt: data.endsAt,
                     startsAt: data.startsAt,
                     positions: data.electionPositions,
-                };
+                    planLimit: data.planLimit,
+                    paymentId: 8789798797,
+                    username : data.username,
+
+                }
+                console.log('Datos filtrados:', dataFiltered);
                 setInfo(dataFiltered);
             } else {
                 console.error('Error al obtener los datos de la elección', response.statusText);

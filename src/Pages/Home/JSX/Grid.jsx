@@ -4,6 +4,7 @@ import Card from './Card';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 
+
 const GridCard = ({ searchTerm }) => {
   const [cards, setCards] = useState([]);
 
@@ -38,6 +39,8 @@ const GridCard = ({ searchTerm }) => {
   const filteredCards = cards.filter(card => 
     removeAccents(card.title.toLowerCase()).includes(removeAccents(searchTerm.toLowerCase()))
   );
+
+  sessionStorage.setItem('electionInProgress', 'false');
 
   return filteredCards && filteredCards.length > 0 ? (
     <div className='grid-container'>

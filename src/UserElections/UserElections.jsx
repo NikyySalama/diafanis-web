@@ -15,7 +15,7 @@ const UserElections = () => {
       navigate('/'); // Redirect to login if not authenticated
     }
   }, [navigate]); // Ensure that `navigate` is included in the dependency array
-
+  sessionStorage.setItem('peeking an election', 'false');
 
   useEffect(() => {
     fetchElections();
@@ -49,6 +49,7 @@ const UserElections = () => {
   };
 
   const handleElectionClicked = (title, electionId, startsAt) => {
+    sessionStorage.setItem('peeking an election', 'true');
     // Sumar 1 día a startsAt
     const oneDayBefore = new Date(new Date(startsAt).getTime() - 24 * 60 * 60 * 1000);
 
@@ -68,7 +69,7 @@ const UserElections = () => {
               'Authorization' : `Bearer ${sessionStorage.getItem('jwt')}`,
              },
           });
-  
+          console.log("papa");console.log(sessionStorage.getItem('jwt'));console.log("papa");
           if (!response.ok) {
             throw new Error(`Error en la respuesta del servidor: ${response.status}`);
           }
