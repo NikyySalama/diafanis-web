@@ -136,7 +136,7 @@ const UserVoters = () => {
                 ...voter,
                 docNumber: Number(voter.docNumber), // Convertir `docNumber` a número
             }));
-            
+
             // Validar que todos los `docNumber` sean números válidos
             if (votersData.some(voter => isNaN(voter.docNumber))) {
                 alert('El archivo Excel contiene valores no válidos en la columna docNumber.');
@@ -282,28 +282,86 @@ const UserVoters = () => {
 
             {/* Modal de visualización */}
             <Modal show={showViewModal} onHide={handleClose} centered>
-                <Modal.Header closeButton>
-                    <Modal.Title>Detalles del Votante</Modal.Title>
+                <Modal.Header closeButton style={{ borderBottom: "none", paddingBottom: "0px" }}>
                 </Modal.Header>
                 <Modal.Body>
-                    <p>Nombre y apellido: {formData.name} {formData.lastName}</p>
-                    <p>Documento: {formData.docNumber}</p>
-                    <p>
-                        Imagen: {formData.imageUrl ? (
-                            <>
-                                {formData.imageUrl.length > 40
-                                    ? `${formData.imageUrl.substring(0, 40)}...`
-                                    : formData.imageUrl
-                                }
-                            </>
-                        ) : "No disponible"}
-                    </p>
-                    {formData.imageUrl && (
-                        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
-                            <img src={formData.imageUrl} alt="Logo Preview" style={{ maxWidth: 'auto', maxHeight: '15rem' }} />
+                    <div
+                        style={{
+                            display: "flex",
+                            alignItems: "center",
+                            border: "1px solid #ccc",
+                            borderRadius: "8px",
+                            padding: "20px",
+                            backgroundColor: "#f9f9f9",
+                        }}
+                    >
+                        {/* Imagen del documento */}
+                        <div style={{ flex: "0 0 auto", marginRight: "20px" }}>
+                            {formData.imageUrl ? (
+                                <img
+                                    src={formData.imageUrl}
+                                    alt="Foto Documento"
+                                    style={{
+                                        width: "150px",
+                                        height: "200px",
+                                        objectFit: "cover",
+                                        borderRadius: "8px",
+                                        border: "1px solid #ddd",
+                                    }}
+                                />
+                            ) : (
+                                <div
+                                    style={{
+                                        width: "150px",
+                                        height: "150px",
+                                        display: "flex",
+                                        alignItems: "center",
+                                        justifyContent: "center",
+                                        backgroundColor: "#e0e0e0",
+                                        borderRadius: "8px",
+                                        border: "1px solid #ddd",
+                                        color: "#777",
+                                        fontSize: "12px",
+                                    }}
+                                >
+                                    Imagen no disponible
+                                </div>
+                            )}
                         </div>
-                    )}
-                    {/*<button type="button" className="modal-button" onClick={handleEditVoterClick}>Editar</button>*/}
+
+                        {/* Detalles del votante */}
+                        <div style={{ flex: "1 1 auto" }}>
+                            {/* Apellido */}
+                            <div style={{ marginBottom: "10px" }}>
+                                <small style={{ fontWeight: "bold", color: "#555" }}>
+                                    Apellido / Surname
+                                </small>
+                                <div style={{ fontSize: "18px", fontWeight: "500" }}>
+                                    {formData.lastName || "No disponible"}
+                                </div>
+                            </div>
+
+                            {/* Nombre */}
+                            <div style={{ marginBottom: "10px" }}>
+                                <small style={{ fontWeight: "bold", color: "#555" }}>
+                                    Nombre / Name
+                                </small>
+                                <div style={{ fontSize: "18px", fontWeight: "500" }}>
+                                    {formData.name || "No disponible"}
+                                </div>
+                            </div>
+
+                            {/* Documento */}
+                            <div>
+                                <small style={{ fontWeight: "bold", color: "#555" }}>
+                                    Documento / Document
+                                </small>
+                                <div style={{ fontSize: "22px", fontWeight: "bold" }}>
+                                    {formData.docNumber || "No disponible"}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </Modal.Body>
             </Modal>
 
