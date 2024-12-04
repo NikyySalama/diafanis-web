@@ -7,7 +7,6 @@ import '../ModalSection.css';
 import checkIMGByURL from '../../../Common/validatorURL';
 import sanitizeInput from '../../../Common/validatorInput';
 import { fetchTables } from '../Tables/TableUtils';
-//import { addAuthorities } from './AuthoritiesUtils';
 
 const UserAuthorities = () => {
     const { electionId, electionEditable } = useElection();
@@ -71,18 +70,20 @@ const UserAuthorities = () => {
             });
 
             if (response.ok) {
-                return true;
+                const updatedTables = await fetchTables(electionId);
+                setTables(updatedTables);
+                handleClose();
             } else {
                 console.error('Error al subir las autoridades', response.statusText);
-                return false;
             }
         } catch (error) {
             console.error('Error en la solicitud de autoridades', error);
-            return false;
         }
     };
 
-    const handleSubmit = async () => {
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+
         if (!selectedTable) {
             alert('Por favor seleccione una mesa.');
             return;
@@ -117,14 +118,11 @@ const UserAuthorities = () => {
             const sanitizedAuthoritiesData = authoritiesData.map(authority => ({
                 name: sanitizeInput(authority.name),
                 lastName: sanitizeInput(authority.lastName),
-                imageUrl: checkIMGByURL(authority.imageUrl) ? authority.imageUrl : '',
-                docNumber: sanitizeInput(authority.docNumber),
+                imageUrl: authority.imageUrl ? authority.imageUrl : '',
+                docNumber: authority.docNumber,
             }));
 
-            await addAuthorities(sanitizedAuthoritiesData);
-            const updatedTables = await fetchTables(electionId);
-            setTables(updatedTables);
-            handleClose();
+            addAuthorities(sanitizedAuthoritiesData);
         };
         reader.readAsArrayBuffer(file);
     };
