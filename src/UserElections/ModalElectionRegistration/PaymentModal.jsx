@@ -201,7 +201,7 @@ const AmountModal = ({ open, onClose, onConfirm }) => {
               <Button
                 variant="contained"
                 onClick={handleNextStep}
-                sx={{ mt: 4, bgcolor: '#020246',width: '50%' }} 
+                sx={{ mt: 4, bgcolor: 'var(--primary-color)',width: '50%' }} 
               >
                 Continuar
               </Button>
@@ -240,14 +240,14 @@ const AmountModal = ({ open, onClose, onConfirm }) => {
                 <Button
                   variant="outlined"
                   onClick={handlePrevStep}
-                  sx={{ color: '#020246', borderColor: '#020246', mr: 2, width: '50%' }}
+                  sx={{ color: 'var(--primary-color)', borderColor: 'var(--primary-color)', mr: 2, width: '50%' }}
                 >
                   Volver
                 </Button>
                 <Button
                   variant="contained"
                   onClick={handleNextStep}
-                  sx={{ bgcolor: '#020246',width: '50%' }}
+                  sx={{ bgcolor: 'var(--primary-color)',width: '50%' }}
                 >
                   Confirmar
                 </Button>
@@ -268,7 +268,7 @@ const AmountModal = ({ open, onClose, onConfirm }) => {
                 <Button
                   variant="outlined"
                   onClick={handlePrevStep}
-                  sx={{ color: '#020246', borderColor: '#020246', mr: 2,mt:2, width: '50%',maxHeight: '48px' }}
+                  sx={{ color: 'var(--primary-color)', borderColor: 'var(--primary-color)', mr: 2,mt:2, width: '50%',maxHeight: '48px' }}
                 >
                   Volver
                 </Button>
