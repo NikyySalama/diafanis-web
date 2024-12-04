@@ -16,7 +16,7 @@ const UserVoters = () => {
     const [showEditVoterModal, setShowEditVoterModal] = useState(false);
     const [tables, setTables] = useState([]);
     const [formData, setFormData] = useState({
-        docNumber: '', 
+        docNumber: '',
         name: '',
         lastName: '',
         imageUrl: '',
@@ -61,7 +61,7 @@ const UserVoters = () => {
             const data = await fetchTables(electionId);
             setTables(data);
         };
-        
+
         fetchData();
     }, [electionId]);
 
@@ -72,7 +72,7 @@ const UserVoters = () => {
 
     const handleVoterClick = (row) => {
         setFormData({
-            docNumber: row.docNumber || '', 
+            docNumber: row.docNumber || '',
             name: row.name || '',
             lastName: row.lastName || '',
             imageUrl: row.logoUrl || '',
@@ -82,7 +82,7 @@ const UserVoters = () => {
     };
 
     const handleEditVoterClick = () => {
-        if(electionEditable){
+        if (electionEditable) {
             setShowViewModal(false); // Cierra el modal de visualización
             setClickedVoter(true);   // Marca que estamos editando
             setShowEditVoterModal(true);      // Abre el modal de edición
@@ -119,7 +119,7 @@ const UserVoters = () => {
         }
         const validExtensions = ['.xls', '.xlsx'];
         const fileExtension = file.name.split('.').pop().toLowerCase();
-      
+
         if (!validExtensions.includes(`.${fileExtension}`)) {
             alert('Por favor suba un archivo Excel válido (.xls o .xlsx).');
             return;
@@ -132,7 +132,16 @@ const UserVoters = () => {
             const worksheet = workbook.Sheets[sheetName];
             const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: ['name', 'lastName', 'imageUrl', 'docNumber'] });
 
-            const votersData = jsonData.slice(1);
+            const votersData = jsonData.slice(1).map(voter => ({
+                ...voter,
+                docNumber: Number(voter.docNumber), // Convertir `docNumber` a número
+            }));
+            
+            // Validar que todos los `docNumber` sean números válidos
+            if (votersData.some(voter => isNaN(voter.docNumber))) {
+                alert('El archivo Excel contiene valores no válidos en la columna docNumber.');
+                return;
+            }
 
             // Validar estructura del archivo
             if (!jsonData.length || !jsonData[0].name || !jsonData[0].lastName || !jsonData[0].imageUrl || !jsonData[0].docNumber) {
@@ -143,7 +152,7 @@ const UserVoters = () => {
                 name: sanitizeInput(voter.name),
                 lastName: sanitizeInput(voter.lastName),
                 imageUrl: checkIMGByURL(voter.imageUrl) ? voter.imageUrl : '',
-                docNumber: sanitizeInput(voter.docNumber),
+                docNumber: Number(voter.docNumber),
             }));
             // Enviar los datos al endpoint
             addVoters(sanitizedVotersData);
@@ -159,16 +168,18 @@ const UserVoters = () => {
                 electorTableUuid: selectedTable,
                 electionUuid: electionId
             }));
-    
+
+            console.log('voters: ', updatedVotersData);
+
             const response = await fetch(`${process.env.REACT_APP_API_URL}/api/tables/${selectedTable}/electors`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization' : `Bearer ${sessionStorage.getItem('jwt')}`,
+                    'Authorization': `Bearer ${sessionStorage.getItem('jwt')}`,
                 },
                 body: JSON.stringify(updatedVotersData),
             });
-    
+
             if (response.ok) {
                 fetchVoters();
                 handleClose();
@@ -178,18 +189,18 @@ const UserVoters = () => {
         } catch (error) {
             console.error('Error en la solicitud de votantes', error);
         }
-    };  
-    
+    };
+
     const handleSubmitVoter = async () => {
         try {
             const response = await fetch(`${process.env.REACT_APP_API_URL}/api/persons/${formData.uuid}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization' : `Bearer ${sessionStorage.getItem('jwt')}`,
+                    'Authorization': `Bearer ${sessionStorage.getItem('jwt')}`,
                 },
                 body: JSON.stringify({
-                    docNumber: sanitizeInput(formData.docNumber),
+                    docNumber: formData.docNumber,
                     name: sanitizeInput(formData.name),
                     lastName: sanitizeInput(formData.lastName),
                     imageUrl: sanitizeInput(formData.imageUrl)
@@ -216,20 +227,20 @@ const UserVoters = () => {
     };
 
     const handleDeleteVoters = async (votersUuids) => { // TODO: mirar con backend el problema de borrado
-        if(!electionEditable){
+        if (!electionEditable) {
             alert('La eleccion ya no es editable.');
             return;
         }
-         
+
         try {
             await Promise.all(
                 votersUuids.map(async (voterUuid) => {
                     const response = await fetch(`${process.env.REACT_APP_API_URL}/api/persons/${electionId}/${voterUuid}`, {
                         method: 'DELETE',
-                        headers: { 
+                        headers: {
                             'Content-Type': 'application/json',
-                            'Authorization' : `Bearer ${sessionStorage.getItem('jwt')}`,
-                         },
+                            'Authorization': `Bearer ${sessionStorage.getItem('jwt')}`,
+                        },
                     });
 
                     if (!response.ok) {
@@ -259,7 +270,7 @@ const UserVoters = () => {
 
     return (
         <div>
-            <CustomTable 
+            <CustomTable
                 title="Votantes"
                 columns={columns}
                 rows={rows}
@@ -302,17 +313,26 @@ const UserVoters = () => {
                     <Modal.Title>Agregar Votantes</Modal.Title>
                     <OverlayTrigger placement="right" overlay={renderTooltip}>
                         <span
-                            style={{ cursor: "pointer", color: "#cccccc", marginLeft: '10px', fontSize:'20px' }}
+                            style={{
+                                cursor: "pointer",
+                                color: "#6c757d",
+                                marginLeft: "10px",
+                                fontSize: "20px",
+                            }}
                             onClick={toggleHelpModal}
                         >
-                          ?
+                            ?
                         </span>
                     </OverlayTrigger>
                 </Modal.Header>
                 <Modal.Body>
-                    <div>
-                        <label>Seleccione una Mesa:</label>
-                        <select value={selectedTable} onChange={handleTableChange}>
+                    <div className="mb-3">
+                        <label className="form-label">Seleccione una Mesa:</label>
+                        <select
+                            value={selectedTable}
+                            onChange={handleTableChange}
+                            className="form-select"
+                        >
                             <option value="">Seleccione...</option>
                             {tables.map((table) => (
                                 <option key={table.uuid} value={table.uuid}>
@@ -321,13 +341,24 @@ const UserVoters = () => {
                             ))}
                         </select>
                     </div>
-                    <div>
-                        <label>Subir archivo Excel:</label>
-                        <input type="file" accept=".xlsx, .xls" onChange={handleFileChange} />
+                    <div className="mb-3">
+                        <label className="form-label">Subir archivo Excel:</label>
+                        <input
+                            type="file"
+                            accept=".xlsx, .xls"
+                            onChange={handleFileChange}
+                            className="form-control"
+                        />
                     </div>
                 </Modal.Body>
                 <Modal.Footer>
-                    <button type="button" className="modal-button" onClick={handleSubmit}>Subir Votantes</button>
+                    <button
+                        type="button"
+                        className="btn btn-primary w-100"
+                        onClick={handleSubmit}
+                    >
+                        Subir Votantes
+                    </button>
                 </Modal.Footer>
             </Modal>
 
@@ -335,7 +366,6 @@ const UserVoters = () => {
                 <Modal.Header closeButton>
                     <Modal.Title>Instrucciones para el archivo Excel</Modal.Title>
                 </Modal.Header>
-                
                 <Modal.Body>
                     <p>El archivo Excel debe contener las siguientes columnas en este orden incluyendo en su primer fila el nombre de cada columna:</p>
                     <ul>
@@ -345,10 +375,10 @@ const UserVoters = () => {
                         <li>docNumber</li>
                     </ul>
                     <p>Ejemplo de formato:</p>
-                    
-                    <img 
-                        src="/assets/example-voters.png" 
-                        alt="Ejemplo de Excel" 
+
+                    <img
+                        src="/assets/example-voters.png"
+                        alt="Ejemplo de Excel"
                         style={{ width: '100%', maxHeight: '200px' }}
                     />
                 </Modal.Body>

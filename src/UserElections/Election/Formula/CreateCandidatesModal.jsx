@@ -17,32 +17,44 @@ const CreateCandidatesModal = ({ show, onHide, handleFileUpload, handleSubmit, p
             <Modal show={show} onHide={onHide} centered>
                 <Modal.Header closeButton>
                     <Modal.Title>Posiciones y Candidatos</Modal.Title>
-                    
                     <OverlayTrigger placement="right" overlay={renderTooltip}>
                         <span
-                            style={{ cursor: "pointer", color: "#cccccc", marginLeft: '10px', fontSize:'20px' }}
+                            style={{
+                                cursor: "pointer",
+                                color: "#cccccc",
+                                marginLeft: "10px",
+                                fontSize: "20px",
+                            }}
                             onClick={toggleHelpModal}
                         >
-                          ?
+                            ?
                         </span>
                     </OverlayTrigger>
                 </Modal.Header>
-                
+
                 <Modal.Body>
                     <form onSubmit={handleSubmit}>
+                        {/* Campo de selección para cada posición */}
                         {positions.map((position, index) => (
-                            <div key={position.uuid} className="form-group">
-                                <label htmlFor={`position${index}`}>{position.title}</label>
+                            <div key={position.uuid} className="mb-3">
+                                <label htmlFor={`position${index}`} className="form-label">
+                                    {position.title}
+                                </label>
                                 <input
                                     type="file"
                                     id={`position${index}`}
                                     name={`position${index}`}
+                                    className="form-control"
                                     accept=".xlsx, .xls"
                                     onChange={(e) => handleFileUpload(e, index)}
                                 />
                             </div>
                         ))}
-                        <button type="submit" className="btn btn-primary">Subir Fórmulas</button>
+
+                        {/* Botón para enviar los archivos */}
+                        <button type="submit" className="btn btn-primary w-100">
+                            Subir Fórmulas
+                        </button>
                     </form>
                 </Modal.Body>
             </Modal>
@@ -52,7 +64,7 @@ const CreateCandidatesModal = ({ show, onHide, handleFileUpload, handleSubmit, p
                 <Modal.Header closeButton>
                     <Modal.Title>Instrucciones para el archivo Excel</Modal.Title>
                 </Modal.Header>
-                
+
                 <Modal.Body>
                     <p>El archivo Excel debe contener las siguientes columnas en este orden incluyendo en su primer fila el nombre de cada columna:</p>
                     <ul>
@@ -63,10 +75,10 @@ const CreateCandidatesModal = ({ show, onHide, handleFileUpload, handleSubmit, p
                         <li>role</li>
                     </ul>
                     <p>Ejemplo de formato:</p>
-                    
-                    <img 
-                        src="/assets/example-formula.png" 
-                        alt="Ejemplo de Excel" 
+
+                    <img
+                        src="/assets/example-formula.png"
+                        alt="Ejemplo de Excel"
                         style={{ width: '100%', maxHeight: '200px' }}
                     />
                 </Modal.Body>
