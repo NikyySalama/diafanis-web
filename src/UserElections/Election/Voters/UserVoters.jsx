@@ -192,8 +192,10 @@ const UserVoters = () => {
     };
 
     const handleSubmitVoter = async () => {
+        console.log("data: ", formData);
+
         try {
-            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/persons/${formData.uuid}`, {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/persons/${electionId}/${formData.uuid}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -203,7 +205,8 @@ const UserVoters = () => {
                     docNumber: formData.docNumber,
                     name: sanitizeInput(formData.name),
                     lastName: sanitizeInput(formData.lastName),
-                    imageUrl: sanitizeInput(formData.imageUrl)
+                    imageUrl: formData.imageUrl,
+                    electionUuid: electionId
                 }),
             });
 
@@ -362,6 +365,7 @@ const UserVoters = () => {
                             </div>
                         </div>
                     </div>
+                    <button type="button" className="modal-button" onClick={handleEditVoterClick}>Editar</button>
                 </Modal.Body>
             </Modal>
 
@@ -448,7 +452,7 @@ const UserVoters = () => {
                     <Modal.Title>Editar Votante</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <div>
+                    <div style={{ marginBottom: "15px" }}>
                         <label>Nro. Documento:</label>
                         <input
                             type="text"
@@ -457,7 +461,7 @@ const UserVoters = () => {
                             onChange={handleInputChange}
                         />
                     </div>
-                    <div>
+                    <div style={{ marginBottom: "15px" }}>
                         <label>Nombre:</label>
                         <input
                             type="text"
