@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Modal } from 'react-bootstrap';
 import ElectionRegistration from './ElectionRegistration';
 import PositionRegistration from './PositionRegistration';
-import { Title } from '@mantine/core';
 
 const ElectionModal = ({ show, onClose, onAddElection, initialData }) => {
   const [modalContent, setModalContent] = useState('election');
@@ -24,7 +23,7 @@ const ElectionModal = ({ show, onClose, onAddElection, initialData }) => {
         : `${process.env.REACT_APP_API_URL}/api/elections`;
      
         console.log("initialData", initialData);
-        
+
       console.log("new election: ", newElection);
       if(initialData){
         sessionStorage.setItem('updatingElection', 'true');

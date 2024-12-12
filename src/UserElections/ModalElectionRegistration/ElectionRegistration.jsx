@@ -60,6 +60,7 @@ const ElectionRegistration = ({ handleAddElection, handleContinue, initialData }
     // Cuando initialData esté disponible, pre-rellena los campos del formulario
     useEffect(() => {
         if (initialData) {
+            console.log("hay initial data: ", initialData);
             setFormData({
                 title: initialData.title || '',
                 description: initialData.description || '',
@@ -101,6 +102,8 @@ const ElectionRegistration = ({ handleAddElection, handleContinue, initialData }
         const electionData = {
             ...formData,
         };
+
+        console.log("se publica", electionData);
         
         handleAddElection(electionData); // Actualiza o crea la elección
         handleContinue(); // Avanza a la siguiente etapa (posiciones)

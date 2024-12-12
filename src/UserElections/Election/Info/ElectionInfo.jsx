@@ -127,6 +127,14 @@ const ElectionInfo = () => {
                 </Box>
             </Box>
             <Box marginTop={2}>
+                <Typography marginBottom={1} variant="subtitle1" fontWeight="bold">
+                    Voto en blanco
+                </Typography>
+                <Box marginBottom={1} display="flex" alignItems="center" gap={1}>
+                    <Typography>{info.allowBlankVote? "Habilitado" : "Deshabilitado"}</Typography>
+                </Box>
+            </Box>
+            <Box marginTop={2}>
                 <Typography variant="subtitle1" fontWeight="bold">
                     Posiciones
                 </Typography>
