@@ -3,6 +3,8 @@ import { Modal, Box, Typography, TextField, Button, Slider, CircularProgress } f
 import Grid from '@mui/material/Grid2';
 import Paper from '@mui/material/Paper';
 import { loadMercadoPago } from "@mercadopago/sdk-js";
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
 
 const AmountModal = ({ open, onClose, onConfirm }) => {
   const [step, setStep] = useState(1);
@@ -137,7 +139,7 @@ const AmountModal = ({ open, onClose, onConfirm }) => {
         top: '50%',
         left: '50%',
         transform: 'translate(-50%, -50%)',
-        width: step === 2 ? 900 : 700, // Adjust width based on step
+        width: step === 2 ? 800 : 700, // Adjust width based on step
         bgcolor: 'background.paper',
         boxShadow: 24,
         borderRadius: '16px',
@@ -250,29 +252,54 @@ const AmountModal = ({ open, onClose, onConfirm }) => {
             <>
               <Grid container spacing={2} sx={{ mt: 2, mb: 5 }}>
                 <Grid size={6}>
-                  <Paper elevation={3} sx={{ p: 2, display: 'flex', justifyContent: 'center' }}>
-                    <Typography>Maxima cantidad de personas: {persons[1]}</Typography>
-                  </Paper>
+                  <Card elevation={2} sx={{ p: 0, display: 'flex', justifyContent: 'center' }}>
+                    <CardContent sx={{ textAlign: 'center', p: 3 }}>
+                      <Typography variant="subtitle1" sx={{ fontWeight: 'bold', mb: 1 }}>
+                        Máxima cantidad de personas
+                      </Typography>
+                      <Typography>{persons[1]}</Typography>
+                    </CardContent>
+                  </Card>
                 </Grid>
                 <Grid size={6}>
-                  <Paper elevation={3} sx={{ p: 2, display: 'flex', justifyContent: 'center' }}>
-                    <Typography>Maxima cantidad de formulas por partido: {formulasByParty[1]}</Typography>
-                  </Paper>
+                  <Card elevation={2} sx={{ p: 0, display: 'flex', justifyContent: 'center' }}>
+                    <CardContent sx={{ textAlign: 'center', p: 3 }}>
+                      <Typography variant="subtitle1" sx={{ fontWeight: 'bold', mb: 1 }}>
+                        Máxima cantidad de formulas por partido
+                      </Typography>
+                      <Typography>{formulasByParty[1]}</Typography>
+                    </CardContent>
+                  </Card>
                 </Grid>
                 <Grid size={6}>
-                  <Paper elevation={3} sx={{ p: 2, display: 'flex', justifyContent: 'center' }}>
-                    <Typography>Maxima cantidad de partidos: {parties[1]}</Typography>
-                  </Paper>
+                  <Card elevation={2} sx={{ p: 0, display: 'flex', justifyContent: 'center' }}>
+                    <CardContent sx={{ textAlign: 'center', p: 3 }}>
+                      <Typography variant="subtitle1" sx={{ fontWeight: 'bold', mb: 1 }}>
+                        Máxima cantidad de partidos
+                      </Typography>
+                      <Typography>{parties[1]}</Typography>
+                    </CardContent>
+                  </Card>
                 </Grid>
                 <Grid size={6}>
-                  <Paper elevation={3} sx={{ p: 2, display: 'flex', justifyContent: 'center' }}>
-                    <Typography>Maxima cantidad de posiciones: {positions[1]}</Typography>
-                  </Paper>
+                  <Card elevation={2} sx={{ p: 0, display: 'flex', justifyContent: 'center' }}>
+                    <CardContent sx={{ textAlign: 'center', p: 3 }}>
+                      <Typography variant="subtitle1" sx={{ fontWeight: 'bold', mb: 1 }}>
+                        Máxima cantidad de posiciones
+                      </Typography>
+                      <Typography>{positions[1]}</Typography>
+                    </CardContent>
+                  </Card>
                 </Grid>
                 <Grid size={12}>
-                  <Paper elevation={3} sx={{ p: 2, display: 'flex', justifyContent: 'center' }}>
-                    <Typography>Maxima cantidad de mesas de votacion: {votingTables[1]}</Typography>
-                  </Paper>
+                  <Card elevation={2} sx={{ p: 0, display: 'flex', justifyContent: 'center' }}>
+                    <CardContent sx={{ textAlign: 'center', p: 3 }}>
+                      <Typography variant="subtitle1" sx={{ fontWeight: 'bold', mb: 1 }}>
+                        Máxima cantidad de mesas de votación
+                      </Typography>
+                      <Typography>{votingTables[1]}</Typography>
+                    </CardContent>
+                  </Card>
                 </Grid>
               </Grid>
               <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
