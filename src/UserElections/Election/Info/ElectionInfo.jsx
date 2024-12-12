@@ -46,7 +46,7 @@ const ElectionInfo = () => {
                     planLimit: data.planLimit,
                     paymentId: 8789798797,
                     username : data.username,
-
+                    allowBlankVote: data.allowBlankVote
                 }
                 console.log('Datos filtrados:', dataFiltered);
                 setInfo(dataFiltered);

@@ -24,6 +24,8 @@ const ElectionModal = ({ show, onClose, onAddElection, initialData }) => {
         : `${process.env.REACT_APP_API_URL}/api/elections`;
      
         console.log("initialData", initialData);
+        
+      console.log("new election: ", newElection);
       if(initialData){
         sessionStorage.setItem('updatingElection', 'true');
       }
@@ -36,9 +38,7 @@ const ElectionModal = ({ show, onClose, onAddElection, initialData }) => {
           'Content-Type': 'application/json',
           'Authorization' : `Bearer ${sessionStorage.getItem('jwt')}`,
         },
-        body: JSON.stringify(newElection),
-        
-        
+        body: JSON.stringify(newElection),        
       });
       
       if (response.ok) {

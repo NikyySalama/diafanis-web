@@ -1,7 +1,49 @@
 import React, { useState, useEffect } from "react";
 import './ElectionRegistration.css';
 import sanitizeInput from "../../Common/validatorInput";
-import checkIMGByURL from "../../Common/validatorURL";
+import Switch, { SwitchProps } from '@mui/material/Switch';
+import Stack from '@mui/material/Stack';
+import { styled } from '@mui/material/styles';
+
+const AntSwitch = styled(Switch)(({ theme }) => ({
+    width: 42,
+    height: 20,
+    padding: 0,
+    display: 'flex',
+    '& .MuiSwitch-switchBase': {
+      padding: 2,
+      '&.Mui-checked': {
+        transform: 'translateX(22px)',
+        color: '#fff',
+        '& + .MuiSwitch-track': {
+          opacity: 1,
+          backgroundColor: '#1890ff',
+          ...theme.applyStyles('dark', {
+            backgroundColor: '#177ddc',
+          }),
+        },
+      },
+    },
+    '& .MuiSwitch-thumb': {
+      boxShadow: '0 2px 4px 0 rgb(0 35 11 / 20%)',
+      width: 16,
+      height: 16,
+      borderRadius: 8,
+      transition: theme.transitions.create(['width'], {
+        duration: 200,
+      }),
+    },
+    '& .MuiSwitch-track': {
+      borderRadius: 20 / 2,
+      opacity: 1,
+      backgroundColor: 'rgba(0,0,0,.25)',
+      boxSizing: 'border-box',
+      ...theme.applyStyles('dark', {
+        backgroundColor: 'rgba(255,255,255,.35)',
+      }),
+    },
+}));
+
 const ElectionRegistration = ({ handleAddElection, handleContinue, initialData }) => {
     const [formData, setFormData] = useState({
         title: '',
@@ -11,12 +53,12 @@ const ElectionRegistration = ({ handleAddElection, handleContinue, initialData }
         username: sessionStorage.getItem('user'),
         planLimit: JSON.parse(sessionStorage.getItem('planLimit')),
         paymentId : sessionStorage.getItem('paymentId'),
+        allowBlankVote : false,
     });
 
  
     // Cuando initialData esté disponible, pre-rellena los campos del formulario
     useEffect(() => {
-
         if (initialData) {
             setFormData({
                 title: initialData.title || '',
@@ -26,6 +68,7 @@ const ElectionRegistration = ({ handleAddElection, handleContinue, initialData }
                 username: initialData.username,
                 planLimit: initialData.planLimit,
                 paymentId: initialData.paymentId,
+                allowBlankVote: initialData.allowBlankVote || false,
             });
         }
     }, [initialData]);
@@ -109,6 +152,19 @@ const ElectionRegistration = ({ handleAddElection, handleContinue, initialData }
                         required
                     />
                 </div>
+                <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+                    <label htmlFor="allowBlankVote">Voto en blanco:</label>
+                    <AntSwitch 
+                        checked={formData.allowBlankVote}
+                        inputProps={{ 'aria-label': 'ant design' }} 
+                        onChange={(e) => 
+                            setFormData({
+                                ...formData,
+                                allowBlankVote: e.target.checked,
+                            })
+                        }
+                    />
+                </Stack>
                 <button type="submit">Continuar</button>
             </form>
         </div>
