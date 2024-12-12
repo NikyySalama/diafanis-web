@@ -77,6 +77,7 @@ const AmountModal = ({ open, onClose, onConfirm }) => {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': `Bearer ${sessionStorage.getItem('jwt')}`
             },
             body: JSON.stringify({
                 persons: persons[1],
