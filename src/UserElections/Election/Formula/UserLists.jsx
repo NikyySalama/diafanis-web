@@ -12,6 +12,7 @@ import sanitizeInput from '../../../Common/validatorInput';
 import checkIMGByURL from '../../../Common/validatorURL';
 import { fetchParties } from '../Parties/PartiesUtils';
 import CustomPieChart from '../../CustomPieChart';
+import ErrorLimitModal from '../ErrorLimitModal';
 
 const UserLists = () => {
   const { electionId, electionEditable } = useElection();
@@ -31,6 +32,7 @@ const UserLists = () => {
     uuid: ''
   });
   const [pieData, setPieData] = useState([]);
+  const [modalErrorData, setErrorModalData] = useState({ isOpen: false, message: '', maxAllowed: null });
 
   const getRandomColor = (index) => {
     const baseColors = [
@@ -203,11 +205,25 @@ const UserLists = () => {
           },
           body: JSON.stringify(formulaData),
         }).then(async (response) => {
+          const responseBody = await response.json().catch(() => null);
           if (!response.ok) {
-            throw new Error(`Error en la respuesta del servidor: ${response.status}`);
+            console.error('Error al guardar la fórmula:', {
+              status: response.status,
+              statusText: response.statusText,
+              errorBody: responseBody,
+            });  
+
+            if (responseBody?.message?.startsWith("El número total de ")) {
+              setShowPositionsModal(false);
+              setErrorModalData({
+                isOpen: true,
+                message: responseBody.message,
+                maxAllowed: responseBody.maxAllowed,
+              });
+            }
+            throw new Error(`Error en la creación de la fórmula: ${response.status}`);          
           }
-          const text = await response.text();
-          return text ? { ...JSON.parse(text), index: validIndex } : { index: validIndex };
+          return { ...responseBody, index: validIndex };
         });
       });
   
@@ -386,6 +402,13 @@ const UserLists = () => {
         handleSubmit={handleUpdateFormula}
         editFormulaData={editFormulaData}
         parties={parties}
+      />
+
+      <ErrorLimitModal
+          isOpen={modalErrorData.isOpen}
+          message={modalErrorData.message}
+          maxAllowed={modalErrorData.maxAllowed}
+          onClose={() => setErrorModalData({ ...modalErrorData, isOpen: false })}
       />
     </div>
   );

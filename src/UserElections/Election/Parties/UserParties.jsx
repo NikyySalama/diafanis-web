@@ -21,7 +21,7 @@ const UserParties = () => {
     });
     const [clickedParty, setClickedParty] = useState(false);
     const [pieData, setPieData] = useState([]);
-    const [modalErrorData, setErrorModalData] = useState({ isOpen: false, message: '', limit: null });
+    const [modalErrorData, setErrorModalData] = useState({ isOpen: false, message: '', maxAllowed: null });
 
     const calculateAff = (parties) => {
         return parties.map((party) => ({
@@ -308,7 +308,6 @@ const UserParties = () => {
                 message={modalErrorData.message}
                 maxAllowed={modalErrorData.maxAllowed}
                 onClose={() => setErrorModalData({ ...modalErrorData, isOpen: false })}
-                onAction={() => console.log('Comprar más clicado')}
             />
         </div>
     );

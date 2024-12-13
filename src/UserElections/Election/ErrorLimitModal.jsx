@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const ErrorLimitModal = ({ isOpen, message, maxAllowed, onClose, onAction }) => {
+const ErrorLimitModal = ({ isOpen, message, maxAllowed, onClose }) => {
     if (!isOpen) {
         return null;
     }
@@ -68,7 +68,7 @@ const ErrorLimitModal = ({ isOpen, message, maxAllowed, onClose, onAction }) => 
                     marginBottom: "10px",
                 }}>{message}</p>
 
-                {maxAllowed && (
+                {(
                     <p style={{
                         fontSize: "0.9rem",
                         color: "#888",
@@ -91,21 +91,6 @@ const ErrorLimitModal = ({ isOpen, message, maxAllowed, onClose, onAction }) => 
                         onClick={onClose}
                     >
                         Cerrar
-                    </button>
-                    <button 
-                        style={{
-                            margin: "5px 10px",
-                            padding: "10px 20px",
-                            border: "none",
-                            borderRadius: "7px",
-                            cursor: "pointer",
-                            backgroundColor: "var(--primary-color)",
-                            color: "white",
-                            fontWeight: "400",
-                        }} 
-                        onClick={onAction}
-                    >
-                        Comprar más
                     </button>
                 </div>
             </div>
