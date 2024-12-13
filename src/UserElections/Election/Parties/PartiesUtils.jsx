@@ -17,7 +17,7 @@ export const fetchParties = async (electionId) => {
     }
 };
 
-export const handleAddParty = async (newParty, electionId) => {
+export const handleAddParty = async (newParty, electionId, setErrorModalData) => {
     const partyData = {
         logoUrl: checkIMGByURL(newParty.logoUrl) ? newParty.logoUrl : "",
         colorHex: sanitizeInput(newParty.colorHex),
@@ -39,7 +39,19 @@ export const handleAddParty = async (newParty, electionId) => {
             await response.json();
             return true;
         } else {
-            console.error('Error al guardar el partido:', response.statusText);
+            const errorBody = await response.json().catch(() => null);
+            console.error('Error al guardar el partido:', {
+                status: response.status,
+                statusText: response.statusText,
+                errorBody, // Podría ser un mensaje JSON del servidor
+            });
+            if(errorBody.message === "El número total de partidos excede el límite permitido."){
+                setErrorModalData({
+                    isOpen: true,
+                    message: errorBody.message,
+                    maxAllowed: errorBody.maxAllowed || 'No especificado',
+                });
+            }
             return false;
         }
     } catch (error) {

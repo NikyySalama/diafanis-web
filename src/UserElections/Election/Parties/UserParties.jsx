@@ -7,6 +7,7 @@ import sanitizeInput from '../../../Common/validatorInput';
 import checkIMGByURL from '../../../Common/validatorURL';
 import CustomPieChart from '../../CustomPieChart';
 import { fetchParties, handleAddParty, handleDeletePartiesUtils } from './PartiesUtils';
+import ErrorLimitModal from '../ErrorLimitModal';
 
 const UserParties = () => {
     const { electionId, electionEditable } = useElection();
@@ -20,6 +21,7 @@ const UserParties = () => {
     });
     const [clickedParty, setClickedParty] = useState(false);
     const [pieData, setPieData] = useState([]);
+    const [modalErrorData, setErrorModalData] = useState({ isOpen: false, message: '', limit: null });
 
     const calculateAff = (parties) => {
         return parties.map((party) => ({
@@ -154,13 +156,13 @@ const UserParties = () => {
             handleUpdateParty();
         }
         else {
-            result = await handleAddParty(formData, electionId);
-        }
-        if (result) {
-            const updatedParties = await fetchParties(electionId);
-            const recalculatedParties = calculateAff(updatedParties); // Recalcular `aff`
-            setParties(recalculatedParties);
-            setPieData(calculatePieData(recalculatedParties));
+            result = await handleAddParty(formData, electionId, setErrorModalData);
+            if (result) {
+                const updatedParties = await fetchParties(electionId);
+                const recalculatedParties = calculateAff(updatedParties); // Recalcular `aff`
+                setParties(recalculatedParties);
+                setPieData(calculatePieData(recalculatedParties));
+            }
         }
         handleClose();
     };
@@ -301,6 +303,13 @@ const UserParties = () => {
                     </form>
                 </Modal.Body>
             </Modal>
+            <ErrorLimitModal
+                isOpen={modalErrorData.isOpen}
+                message={modalErrorData.message}
+                maxAllowed={modalErrorData.maxAllowed}
+                onClose={() => setErrorModalData({ ...modalErrorData, isOpen: false })}
+                onAction={() => console.log('Comprar más clicado')}
+            />
         </div>
     );
 };
