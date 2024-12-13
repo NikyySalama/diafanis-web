@@ -4,7 +4,6 @@ import { Modal, Tooltip, OverlayTrigger } from 'react-bootstrap';
 import AuthoritiesTable from './AuthoritiesTable';
 import * as XLSX from 'xlsx';
 import '../ModalSection.css';
-import checkIMGByURL from '../../../Common/validatorURL';
 import sanitizeInput from '../../../Common/validatorInput';
 import { fetchTables } from '../Tables/TableUtils';
 
@@ -55,7 +54,6 @@ const UserAuthorities = () => {
         try {
             const updatedAuthoritiesData = authoritiesData.map(authority => ({
                 ...authority,
-                docType: 'DNI',
                 electorTableUuid: selectedTable,
                 electionUuid: electionId
             }));
@@ -107,12 +105,12 @@ const UserAuthorities = () => {
             const workbook = XLSX.read(data, { type: 'array' });
             const sheetName = workbook.SheetNames[0];
             const worksheet = workbook.Sheets[sheetName];
-            const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: ['name', 'lastName', 'imageUrl', 'docNumber'] });
+            const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: ['name', 'lastName', 'imageUrl', 'docNumber', 'docType'] });
 
             const authoritiesData = jsonData.slice(1);
 
-            if (!jsonData.length || !jsonData[0].name || !jsonData[0].lastName || !jsonData[0].imageUrl || !jsonData[0].docNumber) {
-                alert('La estructura del archivo Excel no es correcta. Asegúrese de tener las columnas: name, lastName, imageUrl, docNumber.');
+            if (!jsonData.length || !jsonData[0].name || !jsonData[0].lastName || !jsonData[0].imageUrl || !jsonData[0].docNumber || !jsonData[0].docType) {
+                alert('La estructura del archivo Excel no es correcta. Asegúrese de tener las columnas: name, lastName, imageUrl, docNumber, docType.');
                 return;
             }
             const sanitizedAuthoritiesData = authoritiesData.map(authority => ({
@@ -120,6 +118,7 @@ const UserAuthorities = () => {
                 lastName: sanitizeInput(authority.lastName),
                 imageUrl: authority.imageUrl ? authority.imageUrl : '',
                 docNumber: authority.docNumber,
+                docType: authority.docType,
             }));
 
             addAuthorities(sanitizedAuthoritiesData);
@@ -253,6 +252,7 @@ const UserAuthorities = () => {
                     <p>El archivo Excel debe contener las siguientes columnas en este orden incluyendo en su primer fila el nombre de cada columna:</p>
                     <ul>
                         <li>docNumber</li>
+                        <li>docType</li>
                         <li>name</li>
                         <li>lastName</li>
                         <li>imageUrl</li>

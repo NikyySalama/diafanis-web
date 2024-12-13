@@ -8,6 +8,7 @@ import checkIMGByURL from '../../../Common/validatorURL';
 import sanitizeInput from '../../../Common/validatorInput';
 import { fetchTables } from '../Tables/TableUtils';
 import ErrorLimitModal from '../ErrorLimitModal';
+import { VscSymbolParameter } from 'react-icons/vsc';
 
 const UserVoters = () => {
     const { electionId, electionEditable } = useElection();
@@ -18,6 +19,7 @@ const UserVoters = () => {
     const [tables, setTables] = useState([]);
     const [formData, setFormData] = useState({
         docNumber: '',
+        docType: '',
         name: '',
         lastName: '',
         imageUrl: '',
@@ -75,11 +77,13 @@ const UserVoters = () => {
     const handleVoterClick = (row) => {
         setFormData({
             docNumber: row.docNumber || '',
+            docType: row.docType || '',
             name: row.name || '',
             lastName: row.lastName || '',
             imageUrl: row.logoUrl || '',
             uuid: row.uuid || ''
         });
+        console.log("data clicked: ", row);
         setShowViewModal(true); // Modal de visualización
     };
 
@@ -132,7 +136,7 @@ const UserVoters = () => {
             const workbook = XLSX.read(data, { type: 'array' });
             const sheetName = workbook.SheetNames[0];
             const worksheet = workbook.Sheets[sheetName];
-            const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: ['name', 'lastName', 'imageUrl', 'docNumber'] });
+            const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: ['name', 'lastName', 'imageUrl', 'docNumber', 'docType'] });
 
             const votersData = jsonData.slice(1).map(voter => ({
                 ...voter,
@@ -146,8 +150,8 @@ const UserVoters = () => {
             }
 
             // Validar estructura del archivo
-            if (!jsonData.length || !jsonData[0].name || !jsonData[0].lastName || !jsonData[0].imageUrl || !jsonData[0].docNumber) {
-                alert('La estructura del archivo Excel no es correcta. Asegúrese de tener las columnas: name, lastName, imageUrl, docNumber.');
+            if (!jsonData.length || !jsonData[0].name || !jsonData[0].lastName || !jsonData[0].imageUrl || !jsonData[0].docNumber || !jsonData[0].docType) {
+                alert('La estructura del archivo Excel no es correcta. Asegúrese de tener las columnas: name, lastName, imageUrl, docNumber, docType.');
                 return;
             }
             const sanitizedVotersData = votersData.map(voter => ({
@@ -155,6 +159,7 @@ const UserVoters = () => {
                 lastName: sanitizeInput(voter.lastName),
                 imageUrl: checkIMGByURL(voter.imageUrl) ? voter.imageUrl : '',
                 docNumber: Number(voter.docNumber),
+                docType: voter.docType,
             }));
             // Enviar los datos al endpoint
             addVoters(sanitizedVotersData);
@@ -166,7 +171,6 @@ const UserVoters = () => {
         try {
             const updatedVotersData = votersData.map(voter => ({
                 ...voter,
-                docType: 'DNI',
                 electorTableUuid: selectedTable,
                 electionUuid: electionId
             }));
@@ -220,6 +224,7 @@ const UserVoters = () => {
                 },
                 body: JSON.stringify({
                     docNumber: formData.docNumber,
+                    docType: formData.docType,
                     name: sanitizeInput(formData.name),
                     lastName: sanitizeInput(formData.lastName),
                     imageUrl: formData.imageUrl,
@@ -285,6 +290,7 @@ const UserVoters = () => {
         name: voter.name,
         lastName: voter.lastName,
         docNumber: voter.docNumber,
+        docType: voter.docType,
         logoUrl: voter.imageUrl,
     }));
 
@@ -452,6 +458,7 @@ const UserVoters = () => {
                         <li>lastName</li>
                         <li>imageUrl</li>
                         <li>docNumber</li>
+                        <li>docType</li>
                     </ul>
                     <p>Ejemplo de formato:</p>
 

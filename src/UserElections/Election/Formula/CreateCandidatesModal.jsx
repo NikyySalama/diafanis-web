@@ -69,6 +69,7 @@ const CreateCandidatesModal = ({ show, onHide, handleFileUpload, handleSubmit, p
                     <p>El archivo Excel debe contener las siguientes columnas en este orden incluyendo en su primer fila el nombre de cada columna:</p>
                     <ul>
                         <li>docNumber</li>
+                        <li>docType</li>
                         <li>name</li>
                         <li>lastName</li>
                         <li>imageUrl</li>

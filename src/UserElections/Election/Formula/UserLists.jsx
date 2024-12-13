@@ -140,28 +140,28 @@ const UserLists = () => {
       const sheet = workbook.Sheets[workbook.SheetNames[0]];
       const data = XLSX.utils.sheet_to_json(sheet);
 
-      const requiredColumns = ['DNI', 'name', 'lastName', 'imageUrl', 'role'];
+      const requiredColumns = ['docNumber', 'docType', 'name', 'lastName', 'imageUrl', 'role'];
       const fileColumns = Object.keys(data[0] || {});
 
       if (!requiredColumns.every(col => fileColumns.includes(col))) {
-        alert('El archivo debe contener las columnas: DNI, name, lastName, imageUrl, role.');
+        alert('El archivo debe contener las columnas: docNumber, docType, name, lastName, imageUrl, role.');
         e.target.value = '';
         return;
       }
 
-      const dniRegex = /^[0-9]+$/;
-      if (!data.every(row => dniRegex.test(row.DNI))) {
-        alert('El campo DNI debe contener solo valores numéricos.');
+      const docNumRegex = /^[0-9]+$/;
+      if (!data.every(row => docNumRegex.test(row.docNumber))) {
+        alert('El campo docNumber debe contener solo valores numéricos.');
         e.target.value = '';
         return;
       }
 
       const candidates = data.map(row => ({
         role: sanitizeInput(row.role) || 'Desconocido',
-        docNumber: sanitizeInput(parseInt(row.DNI, 10)) || 0,
-        docType: 'DNI',
+        docNumber: sanitizeInput(parseInt(row.docNumber, 10)) || 0,
+        docType: row.docType,
         name: sanitizeInput(row.name) || 'Nombre Desconocido',
-        surname: sanitizeInput(row.lastName) || 'Apellido Desconocido',
+        lastName: sanitizeInput(row.lastName) || 'Apellido Desconocido',
         image: row.imageUrl ? row.imageUrl : ''
       }));
 
@@ -240,7 +240,7 @@ const UserLists = () => {
             docNumber: sanitizeInput(candidate.docNumber),
             docType: sanitizeInput(candidate.docType),
             name: sanitizeInput(candidate.name),
-            lastName: sanitizeInput(candidate.surname),
+            lastName: sanitizeInput(candidate.lastName),
             imageUrl: checkIMGByURL(candidate.image) ? candidate.image : '',
             formulaUuid: uuid,
           },

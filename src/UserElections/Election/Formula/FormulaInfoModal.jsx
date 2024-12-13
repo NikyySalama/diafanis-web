@@ -29,7 +29,7 @@ const FormulaInfoModal = ({ show, onHide, handleEdit, editFormulaData, parties }
                                 <strong>Nombre y Apellido:</strong> {candidate.data?.name || 'Nombre no disponible'} {candidate.data?.lastName || 'Apellido no disponible'}
                             </p>
                             <p className="mb-1">
-                                <strong>Document Number:</strong> {candidate.data?.docNumber || 'Document Number no disponible'}
+                                <strong>Número de documento:</strong> {candidate.data?.docNumber || 'Document Number no disponible'}
                             </p>
                             <p className="mb-0">
                                 <strong>Rol:</strong> {candidate.role || 'Rol no disponible'}
