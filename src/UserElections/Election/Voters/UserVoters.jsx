@@ -7,6 +7,7 @@ import '../ModalSection.css';
 import checkIMGByURL from '../../../Common/validatorURL';
 import sanitizeInput from '../../../Common/validatorInput';
 import { fetchTables } from '../Tables/TableUtils';
+import ErrorLimitModal from '../ErrorLimitModal';
 
 const UserVoters = () => {
     const { electionId, electionEditable } = useElection();
@@ -26,6 +27,7 @@ const UserVoters = () => {
     const [selectedTable, setSelectedTable] = useState('');
     const [file, setFile] = useState(null);
     const [showHelp, setShowHelp] = useState(false);
+    const [modalErrorData, setErrorModalData] = useState({ isOpen: false, message: '', maxAllowed: null });
 
     const toggleHelpModal = () => setShowHelp(!showHelp);
 
@@ -184,7 +186,22 @@ const UserVoters = () => {
                 fetchVoters();
                 handleClose();
             } else {
-                console.error('Error al subir los votantes', response.statusText);
+                const responseBody = await response.json().catch(() => null);
+                console.error('Error al guardar la fórmula:', {
+                    status: response.status,
+                    statusText: response.statusText,
+                    errorBody: responseBody,
+                  });  
+      
+                  if (responseBody?.message?.startsWith("El número total de ")) {
+                    handleClose();
+                    setErrorModalData({
+                      isOpen: true,
+                      message: responseBody.message,
+                      maxAllowed: responseBody.maxAllowed,
+                    });
+                  }
+                throw new Error(`Error al subir los votantes: ${response.status}`);
             }
         } catch (error) {
             console.error('Error en la solicitud de votantes', error);
@@ -484,6 +501,12 @@ const UserVoters = () => {
                     <button type="button" className="modal-button" onClick={handleSubmitVoter}>Guardar Cambios</button>
                 </Modal.Footer>
             </Modal>
+            <ErrorLimitModal
+                isOpen={modalErrorData.isOpen}
+                message={modalErrorData.message}
+                maxAllowed={modalErrorData.maxAllowed}
+                onClose={() => setErrorModalData({ ...modalErrorData, isOpen: false })}
+            />
         </div>
     );
 };
