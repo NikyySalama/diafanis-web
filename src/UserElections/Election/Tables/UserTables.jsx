@@ -7,6 +7,7 @@ import '../ElectionSection.css';
 import sanitizeInput from '../../../Common/validatorInput';
 import { fetchTables, postTable } from './TableUtils';
 import CustomPieChart from '../../CustomPieChart';
+import ErrorLimitModal from '../ErrorLimitModal';
 
 const Tables = () => {
   const { electionId, electionEditable } = useElection();
@@ -25,6 +26,7 @@ const Tables = () => {
   });
   const [showHelp, setShowHelp] = useState(false);
   const [pieData, setPieData] = useState([]);
+  const [modalErrorData, setErrorModalData] = useState({ isOpen: false, message: '', maxAllowed: null });
 
   const toggleHelpModal = () => setShowHelp(!showHelp);
 
@@ -199,7 +201,7 @@ const Tables = () => {
     handleCloseUploadModal();
 
     const results = await Promise.all(
-        tablesData.map(tableData => postTable(tableData, electionId))
+        tablesData.map(tableData => postTable(tableData, electionId, setErrorModalData))
     );
 
     if (results.includes(true)) {
@@ -423,6 +425,12 @@ const Tables = () => {
           </button>
         </Modal.Body>
       </Modal>
+      <ErrorLimitModal
+          isOpen={modalErrorData.isOpen}
+          message={modalErrorData.message}
+          maxAllowed={modalErrorData.maxAllowed}
+          onClose={() => setErrorModalData({ ...modalErrorData, isOpen: false })}
+      />
     </div>
   );
 };

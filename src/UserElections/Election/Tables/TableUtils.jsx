@@ -19,7 +19,7 @@ export const fetchTables = async (electionId) => {
     }
 };
 
-export const postTable = async (table, electionId) => {
+export const postTable = async (table, electionId, setErrorModalData) => {
     const location = {
       country: table.country,
       state: table.state,
@@ -45,7 +45,19 @@ export const postTable = async (table, electionId) => {
         console.log('Mesa guardada:', savedTable);
         return true;
       } else {
-        console.error('Error al guardar la mesa:', response.statusText);
+        const errorBody = await response.json().catch(() => null);
+        console.error('Error al guardar el partido:', {
+            status: response.status,
+            statusText: response.statusText,
+            errorBody, // Podría ser un mensaje JSON del servidor
+        });
+        if(errorBody.message === "El número total de mesas excede el límite permitido."){
+            setErrorModalData({
+                isOpen: true,
+                message: errorBody.message,
+                maxAllowed: errorBody.maxAllowed || 'No especificado',
+            });
+        }
         return false;
       }
     } catch (error) {
