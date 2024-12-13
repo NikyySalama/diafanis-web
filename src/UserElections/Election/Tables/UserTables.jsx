@@ -343,7 +343,7 @@ const Tables = () => {
           <p>Ejemplo de formato:</p>
 
           <img
-            src="/assets/example-table.png"
+            src="/assets/example-tables.png"
             alt="Ejemplo de Excel"
             style={{ width: '100%', maxHeight: '200px' }}
           />
