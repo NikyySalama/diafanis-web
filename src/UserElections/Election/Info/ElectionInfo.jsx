@@ -93,9 +93,27 @@ const ElectionInfo = () => {
                     <EditIcon />
                 </IconButton>
             </Box>
-            <Typography variant="h6" color="textSecondary" gutterBottom>
+            <Box display="flex" alignItems="center" gap={2} marginTop={2}>
+        {/* Imagen circular */}
+        <Box display="flex" alignItems="center" gap={1}>
+            <Box
+                component="img"
+                src={info.imageUrl}
+                alt="Imágen de la elección"
+                sx={{
+                    width: 30,
+                    height: 30,
+                    borderRadius: '50%',
+                    objectFit: 'cover',
+                    marginBottom: '7px'
+                }}
+            />
+            {/* Título de la información */}
+            <Typography variant="h5" color="textSecondary" sx = {{marginBottom: '7px'}}>
                 {info.title || 'Título no disponible'}
             </Typography>
+        </Box>
+        </Box>
             <Typography variant="body1" gutterBottom>
                 {info.description || 'Descripción no disponible'}
             </Typography>

@@ -53,6 +53,7 @@ const ElectionRegistration = ({ handleAddElection, handleContinue, initialData }
         username: sessionStorage.getItem('user'),
         planLimit: JSON.parse(sessionStorage.getItem('planLimit')),
         paymentId : sessionStorage.getItem('paymentId'),
+        imageUrl: '',
         allowBlankVote : false,
     });
 
@@ -69,6 +70,7 @@ const ElectionRegistration = ({ handleAddElection, handleContinue, initialData }
                 username: initialData.username,
                 planLimit: initialData.planLimit,
                 paymentId: initialData.paymentId,
+                imageUrl: initialData.imageUrl || '',
                 allowBlankVote: initialData.allowBlankVote || false,
             });
         }
@@ -77,7 +79,7 @@ const ElectionRegistration = ({ handleAddElection, handleContinue, initialData }
     const handleChange = (e) => {
         const { name, value } = e.target;
         let valueSanitized = value;
-        if(name !== 'imagen' && name !== 'startsAt' && name !== 'endsAt'){
+        if(name !== 'imagen' && name !== 'imageUrl' && name !== 'startsAt' && name !== 'endsAt'){
             valueSanitized = sanitizeInput(value)
         }
         setFormData({
@@ -153,6 +155,16 @@ const ElectionRegistration = ({ handleAddElection, handleContinue, initialData }
                         value={formData.endsAt}
                         onChange={handleChange}
                         required
+                    />
+                </div>
+                <div>
+                    <label htmlFor="title">Imágen:</label>
+                    <input
+                        type="text"
+                        id="imageUrl"
+                        name="imageUrl"
+                        value={formData.imageUrl}
+                        onChange={handleChange}
                     />
                 </div>
                 <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
