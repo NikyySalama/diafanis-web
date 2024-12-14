@@ -82,7 +82,7 @@ const ModalLogout = ({ open, setOpenState }) => {
         width: '27em',
         bgcolor: 'background.paper',
         border: '1px solid #000',
-        borderRadius: 2,
+        borderRadius: '16px',
         height: 'fit-content',
         backgroundImage: 'url("../../Common/Group35593.png")',
         backgroundSize: 'cover',

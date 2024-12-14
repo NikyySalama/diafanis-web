@@ -38,6 +38,7 @@ const AmountModal = ({ open, onClose, onConfirm }) => {
   };
 
   const handleInputChange = (setter, index, otherIndex) => (event) => {
+  
     let value = Math.max(0, Math.floor(Number(event.target.value)));
     value = Number(value);
     setter((prev) => {
@@ -48,9 +49,35 @@ const AmountModal = ({ open, onClose, onConfirm }) => {
         value = newValues[0];
       }
       newValues[index] = value;
+      if(newValues[index] === 0){
+        newValues[index] = '';
+      }
       return newValues;
     });
   };
+
+  const handleFocus = (setter, index) => (event) => {
+  
+    if (event.target.value === '0') {
+      setter((prev) => {
+        const newValues = [...prev];
+        newValues[index] = '';
+        return newValues;
+      });
+    }
+  };
+
+  const handleBlur = (setter, index) => (event) => {
+   
+    if (event.target.value === '') {
+      setter((prev) => {
+        const newValues = [...prev];
+        newValues[index] = 0;
+        return newValues;
+      });
+    }
+  };
+
 
   const handleSliderChange = (setter) => (event, newValue) => {
     setter(newValue);
@@ -180,6 +207,8 @@ const AmountModal = ({ open, onClose, onConfirm }) => {
                           type="number"
                           value={value[0]}
                           onChange={handleInputChange(setter, 0, 1)}
+                          onFocus={handleFocus(setter, 0)}
+                          onBlur={handleBlur(setter, 0)}
                           size="small" // Tamaño pequeño
                           sx={{
                             width: '12rem',
@@ -195,10 +224,10 @@ const AmountModal = ({ open, onClose, onConfirm }) => {
                             boxShadow: '0px 3px 6px rgba(100, 100, 100, 0.2)',
                           }}
                         />
-                        {/* Slider */}
                         <Slider
                           value={value}
                           onChange={handleSliderChange(setter)}
+                          
                           valueLabelDisplay="auto"
                           min={0}
                           max={max}
@@ -208,7 +237,7 @@ const AmountModal = ({ open, onClose, onConfirm }) => {
                             marginLeft: '5px',
                             marginRight: '5px',
                             '& .MuiSlider-valueLabel': {
-                              backgroundColor: 'rgba(80, 55, 204, 0.65)', // Fondo azul
+                              backgroundColor: 'rgba(80, 55, 204, 0.65)',
                               borderRadius: '5px'
                             }
                           }}
@@ -218,6 +247,8 @@ const AmountModal = ({ open, onClose, onConfirm }) => {
                           type="number"
                           value={value[1]}
                           onChange={handleInputChange(setter, 1, 0)}
+                          onFocus={handleFocus(setter, 1)}
+                          onBlur={handleBlur(setter, 1)}
                           size="small"
                           sx={{
                             width: '12rem',

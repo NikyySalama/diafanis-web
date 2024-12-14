@@ -52,7 +52,7 @@ const GridCard = ({ searchTerm }) => {
     </div>
   ) : (
     <Box sx={{
-      height: '60em',
+      height: '25em',
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
