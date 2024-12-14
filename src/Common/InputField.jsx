@@ -1,6 +1,6 @@
 import { FormControl, FormHelperText, InputAdornment, Modal, Box, IconButton, Button, Input, InputLabel, Popover, Typography, List, ListItem } from '@mui/material';
 
-const InputField = ({ label, placeholder, onChangeMethod, onBlurMethod, values, error, helperText, required }) => {
+const InputField = ({ label, placeholder, onChangeMethod, onBlurMethod, values, error, helperText, required,disabled }) => {
     return (
       <FormControl sx={{ m: 1, width: '21em' }} variant="standard" error={error} required={required}>
         <InputLabel sx={{ color: 'grey' }} htmlFor={`standard-adornment-${label}`}>{label}</InputLabel>
@@ -13,6 +13,7 @@ const InputField = ({ label, placeholder, onChangeMethod, onBlurMethod, values, 
           onBlur={onBlurMethod}
           value={values[label]}
           autoComplete="off"
+          disabled={disabled}
         />
         {helperText && <FormHelperText>{helperText}</FormHelperText>}
       </FormControl>

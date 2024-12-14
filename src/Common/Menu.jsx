@@ -4,13 +4,17 @@ import isotipo from './Isotipo.png'
 import { Form, useNavigate } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
 import im from './Group35593.png'
-import { FormControl, FormHelperText, InputAdornment, Modal, Box, IconButton, Button, Input, InputLabel, Popover, Typography, List, ListItem } from '@mui/material';
+import { FormControl, FormHelperText, InputAdornment, Modal, Box, IconButton, Button, Input, InputLabel, Popover, Typography, List, ListItem, CircularProgress, SvgIcon } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import CheckIcon from '@mui/icons-material/Check';
 import checkIMGByURL from './validatorURL';
 import sanitizeInput from './validatorInput';
 import InputField from './InputField';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import SuccessIcon from './successIcon.svg'
+import FailureIcon from './failureIcon.svg'
+import Paper from '@mui/material/Paper';
 
 const StepIndicator = ({ currentStep, totalSteps }) => {
   return (
@@ -56,7 +60,11 @@ const StepIndicator = ({ currentStep, totalSteps }) => {
 
 const Signin = ({ openState, setOpenState }) => {
   const [step, setStep] = useState(0);
-  const handleBack = () => setStep((prevStep) => prevStep - 1);
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const navigate = useNavigate();
+
   const handleCloseSignin = () => {
     setOpenState(false);
     setFormValues({
@@ -67,6 +75,10 @@ const Signin = ({ openState, setOpenState }) => {
       Apellido: '',
       Imagen: ''
     });
+    setStep(0);
+    setLoading(false);
+    setSuccess(false);
+    setErrorMessage('');
   };
 
   const [formValues, setFormValues] = useState({
@@ -97,10 +109,9 @@ const Signin = ({ openState, setOpenState }) => {
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     let valueSanitize = value;
-    if(name !== 'Imagen'){
+    if (name !== 'Imagen') {
       valueSanitize = sanitizeInput(value);
-    }
-    else if(!checkIMGByURL(value)){
+    } else if (!checkIMGByURL(value)) {
       valueSanitize = '';
     }
     setFormValues((prevValues) => ({
@@ -120,19 +131,24 @@ const Signin = ({ openState, setOpenState }) => {
 
   const validateField = (fieldName, value) => {
     let error = '';
+    let isValid = true;
     switch (fieldName) {
       case 'Email':
         if (!value) {
           error = 'Email es obligatorio';
+          isValid = false;
         } else if (!/\S+@\S+\.\S+/.test(value)) {
           error = 'Email formato invalido';
+          isValid = false;
         }
         break;
       case 'Contraseña':
         if (!value) {
           error = 'Contraseña es obligatorio';
+          isValid = false;
         } else if (value.length < 6) {
           error = 'Contraseña debe tener al menos 6 letras';
+          isValid = false;
         }
         break;
       case 'Usuario':
@@ -140,6 +156,7 @@ const Signin = ({ openState, setOpenState }) => {
       case 'Apellido':
         if (!value) {
           error = `${fieldName} es obligatorio`;
+          isValid = false;
         }
         break;
       default:
@@ -149,6 +166,7 @@ const Signin = ({ openState, setOpenState }) => {
       ...prevErrors,
       [fieldName]: error,
     }));
+    return isValid;
   };
 
   const validateForm = () => {
@@ -163,29 +181,24 @@ const Signin = ({ openState, setOpenState }) => {
   };
 
   const handleNext = () => {
-    if (validateForm()) {
-      setStep((prevStep) => prevStep + 1);
+    console.log(`handleNext called at step ${step}`);
+    if (step === 0 && validateField('Usuario', formValues.Usuario) && validateField('Contraseña', formValues.Contraseña)) {
+      setStep(1);
     }
   };
 
+  const handleBack = () => {
+    setStep((prevStep) => prevStep - 1);
+  }
+
   const handleSubmit = async (event) => {
     event.preventDefault();
-    if (validateForm()) {
-      setStep(0);
-      setTouched({
-        Email: false,
-        Contraseña: false,
-        Usuario: false,
-        Nombre: false,
-        Apellido: false,
-      });
-      setErrors({
-        Email: '',
-        Contraseña: '',
-        Usuario: '',
-        Nombre: '',
-        Apellido: '',
-      });
+    console.log(`handleSubmit called at step ${step}`);
+    if (step === 1 && validateForm()) {
+      setStep(2);
+      setLoading(true);
+      setSuccess(false);
+
       try {
         const response = await fetch(`${process.env.REACT_APP_API_URL}/api/auth/register`, {
           method: 'POST',
@@ -201,19 +214,48 @@ const Signin = ({ openState, setOpenState }) => {
             imageUrl: formValues.Imagen,
           }),
         });
-
+        if (response.status === 409) {
+          setErrorMessage('Ya se encuentra registrado un usuario con ese email')
+        }
+        const data = await response.json();
         if (response.ok) {
-          const data = await response.json();
+          setLoading(false);
+          setSuccess(true);
+          setTimeout(() => {
+            setTouched({
+              Email: false,
+              Contraseña: false,
+              Usuario: false,
+              Nombre: false,
+              Apellido: false,
+            });
+            setErrors({
+              Email: '',
+              Contraseña: '',
+              Usuario: '',
+              Nombre: '',
+              Apellido: '',
+            });
+            setStep(0);
+            sessionStorage.setItem('jwt', data.token);
+            sessionStorage.setItem('user', data.username);
+            navigate(`/userElections`);
+            handleCloseSignin();
+          }, 750);
+       
           console.log('Form submitted successfully', data);
         } else {
-          const errorMessage = await response.json();
-          console.error('Error submitting form:', response.status, errorMessage);
+          setSuccess(false);
+          if (response.status === 409) {
+            setErrorMessage('Ya se encuentra registrado un usuario con ese email')
+          }
+          setLoading(false);
         }
       } catch (error) {
-        console.error('Network or server error:', error);
+        setLoading(false);
+        setSuccess(false);
+        console.log("error",error)
       }
-
-      handleCloseSignin();
     }
   };
 
@@ -229,7 +271,7 @@ const Signin = ({ openState, setOpenState }) => {
         top: '50%',
         left: '50%',
         transform: 'translate(-50%, -50%)',
-        width: '27em',
+        width: step === 2 ? '29em' : '27em',
         bgcolor: 'background.paper',
         border: '1px solid #000',
         borderRadius: 2,
@@ -245,26 +287,31 @@ const Signin = ({ openState, setOpenState }) => {
         flexDirection: 'column',
         p: 4,
       }} component="form" onSubmit={handleSubmit}>
-        <Box sx={{
-          width: '100%',
-          display: 'flex',
-          justifyContent: 'center',
-        }}>
-          <img
-            src={isotipo}
-            alt="Description of image"
-            style={{
-              maxWidth: '10em',
-              height: 'min-content',
-            }}
-          />
-        </Box>
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <StepIndicator currentStep={step} totalSteps={2} />
-        </Box>
-        <Typography sx={{ mt: 3, ml: 0.75 }} variant="h5">
-          Cree su cuenta
-        </Typography>
+
+        {step < 2 && (
+          <>
+            <Box sx={{
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'center',
+            }}>
+              <img
+                src={isotipo}
+                alt="Description of image"
+                style={{
+                  maxWidth: '10em',
+                  height: 'min-content',
+                }}
+              />
+            </Box>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <StepIndicator currentStep={step} totalSteps={2} />
+            </Box>
+            <Typography sx={{ mt: 3, ml: 0.75 }} variant="h5">
+              Cree su cuenta
+            </Typography>
+          </>
+        )}
 
         {step === 0 && (
           <Box>
@@ -277,6 +324,7 @@ const Signin = ({ openState, setOpenState }) => {
               error={touched.Usuario && !!errors.Usuario}
               helperText={touched.Usuario && errors.Usuario}
               required
+              disabled={false}
             />
             <PasswordInput
               onChangeMethod={handleInputChange}
@@ -291,7 +339,7 @@ const Signin = ({ openState, setOpenState }) => {
 
         {step === 1 && (
           <Box>
-            <Typography sx={{ m: 1, mb: 0, mt: 3 }}>Informacion personal</Typography>
+
             <InputField
               label="Email"
               placeholder="123@gmail.com"
@@ -301,6 +349,7 @@ const Signin = ({ openState, setOpenState }) => {
               error={touched.Email && !!errors.Email}
               helperText={touched.Email && errors.Email}
               required
+              disabled={false}
             />
             <InputField
               label="Nombre"
@@ -311,6 +360,7 @@ const Signin = ({ openState, setOpenState }) => {
               error={touched.Nombre && !!errors.Nombre}
               helperText={touched.Nombre && errors.Nombre}
               required
+              disabled={false}
             />
             <InputField
               label="Apellido"
@@ -321,41 +371,124 @@ const Signin = ({ openState, setOpenState }) => {
               error={touched.Apellido && !!errors.Apellido}
               helperText={touched.Apellido && errors.Apellido}
               required
+              disabled={false}
             />
             <InputField
               label="Imagen"
               placeholder="URL"
               onChangeMethod={handleInputChange}
               values={formValues}
+              disabled={false}
             />
+            <Box align="center" sx={{ mt: 6 }}>
+              <Button
+                sx={{
+                  color: 'var(--primary-color)',
+                  backgroundColor: 'var(--background-color)',
+                  cursor: 'pointer',
+                  fontFamily: 'Inter',
+                  fontWeight: 700,
+                  border: '0.25px solid black',
+                  width: '9em',
+                  mr: 2,
+                }}
+                variant="contained"
+                onClick={handleBack}
+              >
+                Atras
+              </Button>
+              <Button
+                sx={{
+                  color: 'var(--background-color)',
+                  backgroundColor: 'var(--primary-color)',
+                  cursor: 'pointer',
+                  fontFamily: 'Inter',
+                  fontWeight: 700,
+                  border: '0.25px solid black',
+                  width: '9em',
+                }}
+                variant="contained"
+                type="submit"
+                disabled={loading || success}
+              >
+                Registrarme
+              </Button>
+            </Box>
           </Box>
         )}
 
         {step === 2 && (
-          <Typography variant='body2' sx={{ m: 0, mb: 0, mt: 3 }}>
-            Paso final, realice el pago del servicio a traves del cbu
-          </Typography>
+          <>
+            {loading ? (
+              <CircularProgress size={'5em'} />
+            ) : success ? (
+              <Box sx={{
+                width: '5em',
+                height: '5em',
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+                <img src={SuccessIcon} alt="Success" />
+              </Box>
+            ) : (
+              <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+                <Box sx={{
+                  width: '5em',
+                  height: '5em',
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                  <img src={FailureIcon} alt="Failure" />
+                </Box>
+                <Typography color='var(--primary-color)' sx={{ mt: 2 }}>
+                  {errorMessage}
+                </Typography>
+                <Box align="center" sx={{ mt: 6 }}>
+                  <Button
+                    sx={{
+                      color: 'var(--primary-color)',
+                      backgroundColor: 'var(--background-color)',
+                      cursor: 'pointer',
+                      fontFamily: 'Inter',
+                      fontWeight: 700,
+                      border: '0.25px solid black',
+                      width: '9em',
+                      mr: 2,
+                    }}
+                    variant="contained"
+                    onClick={handleBack}
+                  >
+                    Atras
+                  </Button>
+                </Box>
+              </Box>
+            )}
+          </>
         )}
 
-        <Box align="center" sx={{ mt: 6 }}>
-          <Button
-            sx={{
-              color: 'var(--primary-color)',
-              backgroundColor: 'var(--background-color)',
-              cursor: 'pointer',
-              fontFamily: 'Inter',
-              fontWeight: 700,
-              border: '0.25px solid black',
-              width: '9em',
-              mr: 2,
-            }}
-            variant="contained"
-            disabled={step === 0}
-            onClick={handleBack}
-          >
-            Atras
-          </Button>
-          {step < 2 ? (
+        {step < 1 && (
+          <Box align="center" sx={{ mt: 6 }}>
+            <Button
+              sx={{
+                color: 'var(--primary-color)',
+                backgroundColor: 'var(--background-color)',
+                cursor: 'pointer',
+                fontFamily: 'Inter',
+                fontWeight: 700,
+                border: '0.25px solid black',
+                width: '9em',
+                mr: 2,
+              }}
+              variant="contained"
+              disabled={step === 0}
+              onClick={handleBack}
+            >
+              Atras
+            </Button>
             <Button
               sx={{
                 color: 'var(--background-color)',
@@ -372,29 +505,97 @@ const Signin = ({ openState, setOpenState }) => {
             >
               Continuar
             </Button>
-          ) : (
-            <Button
-              sx={{
-                color: 'var(--background-color)',
-                backgroundColor: 'var(--primary-color)',
-                cursor: 'pointer',
-                fontFamily: 'Inter',
-                fontWeight: 700,
-                width: '9em',
-                border: '0.25px solid black',
-              }}
-              variant="contained"
-              type="submit"
-            >
-              Registrarme
-            </Button>
-          )}
-        </Box>
+          </Box>
+        )}
       </Box>
     </Modal>
   );
 };
 
+const ModalLogout = ({ open, setOpenState }) => {
+  const navigate = useNavigate(); 
+
+  const handleLogout = () => {
+    setOpenState(false);
+    sessionStorage.removeItem('user');
+    sessionStorage.removeItem('jwt');
+    navigate(`/`);
+  };
+  const handleCloseLogout = () => {
+    setOpenState(false);
+  };
+
+  
+  return (
+    <Modal
+      open={open}
+      onClose={handleCloseLogout}
+      aria-labelledby="modal-modal-title"
+      aria-describedby="modal-modal-description"
+    >
+      <Box sx={{
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: '27em',
+        bgcolor: 'background.paper',
+        border: '1px solid #000',
+        height: 'fit-content',
+        backgroundImage: 'url("../../Common/Group35593.png")',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        boxShadow: 24,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexDirection: 'column',
+        borderRadius: '16px',
+        p: 4,
+      }}  >
+
+        <Typography  align="center"  sx={{ mt: 3, ml: 0.75,color:'black' }} id="modal-logout-title" variant="h5">
+          Esta por cerrar sesion
+        </Typography>
+        <Typography  align="center"  sx={{ mt: 3, ml: 0.75,color:'black' }} id="modal-logout-action" variant="h6">
+          Desea continuar?
+        </Typography>
+        
+        <Button 
+          sx={{
+            color: 'var(--background-color)',
+            backgroundColor: 'var(--primary-color)',
+            cursor: 'pointer',
+            fontFamily: 'Inter',
+            mt: 4,
+            ml: 0.75,
+            fontWeight: 700,
+            width: '24.5em',
+            border: '0.25px solid black',
+          }} 
+          variant="contained" type='button' onClick={handleLogout} >
+          Confirmar
+        </Button>
+        <Button 
+          sx={{
+            color: 'var(--primary-color)',
+            backgroundColor: 'var(--background-color)',
+            cursor: 'pointer',
+            fontFamily: 'Inter',
+            mt: 4,
+            ml: 0.75,
+            fontWeight: 700,
+            width: '24.5em',
+            border: '0.25px solid black',
+          }} 
+          variant="contained"  type='button' onClick={handleCloseLogout}>
+          Cancelar
+        </Button>
+      </Box>
+    </Modal>
+  );
+};
 
 
 const PasswordInput = ({ onChangeMethod, onBlurMethod, values, error, helperText, required }) => {
@@ -436,6 +637,10 @@ const PasswordInput = ({ onChangeMethod, onBlurMethod, values, error, helperText
 
 const Login = ({ open, setOpenState }) => {
   const navigate = useNavigate();
+  const [step, setStep] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
 
   const [formValues, setFormValues] = useState({
@@ -443,12 +648,34 @@ const Login = ({ open, setOpenState }) => {
     Contraseña: '',
   });
 
-  const handleCloseLogin = () => {
+  const [errors, setErrors] = useState({
+    Usuario: '',
+    Contraseña: '',
+  });
+
+  const [touched, setTouched] = useState({
+    Usuario: false,
+    Contraseña: false,
+  });
+
+   const handleCloseLogin = () => {
     setOpenState(false);
     setFormValues({
       Usuario: '',
       Contraseña: '',
     });
+    setErrors({
+      Usuario: '',
+      Contraseña: '',
+    });
+    setTouched({
+      Usuario: false,
+      Contraseña: false,
+    });
+    setStep(0);
+    setLoading(false);
+    setSuccess(false);
+    setErrorMessage('');
   };
 
   const handleInputChange = (event) => {
@@ -459,36 +686,95 @@ const Login = ({ open, setOpenState }) => {
     }));
   };
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/auth/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          username: formValues.Usuario,
-          password: formValues.Contraseña,
-        }),
-
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        sessionStorage.setItem('jwt', data.token);
-        sessionStorage.setItem('user', data.username);
-        navigate(`/userElections`);
-      } else {
-        const errorMessage = await response.json();
-        console.error('Error submitting form:', response.status, errorMessage);
-      }
-    } catch (error) {
-      console.error('Network or server error:', error);
-    }
-    handleCloseLogin();
+  const handleBlur = (event) => {
+    const { name } = event.target;
+    setTouched((prevTouched) => ({
+      ...prevTouched,
+      [name]: true,
+    }));
+    validateField(name, formValues[name]);
   };
 
+  const validateField = (fieldName, value) => {
+    let error = '';
+    switch (fieldName) {
+      case 'Usuario':
+        if (!value) {
+          error = 'Usuario es obligatorio';
+        }
+        break;
+      case 'Contraseña':
+        if (!value) {
+          error = 'Contraseña es obligatorio';
+        }
+        break;
+      default:
+        break;
+    }
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [fieldName]: error,
+    }));
+  };
+
+  const validateForm = () => {
+    let isValid = true;
+    Object.keys(formValues).forEach((fieldName) => {
+      validateField(fieldName, formValues[fieldName]);
+      if (errors[fieldName]) {
+        isValid = false;
+      }
+    });
+    return isValid;
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    if (validateForm()) {
+      setLoading(true);
+      setStep(1); // Move to the progress step
+      try {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/auth/login`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            username: formValues.Usuario,
+            password: formValues.Contraseña,
+          }),
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          sessionStorage.setItem('jwt', data.token);
+          sessionStorage.setItem('user', data.username);
+          setSuccess(true);
+          setLoading(false);
+          setTimeout(() => {
+            navigate(`/userElections`);
+            handleCloseLogin();
+          }, 750); // Delay to show the success tick
+        } else {
+          const responseData = await response.json();
+          if (response.status === 401) {
+            setErrorMessage('Usuario o contraseña incorrectos');
+          }
+          if (response.status === 400) {
+            setErrorMessage('Debe completar todos los campos');
+          }
+          setLoading(false);
+          setSuccess(false);
+          console.error('Error submitting form:', response.status, responseData);
+        }
+      } catch (error) {
+        console.error('Network or server error:', error);
+        setErrorMessage('Error de red o servidor, intente nuevamente');
+        setLoading(false);
+        setSuccess(false);
+      }
+    }
+  };
   return (
     <Modal
       open={open}
@@ -517,52 +803,127 @@ const Login = ({ open, setOpenState }) => {
         flexDirection: 'column',
         p: 4,
       }} component="form" onSubmit={handleSubmit} >
-        <Box sx={{
-          width: '100%',
-          display: 'flex',
-          justifyContent: 'center',
-        }}>
-          <img
-            src={isotipo}
-            alt="Description of image"
-            style={{
-              maxWidth: '10em',
-              height: 'min-content',
-            }}
-          />
-        </Box>
-        <Typography sx={{ mt: 3, ml: 0.75 }} id="multi-step-modal-title" variant="h5">
-          Inicie sesion
-        </Typography>
+        {step === 0 && (
+          <>
+            <Box sx={{
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'center',
+            }}>
+              <img
+                src={isotipo}
+                alt="Description of image"
+                style={{
+                  maxWidth: '10em',
+                  height: 'min-content',
+                }}
+              />
+            </Box>
+            <Typography sx={{ mt: 3, ml: 0.75 }} id="multi-step-modal-title" variant="h5">
+              Inicie sesion
+            </Typography>
 
-        <Box>
-          <InputField label={"Usuario"} placeholder={""} onChangeMethod={handleInputChange} values={formValues} />
-          <PasswordInput onChangeMethod={handleInputChange} values={formValues} />
-        </Box>
+            <Box>
+              <InputField
+                label="Usuario"
+                placeholder=""
+                onChangeMethod={handleInputChange}
+                onBlurMethod={handleBlur}
+                values={formValues}
+                error={touched.Usuario && !!errors.Usuario}
+                helperText={touched.Usuario && errors.Usuario}
+                required
+                disabled={false}
+              />
+              <PasswordInput
+                onChangeMethod={handleInputChange}
+                onBlurMethod={handleBlur}
+                values={formValues}
+                error={touched.Contraseña && !!errors.Contraseña}
+                helperText={touched.Contraseña && errors.Contraseña}
+                required
+              />
+            </Box>
+            <Button
+              sx={{
+                color: 'var(--background-color)',
+                backgroundColor: 'var(--primary-color)',
+                cursor: 'pointer',
+                fontFamily: 'Inter',
+                mt: 4,
+                ml: 0.75,
+                fontWeight: 700,
+                width: '24.5em',
+                border: '0.25px solid black',
+              }}
+              variant="contained"
+              type="submit"
+              disabled={loading}
+            >
+              {loading ? <CircularProgress size={24} /> : 'Iniciar sesion'}
+            </Button>
+          </>
+        )}
 
-        <Button
-          sx={{
-            color: 'var(--background-color)',
-            backgroundColor: 'var(--primary-color)',
-            cursor: 'pointer',
-            fontFamily: 'Inter',
-            mt: 4,
-            ml: 0.75,
-            fontWeight: 700,
-            width: '24.5em',
-            border: '0.25px solid black',
-          }}
-          variant="contained"
-          type='submit'>
-          Iniciar sesion
-        </Button>
+        {step === 1 && (
+          <>
+            {loading ? (
+              <CircularProgress size={'5em'} />
+            ) : success ? (
+              <Box sx={{
+                width: '5em',
+                height: '5em',
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+                <img src={SuccessIcon} alt="Success" />
+              </Box>
+            ) : (
+              <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+                <Box sx={{
+                  width: '5em',
+                  height: '5em',
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                  <img src={FailureIcon} alt="Failure" />
+                </Box>
+                <Typography   color = 'var(--primary-color)' sx={{ mt: 2 }}>
+                  {errorMessage}
+                </Typography>
+                <Box align="center" sx={{ mt: 6 }}>
+                  <Button
+                    sx={{
+                      color: 'var(--primary-color)',
+                      backgroundColor: 'var(--background-color)',
+                      cursor: 'pointer',
+                      fontFamily: 'Inter',
+                      fontWeight: 700,
+                      border: '0.25px solid black',
+                      width: '9em',
+                      mr: 2,
+                    }}
+                    variant="contained"
+                    onClick={() => setStep(0)}
+                  >
+                    Atras
+                  </Button>
+                </Box>
+              </Box>
+            )}
+          </>
+        )}
       </Box>
     </Modal>
   );
 };
 
 const UserData = ({ open, setOpenState }) => {
-  
+
 
   const [formValues, setFormValues] = useState({
     Nombre: '',
@@ -591,7 +952,7 @@ const UserData = ({ open, setOpenState }) => {
           Email: data.email || '',
           Imagen: data.imageUrl || '',
         });
-       
+
       }
     }
   }, [open]);
@@ -599,10 +960,10 @@ const UserData = ({ open, setOpenState }) => {
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     let valueSanitized = value;
-    if(name !== 'Imagen'){
+    if (name !== 'Imagen') {
       valueSanitized = sanitizeInput(value);
     }
-    else if(!checkIMGByURL(value)){
+    else if (!checkIMGByURL(value)) {
       valueSanitized = '';
     }
 
@@ -659,7 +1020,7 @@ const UserData = ({ open, setOpenState }) => {
         width: '27em',
         bgcolor: 'background.paper',
         border: '1px solid #000',
-        borderRadius: 2,
+        borderRadius: '16px',
         height: 'fit-content',
         backgroundImage: `${im}`,
         backgroundSize: 'cover',
@@ -677,10 +1038,10 @@ const UserData = ({ open, setOpenState }) => {
         </Typography>
 
         <Box>
-          <InputField label={"Nombre"} placeholder={""} onChangeMethod={handleInputChange} values={formValues} />
-          <InputField label={"Apellido"} placeholder={""} onChangeMethod={handleInputChange} values={formValues} />
-          <InputField label={"Email"} placeholder={""} onChangeMethod={handleInputChange} values={formValues} />
-          <InputField label={"Imagen"} placeholder={""} onChangeMethod={handleInputChange} values={formValues} />
+          <InputField label={"Email"} placeholder={""} onChangeMethod={handleInputChange} values={formValues}  disabled={true} />
+          <InputField label={"Nombre"} placeholder={""} onChangeMethod={handleInputChange} values={formValues}  disabled={false} />
+          <InputField label={"Apellido"} placeholder={""} onChangeMethod={handleInputChange} values={formValues}  disabled={false} />
+          <InputField label={"Imagen"} placeholder={""} onChangeMethod={handleInputChange} values={formValues}  disabled={false} />
         </Box>
 
         <Button
@@ -723,10 +1084,12 @@ const Menu = () => {
   const [openLogin, setOpenLogin] = useState(false);
   const [openSignin, setOpenSignin] = useState(false);
   const [openUserData, setOpenUserData] = useState(false);
+  const [openLogout, setOpenLogout] = useState(false);
 
   const handleOpenLogin = () => setOpenLogin(true);
 
   const handleOpenSignin = () => setOpenSignin(true);
+  const handleOpenLogout = () => setOpenLogout(true);
 
   const handleOpenUserData = async () => {
     try {
@@ -751,7 +1114,6 @@ const Menu = () => {
     }
 
   }
-
 
 
   const navigate = useNavigate();
@@ -837,50 +1199,95 @@ const Menu = () => {
           </Button>
 
           <Popover
-            id={id}
-            open={open}
-            anchorEl={anchorEl}
-            onClose={handleClosePopover}
-            anchorOrigin={{
-              vertical: 'bottom',
-              horizontal: 'left',
-            }}
-            transformOrigin={{
-              vertical: 'top',
-              horizontal: 'left',
-            }}
-          >
-            <List>
-              <ListItem >
-                <Button
-                  sx={{
-                    paddingLeft: '2.75em', width: '100%', textAlign: 'left', color: 'var(--primary-color)',
-                    backgroundColor: 'var(--background-color)',
-                  }}
-                  onClick={handleOpenUserData}
-                >
-                  Modificar mis datos
-                </Button>
-              </ListItem>
-              <ListItem>
-                <Button
-                  sx={{
-                    width: '100%', textAlign: 'left', color: 'var(--primary-color)',
-                    backgroundColor: 'var(--background-color)',
-                  }}
-                  onClick={handleClickUser}
-                >
-                  Mis elecciones
-                </Button>
-              </ListItem>
-            </List>
-          </Popover>
+        id={id}
+        open={open}
+        anchorEl={anchorEl}
+        onClose={handleClosePopover}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'left',
+        }}
+      >
+        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', p: 2 }}>
+          <List sx={{ width: '100%' }}>
+            <ListItem sx={{ justifyContent: 'center' }}>
+              <Button
+                sx={{
+                  width: '100%',
+                  textAlign: 'left',
+                  color: 'var(--primary-color)',
+                  backgroundColor: 'var(--background-color)',
+                  padding: '0.75em 1.5em',
+                  borderRadius: '8px',
+                  fontFamily: 'Inter',
+                  fontWeight: 700,
+                  '&:hover': {
+                    backgroundColor: 'var(--primary-color)',
+
+                    color: 'var(--background-color)',
+                  },
+                }}
+                onClick={handleOpenUserData}
+              >
+                Modificar mis datos
+              </Button>
+            </ListItem>
+            <ListItem sx={{ justifyContent: 'center' }}>
+              <Button
+                sx={{
+                  width: '100%',
+                  textAlign: 'left',
+                  color: 'var(--primary-color)',
+                  backgroundColor: 'var(--background-color)',
+                  padding: '0.75em 1.5em',
+                  borderRadius: '8px',
+                  fontFamily: 'Inter',
+                  fontWeight: 700,
+                  '&:hover': {
+                    backgroundColor: 'var(--primary-color)',
+                    color: 'var(--background-color)',
+                  },
+                }}
+                onClick={handleClickUser}
+              >
+                Mis elecciones
+              </Button>
+            </ListItem>
+            <ListItem sx={{ justifyContent: 'center' }}>
+              <Button
+                sx={{
+                  width: '100%',
+                  textAlign: 'left',
+                  color: 'var(--primary-color)',
+                  backgroundColor: 'var(--background-color)',
+                  padding: '0.75em 1.5em',
+                  borderRadius: '8px',
+                  fontFamily: 'Inter',
+                  fontWeight: 700,
+                  '&:hover': {
+                    backgroundColor: 'var(--primary-color)',
+                    color: 'var(--background-color)',
+                  },
+                }}
+                onClick={handleOpenLogout}
+              >
+                Cerrar sesión
+              </Button>
+            </ListItem>
+          </List>
+        </Box>
+      </Popover>
 
         </>
       )}
       <Signin openState={openSignin} setOpenState={setOpenSignin} />
       <Login open={openLogin} setOpenState={setOpenLogin} />
       <UserData open={openUserData} setOpenState={setOpenUserData} />
+      <ModalLogout open={openLogout} setOpenState={setOpenLogout}/>
     </div>
   );
 }
