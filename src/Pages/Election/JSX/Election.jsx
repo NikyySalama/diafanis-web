@@ -64,10 +64,14 @@ const Election = () => {
         </Box>
       ) : (
         <>
+         <Box sx={{ flex: '1 0 auto' }}>
           <Menu />
           <Title content={election.title} />
           <MainContent />
+          </Box>
+          <Box sx={{ flexShrink: 0 }}>
           <Footer />
+          </Box>
         </>
       )}
     </div>

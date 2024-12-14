@@ -1,9 +1,16 @@
 import React from 'react';
 import './Footer.css';
 import Typography from '@mui/material/Typography';
+import { Box } from "@mui/material";
 const Footer = () => {
   return (
-    <div className="footer">
+    <Box sx={{
+      width: '100%',
+      backgroundColor: '#D3D3D3',
+      padding: '1em 0',
+      textAlign: 'center',
+      boxShadow: '0 -2px 5px rgba(0, 0, 0, 0.1)',
+    }} >
       <Typography
         sx={{
           margin: '0 auto',
@@ -15,7 +22,7 @@ const Footer = () => {
       >
         Software distribuído por Diafanis Co. | Todos los derechos reservados
       </Typography>
-    </div>
+    </Box>
   );
 }  
 

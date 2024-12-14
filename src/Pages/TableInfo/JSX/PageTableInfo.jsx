@@ -5,7 +5,7 @@ import Title from "../../Election/JSX/Title";
 import Menu from "../../../Common/Menu";
 import MainContent from "./MainContent";
 import { useState, useEffect } from 'react';
-
+import Box from '@mui/material/Box';
 const PageTableInfo = () => {
 
   const [table, setTable] = useState(null);
@@ -58,10 +58,14 @@ const PageTableInfo = () => {
 
   return (
     <div className="PageTableInfo">
+        <Box sx={{ flex: '1 0 auto' }}>
       <Menu />
       <Title content={`Mesa ${tableUuid}`} />
       <MainContent  /> {/* Pass formulas as a prop */}
+      </Box>
+      <Box sx={{ flexShrink: 0 }}>
       <Footer />
+      </Box>
     </div>
   );
 };
