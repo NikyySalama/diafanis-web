@@ -6,6 +6,8 @@ import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import ElectionModal from '../../ModalElectionRegistration/ElectionModal';
 import './ElectionInfo.css';
+import sanitizeInput from '../../../Common/validatorInput';
+import ErrorLimitModal from '../ErrorLimitModal';
 
 const formatDate = (dateString) => {
     if (!dateString) return { date: 'Fecha no disponible', time: '' };
@@ -24,6 +26,7 @@ const ElectionInfo = () => {
     const { electionId, electionEditable } = useElection();
     const [info, setInfo] = useState({});
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [modalErrorData, setErrorModalData] = useState({ isOpen: false, message: '', maxAllowed: null });
 
     const fetchInfo = async () => {
         try {
@@ -64,6 +67,56 @@ const ElectionInfo = () => {
         }
     }, [electionId]);
 
+    const handleAddPosition = async (position, electionUuid) => {
+        const positionToSend = {
+          title: sanitizeInput(position.title),
+          description: '',
+          electionUuid: electionUuid,
+        };
+    
+        try {
+          let response;
+          if (position.uuid) {
+            console.log("uuid: ", position.uuid);
+            // Si la posición ya tiene un uuid, hacemos un PUT
+            response = await fetch(`${process.env.REACT_APP_API_URL}/api/electionPositions/${position.uuid}`, {
+              method: 'PUT',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization' : `Bearer ${sessionStorage.getItem('jwt')}`,
+              },
+              body: JSON.stringify(positionToSend),
+            });
+          } else {
+            // Si la posición no tiene uuid, hacemos un POST
+            response = await fetch(`${process.env.REACT_APP_API_URL}/api/electionPositions`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization' : `Bearer ${sessionStorage.getItem('jwt')}`,
+              },
+              body: JSON.stringify(positionToSend),
+            });
+          }
+    
+          if (response.ok) {
+            const savedPosition = await response.json();
+          } else {
+            const responseBody = await response.json().catch(() => null);
+            if (responseBody?.message === "El número total de posiciones excede el límite permitido.") {
+              setErrorModalData({
+                isOpen: true,
+                message: responseBody.message,
+                maxAllowed: responseBody.maxAllowed,
+              });
+            }
+            throw new Error(`Error en la agregación de posición: ${response.status}`);
+          }
+        } catch (error) {
+          console.error('Error en la solicitud:', error);
+        }
+    };
+
     const openModal = () => {
         if (electionEditable) setIsModalOpen(true);
         else alert('La elección ya no es editable.');
@@ -75,7 +128,8 @@ const ElectionInfo = () => {
     const end = formatDate(info.endsAt);
 
     return (
-        <Box
+        <>
+            <Box
             sx={{
                 padding: 4,
                 maxWidth: 600,
@@ -174,9 +228,18 @@ const ElectionInfo = () => {
                 show={isModalOpen}
                 onClose={closeModal}
                 onAddElection={fetchInfo}
+                handleAddPosition={handleAddPosition}
                 initialData={info}
             />
         </Box>
+        
+        <ErrorLimitModal
+            isOpen={modalErrorData.isOpen}
+            message={modalErrorData.message}
+            maxAllowed={modalErrorData.maxAllowed}
+            onClose={() => setErrorModalData({ ...modalErrorData, isOpen: false })}
+        />
+        </>
     );
 };
 

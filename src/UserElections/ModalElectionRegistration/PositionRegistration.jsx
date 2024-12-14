@@ -2,9 +2,8 @@ import React, { useState, useEffect } from 'react';
 import './PositionRegistration.css';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ReplayIcon from '@mui/icons-material/Replay';
-import sanitizeInput from '../../Common/validatorInput';
 
-const PositionRegistration = ({ onClose, electionId, initialPositions }) => {
+const PositionRegistration = ({ onClose, initialPositions, handleAddPosition }) => {
   const [positions, setPositions] = useState([{ title: '', uuid: null }]);
   const [lastRemoved, setLastRemoved] = useState(null); // Para el undo
 
@@ -30,51 +29,11 @@ const PositionRegistration = ({ onClose, electionId, initialPositions }) => {
     setPositions([...positions, { title: '', uuid: null }]);
   };
 
-  const handleAddPosition = async (position) => {
-    const positionToSend = {
-      title: sanitizeInput(position.title),
-      description: '',
-      electionUuid: electionId,
-    };
-
-    try {
-      let response;
-      if (position.uuid) {
-        console.log("uuid: ", position.uuid);
-        // Si la posición ya tiene un uuid, hacemos un PUT
-        response = await fetch(`${process.env.REACT_APP_API_URL}/api/electionPositions/${position.uuid}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization' : `Bearer ${sessionStorage.getItem('jwt')}`,
-          },
-          body: JSON.stringify(positionToSend),
-        });
-      } else {
-        // Si la posición no tiene uuid, hacemos un POST
-        response = await fetch(`${process.env.REACT_APP_API_URL}/api/electionPositions`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization' : `Bearer ${sessionStorage.getItem('jwt')}`,
-          },
-          body: JSON.stringify(positionToSend),
-        });
-      }
-
-      if (response.ok) {
-        const savedPosition = await response.json();
-      } else {
-        console.error('Error al guardar la posición:', response.statusText);
-      }
-    } catch (error) {
-      console.error('Error en la solicitud:', error);
-    }
-  };
-
   const handleSubmit = (e) => {
     e.preventDefault();
-    positions.forEach((position) => handleAddPosition(position));
+    console.log("handleAddPosition en PositionRegistration:", handleAddPosition);
+
+    positions?.forEach((position) => handleAddPosition(position));
     sessionStorage.setItem('electionInProgress', 'false');
     onClose();
   };

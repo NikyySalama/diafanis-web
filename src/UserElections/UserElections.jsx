@@ -4,11 +4,15 @@ import './UserElections.css';
 import ElectionModal from './ModalElectionRegistration/ElectionModal';
 import NavbarUserElection from './NavbarUserElection';
 import CustomTable from './CustomTable';
+import sanitizeInput from '../Common/validatorInput';
+import ErrorLimitModal from './Election/ErrorLimitModal';
 
 const UserElections = () => {
   const [elections, setElections] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalErrorData, setErrorModalData] = useState({ isOpen: false, message: '', maxAllowed: null });
   const navigate = useNavigate();
+
   useEffect(() => {
     const isLoggedIn = sessionStorage.getItem('jwt'); // Example check
     if (!isLoggedIn) {
@@ -81,7 +85,57 @@ const UserElections = () => {
     }
   };  
 
-  const openModal = () => setIsModalOpen(true);
+  const handleAddPosition = async (position, electionUuid) => {
+    const positionToSend = {
+      title: sanitizeInput(position.title),
+      description: '',
+      electionUuid: electionUuid,
+    };
+
+    try {
+      let response;
+      if (position.uuid) {
+        console.log("uuid: ", position.uuid);
+        // Si la posición ya tiene un uuid, hacemos un PUT
+        response = await fetch(`${process.env.REACT_APP_API_URL}/api/electionPositions/${position.uuid}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization' : `Bearer ${sessionStorage.getItem('jwt')}`,
+          },
+          body: JSON.stringify(positionToSend),
+        });
+      } else {
+        // Si la posición no tiene uuid, hacemos un POST
+        response = await fetch(`${process.env.REACT_APP_API_URL}/api/electionPositions`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization' : `Bearer ${sessionStorage.getItem('jwt')}`,
+          },
+          body: JSON.stringify(positionToSend),
+        });
+      }
+
+      if (response.ok) {
+        const savedPosition = await response.json();
+      } else {
+        const responseBody = await response.json().catch(() => null);
+        if (responseBody?.message === "El número total de posiciones excede el límite permitido.") {
+          setErrorModalData({
+            isOpen: true,
+            message: responseBody.message,
+            maxAllowed: responseBody.maxAllowed,
+          });
+        }
+        throw new Error(`Error en la agregación de posición: ${response.status}`);
+      }
+    } catch (error) {
+      console.error('Error en la solicitud:', error);
+    }
+  };
+
+  const openModal = () => {setIsModalOpen(true); console.log("handleAddPosition en UserElections:", handleAddPosition); }
   const closeModal = () => setIsModalOpen(false);
 
   const columns = [
@@ -94,13 +148,6 @@ const UserElections = () => {
     <div>
       <NavbarUserElection />
       <div className="my-elections">
-      <div className="my-elections-header">
-        {/*<h1 className="my-elections-title">Sus Elecciones</h1>
-        <button className="add-election-button" onClick={openModal}>
-          Crear Elección
-        </button>*/}
-      </div>
-
         <CustomTable
           title="Elecciones"
           columns={columns}
@@ -114,6 +161,14 @@ const UserElections = () => {
           show={isModalOpen}
           onClose={closeModal}
           onAddElection={fetchElections}
+          handleAddPosition={handleAddPosition}
+        />
+
+        <ErrorLimitModal
+          isOpen={modalErrorData.isOpen}
+          message={modalErrorData.message}
+          maxAllowed={modalErrorData.maxAllowed}
+          onClose={() => setErrorModalData({ ...modalErrorData, isOpen: false })}
         />
       </div>
     </div>

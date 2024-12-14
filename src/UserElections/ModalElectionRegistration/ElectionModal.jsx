@@ -3,7 +3,7 @@ import { Modal } from 'react-bootstrap';
 import ElectionRegistration from './ElectionRegistration';
 import PositionRegistration from './PositionRegistration';
 
-const ElectionModal = ({ show, onClose, onAddElection, initialData }) => {
+const ElectionModal = ({ show, onClose, onAddElection, handleAddPosition, initialData }) => {
   const [modalContent, setModalContent] = useState('election');
   const [addedElection, setAddedElection] = useState(null);
 
@@ -26,6 +26,7 @@ const ElectionModal = ({ show, onClose, onAddElection, initialData }) => {
 
       console.log("new election: ", newElection);
       if(initialData){
+        delete newElection.planLimit;
         sessionStorage.setItem('updatingElection', 'true');
       }
       else{
@@ -39,18 +40,32 @@ const ElectionModal = ({ show, onClose, onAddElection, initialData }) => {
         },
         body: JSON.stringify(newElection),        
       });
+
+      console.log("new election: ", newElection);
       
       if (response.ok) {
         const savedElection = await response.json();
         onAddElection(); // Actualizar la lista de elecciones
         setAddedElection(savedElection);
       } else {
-        console.error('Error al guardar la elección:', response.statusText);
+        const responseBody = await response.json().catch(() => null);
+        console.error('Error al guardar la elección:', {
+          status: response.status,
+          statusText: response.statusText,
+          errorBody: responseBody,
+        });
       }
     } catch (error) {
       console.error('Error en la solicitud:', error);
     }
   };
+
+  const handleAddPositionHere = async (position) => {
+    console.log(handleAddPosition);
+    if (addedElection) {
+      await handleAddPosition(position, addedElection.uuid);
+    }
+  }
 
   return (
     <Modal show={show} onHide={handleClose} centered>
@@ -69,9 +84,9 @@ const ElectionModal = ({ show, onClose, onAddElection, initialData }) => {
         ) : (
           addedElection ? (
             <PositionRegistration 
-              onClose={handleClose} 
-              electionId={addedElection.uuid} 
+              onClose={handleClose}
               initialPositions={initialData?.positions || []}  // Asegúrate de que no falle si es undefined
+              handleAddPosition={handleAddPositionHere}
               />
           ) : (
             <p>Cargando...</p>
