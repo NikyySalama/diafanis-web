@@ -6,14 +6,18 @@ import Menu from "../../../Common/Menu";
 import MainContent from "./MainContent";
 import { useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
+import { Button } from "@mui/material";
+import { useNavigate } from 'react-router-dom';
 const PageTableInfo = () => {
 
   const [table, setTable] = useState(null);
   const [loading, setLoading] = useState(true);
-
+ const navigate = useNavigate();
   // Retrieve tableUuid from sessionStorage
   const tableUuid = sessionStorage.getItem('tableUuid');
-
+  const goBack = () => {
+    navigate(`/election`);
+  }
   useEffect(() => {
     // Define the fetchData function to get table data
     const fetchData = async () => {
@@ -58,14 +62,21 @@ const PageTableInfo = () => {
 
   return (
     <div className="PageTableInfo">
-        <Box sx={{ flex: '1 0 auto' }}>
-      <Menu />
+    <Box sx={{display:'flex',flexDirection:'column' ,flex: '1 0 auto' }}>
+      <Menu/>
+      <Box sx={{paddingTop:'4em',paddingLeft:'0.5em',display:'flex',justifyContent:'flex-start',alignItems:'center'}}>
+        <Button 
+         onClick={goBack}
+        sx={{  color: 'var(--primary-color)'}}>
+         Volver
+            </Button>
+         </Box>
       <Title content={`Mesa ${tableUuid}`} />
       <MainContent  /> {/* Pass formulas as a prop */}
       </Box>
       <Box sx={{ flexShrink: 0 }}>
       <Footer />
-      </Box>
+    </Box>
     </div>
   );
 };

@@ -6,12 +6,16 @@ import MainContent from "./MainContent";
 import Menu from "../../../Common/Menu";
 import { useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
-
+import { useNavigate } from 'react-router-dom';
+import { Button } from "@mui/material";
 const Election = () => {
   const [election, setElection] = useState(null); // Initialize with null to handle loading states
   const [elecctionUuid, setElecctionUuid] = useState(null); // Initialize with null for the UUID
   const [loading, setLoading] = useState(true); // Add a loading state
-
+const navigate = useNavigate();
+  const goBack = () => {
+    navigate(`/`);
+  }
   useEffect(() => {
     const savedElectionId = sessionStorage.getItem('electionId');
     if (savedElectionId) {
@@ -64,8 +68,15 @@ const Election = () => {
         </Box>
       ) : (
         <>
-         <Box sx={{ flex: '1 0 auto' }}>
+           <Box sx={{display:'flex',flexDirection:'column' ,flex: '1 0 auto' }}>
           <Menu />
+          <Box sx={{paddingTop:'4em',paddingLeft:'0.5em',display:'flex',justifyContent:'flex-start',alignItems:'center'}}>
+        <Button 
+         onClick={goBack}
+        sx={{  color: 'var(--primary-color)'}}>
+         Volver
+            </Button>
+         </Box>
           <Title content={election.title} />
           <MainContent />
           </Box>

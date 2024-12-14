@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import '../CSS/MainContentTable.css';
 import { Box, Typography, Button, Snackbar, Divider } from '@mui/material';
 import Grid from '@mui/material/Grid2';
@@ -28,9 +29,9 @@ const TextContainer = ({ title, content, icon }) => {
   };
 
   return (
-    <Box sx={{ padding: '1em', marginBottom: '1em', border: '1px solid #ddd', borderRadius: '8px' }}>
+    <Box sx={{backgroundColor:'#fff', padding: '0.75em', margin: '1em', border: '1px solid #ddd', borderRadius: '16px' }}>
       <Grid container alignItems="center">
-        <Grid item xs>
+        <Grid>
           <Typography
             variant="h6"
             sx={{
@@ -40,13 +41,14 @@ const TextContainer = ({ title, content, icon }) => {
               whiteSpace: 'nowrap',
               overflow: 'hidden',
               textOverflow: 'ellipsis',
+              
             }}
           >
             {title}
           </Typography>
         </Grid>
         {icon && (
-          <Grid item>
+          <Grid>
             <Button
               variant="text"
               onClick={() => copyToClipboard(content)}
@@ -55,10 +57,20 @@ const TextContainer = ({ title, content, icon }) => {
           </Grid>
         )}
       </Grid>
-      <Divider sx={{ marginY: '0.5em' }} />
-      <Typography variant="body1" sx={{ color: 'var(--primary-color)' }}>
-        {content}
-      </Typography>
+      <Divider aria-hidden="true" sx={{ borderWidth: '1px', borderStyle: 'solid', borderColor: 'black', opacity: 0.2 }}/>
+    <Typography
+      variant="body1"
+      sx={{
+        color: 'var(--primary-color)',
+        overflowY: 'auto',
+        maxHeight: '4em',
+        paddingTop: '0.5em',
+        wordWrap: 'break-word',
+        margin: 0,
+      }}
+    >
+      {content}
+    </Typography>
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={1000}
@@ -89,21 +101,21 @@ const CarouselComponent = ({ table, positions, forms, display }) => {
   };
 
   return (
-    <Box sx={{ padding: '1em', marginBottom: '1em', border: '1px solid #ddd', borderRadius: '8px' }}>
-      <Box sx={{ background: 'var(--background-color)' }}>
+    <Box sx={{padding: '0.75em', margin: '1em',border: '1px solid #ddd',  display: 'flex', flexDirection: 'column',borderRadius: '16px',background:'var(--background-color)', flexGrow: 1 }}>
         <Carousel
           navButtonsAlwaysVisible
           indicators={true}
           animation="slide"
           autoPlay={false}
           cycleNavigation={false}
+          sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}
         >
           {positions && Object.entries(positions).map(([positionId, position], index) => (
-            <Box key={index} className="carouselSlide" sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <Box key={index} className="carouselSlide" sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center',height:'40em' }}>
               <Typography variant="h5" className="slideTitulo" sx={{ textAlign: 'center' }}>
                 {position.title || 'Unknown Position'}
               </Typography>
-              <Box sx={{ maxHeight: '300px', overflowY: 'auto', padding: '1em' }}>
+              <Box sx={{ overflowY: 'auto', padding: '1em',display:'flex', flexGrow: 1 }}>
                 {display && table.results && table.results[positionId] ? (
                   Object.entries(table.results[positionId]).map(([formulaId, votes]) => (
                     <ItemFormulaResult
@@ -146,12 +158,13 @@ const CarouselComponent = ({ table, positions, forms, display }) => {
           message={snackbarMessage}
           anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
         />
-      </Box>
+    
     </Box>
   );
 };
 
 const MainContent = () => {
+  const navigate = useNavigate();
   const [positions, setPositions] = useState(null);
   const [table, setTable] = useState(null);
   const [forms, setForms] = useState(null);
@@ -304,83 +317,78 @@ const MainContent = () => {
   }
 
   return (
-    <Grid container rowSpacing={2} columnSpacing={{ xs: 2, sm: 3, md: 4 }} columns={16}>
-      <Grid item xs={16}>
-        <Grid >
-          <Grid >
+    <Grid container rowSpacing={2} columnSpacing={{ xs: 2, sm: 3, md: 4 }} columns={16} sx={{ height: '100%' }}>
+      <Grid size={16} sx={{ display: 'flex', flexDirection: 'row', height: '50%' }}>
+        <Grid size={8} sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+          <Grid>
             <TextContainer title="Ubicación" content={`${table.location.country}, ${table.location.state}, ${table.location.city}, ${table.location.address}`} />
           </Grid>
-          <Grid >
+          <Grid>
             <TextContainer title="Clave pública" content={publicKey} icon={true} />
           </Grid>
           <Grid>
             <TextContainer title="Firma" content={hash} icon={true} />
           </Grid>
-        </Grid>
-      </Grid>
-
-      <Grid >
-        <Grid container spacing={2}>
-          <Grid>
-            <CarouselComponent table={table} positions={positions} forms={forms} display={display} />
-          </Grid>
-          <Grid >
-            <Grid container spacing={2}>
-              <Grid >
-                <InputField
-                  label='Clave Publica'
-                  placeholder="Clave publica"
-                  onChangeMethod={handleInputChange}
-                  values={formValues}
-                  name='Clave Publica'
-                  disabled={false}
-                />
-              </Grid>
-              <Grid >
-                <InputField
-                  label="Firma"
-                  placeholder="Firma"
-                  onChangeMethod={handleInputChange}
-                  values={formValues['Firma']}
-                  name="Firma"
-                  disabled={false}
-                />
-              </Grid>
-              <Grid >
-                <InputField
-                  label="Resultados"
-                  placeholder="Resultados"
-                  onChangeMethod={handleInputChange}
-                  values={formValues['Resultados']}
-                  name="Resultados"
-                  disabled={false}
-                />
-              </Grid>
-              <Grid  sx={{ display: 'flex', justifyContent: 'center' }}>
-                <Button
-                  sx={{
-                    color: 'var(--background-color)',
-                    backgroundColor: 'var(--primary-color)',
-                    height: '3em',
-                    padding: '0.5em 1em',
-                    cursor: 'pointer',
-                    fontSize: '1em',
-                    fontFamily: 'Inter',
-                    fontWeight: 700,
-                    border: '0.25px solid black',
-                  }}
-                  variant="contained"
-                  onClick={handleVerification}
-                  disabled={!positions || !table || !forms || !formValues['Clave Publica'] || !formValues['Firma'] || !formValues['Resultados']}
-                >
-                  Validar acta
-                </Button>
-              </Grid>
+       
+         <Grid size={8} sx={{paddingLeft:'1em', display: 'flex', flexDirection: 'column' }}>
+          <Grid container spacing={2} sx={{ flexGrow: 1 }}>
+            <Grid size={8}>
+              <InputField
+                label='Clave Publica'
+                placeholder="Clave publica"
+                onChangeMethod={handleInputChange}
+                values={formValues}
+                name='Clave Publica'
+                disabled={false}
+              />
+            </Grid>
+            <Grid size={8}>
+              <InputField
+                label="Firma"
+                placeholder="Firma"
+                onChangeMethod={handleInputChange}
+                values={formValues['Firma']}
+                name="Firma"
+                disabled={false}
+              />
+            </Grid>
+            <Grid size={8}>
+              <InputField
+                label="Resultados"
+                placeholder="Resultados"
+                onChangeMethod={handleInputChange}
+                values={formValues['Resultados']}
+                name="Resultados"
+                disabled={false}
+              />
+            </Grid>
+            <Grid size={8}>
+              <Button
+                sx={{
+                  color: 'var(--background-color)',
+                  backgroundColor: 'var(--primary-color)',
+                  height: '3em',
+                  cursor: 'pointer',
+                  fontSize: '1em',
+                  fontFamily: 'Inter',
+                  fontWeight: 700,
+                  border: '0.25px solid black',
+                }}
+                variant="contained"
+                onClick={handleVerification}
+                disabled={!positions || !table || !forms || !formValues['Clave Publica'] || !formValues['Firma'] || !formValues['Resultados']}
+              >
+                Validar acta
+              </Button>
             </Grid>
           </Grid>
+         
         </Grid>
       </Grid>
-
+      <Grid sx={{  display: 'flex',flexGrow: 1, }}>
+            <CarouselComponent table={table} positions={positions} forms={forms} display={display} />
+          </Grid>
+</Grid>
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={2000}
