@@ -180,6 +180,7 @@ const MainContent = () => {
 
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarBgColor, setSnackbarBgColor] = useState('');
 
   const handleSnackbarClose = () => {
     setSnackbarOpen(false);
@@ -304,8 +305,10 @@ const MainContent = () => {
 
     if (isVerified) {
       setSnackbarMessage("El acta está inalterada");
+      setSnackbarBgColor('green');
     } else {
       setSnackbarMessage("El acta está alterada");
+      setSnackbarBgColor('red');
     }
     setSnackbarOpen(true);
   };
@@ -393,6 +396,12 @@ const MainContent = () => {
         onClose={handleSnackbarClose}
         message={snackbarMessage}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        ContentProps={{
+          sx: {
+            backgroundColor: snackbarBgColor,
+            fontSize: '1.2em',
+          },
+        }}
       />
     </Grid>
   );
