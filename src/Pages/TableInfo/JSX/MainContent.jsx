@@ -292,13 +292,11 @@ const MainContent = () => {
     // console.log("hikj",modifiedString);
     let str = message;
 
-    // Use regular expression to remove the quotes around the keys
-    str = str.replace(/"([^"]+)":/g, '$1:');
+    str = str.replace(/["' ]/g, '');
 
     // Remove only the initial space at the start
     str = str.trimStart();
     str = str.toString();
-    str = str.replace(/:/g, ': ');
     console.log(str);
     const isVerified = await verifyHash(formattedPublicKey, str, signature);
 
