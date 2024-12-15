@@ -112,7 +112,9 @@ const MainContent = () => {
   useEffect(() => {
     if (election && election.uuid && display) {
       const fetchData = async () => {
+
         try {
+          await fetchVoters();
           const response = await fetch(`${process.env.REACT_APP_API_URL}/api/elections/${election.uuid}/results`, {
             method: 'GET',
             headers: {
@@ -134,7 +136,7 @@ const MainContent = () => {
               newTotalVotes[positionId] = Object.values(positionResults).reduce((acc, votes) => acc + votes, 0);
             });
             setTotalVotes(newTotalVotes);
-          await fetchVoters();
+         
 
           }
         } catch (error) {
