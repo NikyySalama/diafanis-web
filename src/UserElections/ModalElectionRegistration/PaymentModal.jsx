@@ -17,33 +17,6 @@ const AmountModal = ({ open, onClose, onConfirm }) => {
   const [preferenceId, setPreferenceId] = useState("");
   const [paymentLink, setPaymentLink] = useState("");
   const [loading, setLoading] = useState(false);
-  const [freePlan, setFreePlan] = useState(false);
-
-  useEffect(() => {
-      const fetchData = async () => {
-        try {
-          const response = await fetch(`${process.env.REACT_APP_API_URL}/api/freePlanLimits`, {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${sessionStorage.getItem('jwt')}`,
-            },
-          });
-  
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
-  
-          const data = await response.json();
-          setFreePlan(data);
-        } catch (error) {
-          console.error('Error fetching data:', error);
-        }
-      };
-  
-      fetchData();
-    }, []);
-
 
   const handleConfirm = () => {
     onConfirm({
@@ -112,18 +85,6 @@ const AmountModal = ({ open, onClose, onConfirm }) => {
 
   const handleNextStep = async () => {
     if (step === 2) {
-      if(step === 2 && freePlan){
-        if(persons[1] <= freePlan.persons && formulasByParty[1] <= freePlan.formulasByParty && parties[1] <= freePlan.parties && positions[1] <= freePlan.positions && votingTables[1] <= freePlan.votingTables){
-          sessionStorage.setItem('planLimit', JSON.stringify({
-            persons: persons[1],
-            formulasByParty: formulasByParty[1],
-            parties: parties[1],
-            positions: positions[1],
-            votingTables: votingTables[1],
-          }));
-          onClose();
-        }
-      }
       setLoading(true);
       setStep(step + 1);
       await fetchPaymentLink();
