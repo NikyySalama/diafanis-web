@@ -27,7 +27,7 @@ const CarouselComponent = ({ results, positions, formulaMap, display }) => {
             <Typography variant="h5" className="slideTitulo" sx={{ textAlign: 'center' }}>
               {position.title || 'Unknown Position'}
             </Typography>
-            <Box sx={{ overflowY: 'auto', padding: '1em', display: 'flex', flexGrow: 1, width: '100%' }}>
+            <Box sx={{ overflowY: 'auto', padding: '1em', display: 'flex',flexDirection:'column', flexGrow: 1, width: '100%' }}>
               {display && results && results[positionId] ? (
                 Object.entries(results[positionId]).map(([formulaId, votes]) => (
                   <ItemFormulaResult

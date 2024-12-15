@@ -7,7 +7,7 @@ import Box from '@mui/material/Box';
 
 const GridCard = ({ searchTerm }) => {
   const [cards, setCards] = useState([]);
-
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -24,6 +24,7 @@ const GridCard = ({ searchTerm }) => {
 
         const data = await response.json();
         setCards(data);
+        setLoading(false);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -59,7 +60,7 @@ const GridCard = ({ searchTerm }) => {
       justifyContent: 'center'
     }}>
       <Typography color='var(--primary-color)' align='center' variant="h3">
-        {searchTerm ? `No se encontraron elecciones para "${searchTerm}"` : 'Lo sentimos, de momento no hay ninguna elección creada'}
+        {searchTerm ? `No se encontraron elecciones para "${searchTerm}"` : {loading} ? 'Cargando...' : 'No hay elecciones disponibles'}
       </Typography>
     </Box>
   );
