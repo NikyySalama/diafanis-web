@@ -52,7 +52,7 @@ const ElectionRegistration = ({ handleAddElection, handleContinue, initialData }
         endsAt: '',
         username: sessionStorage.getItem('user'),
         planLimit: JSON.parse(sessionStorage.getItem('planLimit')),
-        paymentId : sessionStorage.getItem('paymentId'),
+        paymentId : sessionStorage.getItem('paymentId') || 8979879,
         imageUrl: '',
         allowBlankVote : false,
     });
@@ -69,7 +69,7 @@ const ElectionRegistration = ({ handleAddElection, handleContinue, initialData }
                 endsAt: initialData.endsAt || '',
                 username: initialData.username,
                 planLimit: initialData.planLimit,
-                paymentId: initialData.paymentId,
+                paymentId: initialData.paymentId ,
                 imageUrl: initialData.imageUrl || '',
                 allowBlankVote: initialData.allowBlankVote || false,
             });

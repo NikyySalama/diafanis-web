@@ -26,7 +26,6 @@ const ElectionModal = ({ show, onClose, onAddElection, handleAddPosition, initia
       console.log("initialData", initialData);
 
       if(initialData){
-        delete newElection.planLimit;
         sessionStorage.setItem('updatingElection', 'true');
       }
       else{
@@ -42,7 +41,7 @@ const ElectionModal = ({ show, onClose, onAddElection, handleAddPosition, initia
       });
 
       console.log("new election: ", newElection);
-      
+      sessionStorage.setItem('electionInProgress', 'false');
       if (response.ok) {
         const savedElection = await response.json();
         onAddElection(); // Actualizar la lista de elecciones
