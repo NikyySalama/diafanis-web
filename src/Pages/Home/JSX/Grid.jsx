@@ -7,9 +7,8 @@ import Box from '@mui/material/Box';
 
 const GridCard = ({ searchTerm }) => {
   const [cards, setCards] = useState([]);
-   sessionStorage.setItem('paymentDone', 'false')
-  useEffect(() => {
-    const fetchData = async () => {
+   sessionStorage.setItem('paymentDone', 'false')  
+   const fetchData = async () => {
       try {
         const response = await fetch(`${process.env.REACT_APP_API_URL}/api/elections`, {
           method: 'GET',
@@ -28,10 +27,10 @@ const GridCard = ({ searchTerm }) => {
         console.error('Error fetching data:', error);
       }
     };
-
+useEffect(() => {
     fetchData();
   }, []);
-
+ 
   const removeAccents = (str) => {
     return str.normalize("NFD").replace(/[\u0300-\u036f]/g, ""); // Elimina diacríticos
   };
