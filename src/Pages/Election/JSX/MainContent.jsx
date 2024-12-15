@@ -99,7 +99,7 @@ const MainContent = () => {
       
       const data = await response.json();
       data.people.forEach((person) => {
-        if(person.hasVoted !== null) {
+        if(person.hasVoted === true ) {
           setPeopleVoted(peopleVoted + 1);
         }
       }
