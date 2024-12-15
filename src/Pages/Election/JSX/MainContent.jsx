@@ -8,7 +8,7 @@ import List from '@mui/material/List';
 import Typography from '@mui/material/Typography';
 import Carousel from 'react-material-ui-carousel';
 
-const CarouselComponent = ({ results, positions, formulaMap, display, totalVotes,people }) => {
+const CarouselComponent = ({ results, positions, formulaMap, display, totalVotes, people }) => {
   return (
     <Box sx={{ padding: '0.75em', margin: '1em', marginTop: 0, border: '1px solid #ddd', display: 'flex', flexDirection: 'column', borderRadius: '16px', background: 'var(--background-color)', flexGrow: 1, width: '100%' }}>
       <Carousel
@@ -82,10 +82,9 @@ const MainContent = () => {
       const currentDate = new Date();
       const show = electionDate < currentDate;
       setDisplay(show);
-      sessionStorage.setItem('display', JSON.stringify(display));
+      sessionStorage.setItem('display', JSON.stringify(show));
     }
   }, [election]);
-
 
   const fetchVoters = async () => {
     try {
@@ -101,12 +100,13 @@ const MainContent = () => {
       }
       
       const data = await response.json();
+      let votedCount = 0;
       data.people.forEach((person) => {
         if(person.hasVoted === true ) {
-          setPeopleVoted(peopleVoted + 1);
+          votedCount += 1;
         }
-      }
-      );
+      });
+      setPeopleVoted(votedCount);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
@@ -115,7 +115,6 @@ const MainContent = () => {
   useEffect(() => {
     if (election && election.uuid && display) {
       const fetchData = async () => {
-
         try {
           await fetchVoters();
           const response = await fetch(`${process.env.REACT_APP_API_URL}/api/elections/${election.uuid}/results`, {
@@ -139,8 +138,6 @@ const MainContent = () => {
               newTotalVotes[positionId] = Object.values(positionResults).reduce((acc, votes) => acc + votes, 0);
             });
             setTotalVotes(newTotalVotes);
-         
-
           }
         } catch (error) {
           console.error('Error fetching data:', error);
