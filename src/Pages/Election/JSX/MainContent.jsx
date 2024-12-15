@@ -13,7 +13,7 @@ import Carousel from 'react-material-ui-carousel';
 
 const CarouselComponent = ({ results, positions, formulaMap, display }) => {
   return (
-    <Box sx={{ padding: '0.75em', margin: '1em', border: '1px solid #ddd', display: 'flex', flexDirection: 'column', borderRadius: '16px', background: 'var(--background-color)', flexGrow: 1, width: '100%' }}>
+    <Box sx={{ padding: '0.75em', margin: '1em',marginRight:'4em', border: '1px solid #ddd', display: 'flex', flexDirection: 'column', borderRadius: '16px', background: 'var(--background-color)', flexGrow: 1, width: '100%',maxHeight:'30em' }}>
       <Carousel
         navButtonsAlwaysVisible
         indicators={true}
@@ -23,7 +23,7 @@ const CarouselComponent = ({ results, positions, formulaMap, display }) => {
         sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', width: '100%' }}
       >
         {positions && Object.entries(positions).map(([positionId, position], index) => (
-          <Box key={index} className="carouselSlide" sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: '40em', width: '100%' }}>
+          <Box key={index} className="carouselSlide" sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
             <Typography variant="h5" className="slideTitulo" sx={{ textAlign: 'center' }}>
               {position.title || 'Unknown Position'}
             </Typography>
@@ -154,34 +154,33 @@ const MainContent = () => {
   };
 
   return (
-    <Box className='main-container' sx={{ display: 'flex', flexDirection: 'row', height: '100%' }}>
+    <Box sx={{maxWidth: '50%', minWidth: '50%', width: '100%', height: '80%', minHeight: '80%', minWidth: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'space-around', overflowY: 'auto' }}>
       {election ? (
         <>
-          <Box className='left-container' sx={{ width: '30%', padding: '1em', boxSizing: 'border-box' }}>
-            <Box sx={{ width: '70%', marginBottom: '10px' }}>
+          <Box sx={{ width: '50%', padding: '1em', boxSizing: 'border-box', display: 'flex', flexDirection: 'column', justifySelf: 'start', alignItems: 'center' }}>
+            <Box sx={{ width: '70%', marginBottom: '10px',borderRadius:'16px' }}>
               <input
                 type="text"
                 placeholder="Buscar mesa..."
                 value={searchTerm}
                 onChange={handleSearchChange}
-                className="search-input"
               />
             </Box>
-            <List sx={{ overflowY: 'auto', width: '100%', backgroundColor: '#FFFFFF', padding: '0' }} className='list-tables'>
-              {filteredTables && filteredTables.length > 0 ? (
-                filteredTables.map((table) => (
-                  <ItemMesa key={table.uuid} uuid={`${table.location.country}, ${table.location.state}, ${table.location.city}, ${table.location.address}`} />
-                ))
-              ) : (
-                <Typography variant="body1">No se encontraron mesas</Typography>
-              )}
-            </List>
+              <List sx={{ overflowY: 'auto', width: '100%', backgroundColor: '#FFFFFF', padding: '0', marginTop: '3%', boxShadow: '0 0.25em 0.5em rgba(0, 0, 0, 0.1)', paddingTop: '0.25%', height: '70%', minHeight: '30%', display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', minWidth: '70%', maxWidth: '70%',borderRadius:'16px' }}>
+                {filteredTables && filteredTables.length > 0 ? (
+                  filteredTables.map((table) => (
+                      <ItemMesa uuid={table.uuid} location={`${table.location.country}, ${table.location.state}, ${table.location.city}, ${table.location.address}`} />
+                  ))
+                ) : (
+                  <Typography variant="body1">No se encontraron mesas</Typography>
+                )}
+              </List>
           </Box>
-          <Box className='right-container' sx={{ width: '70%', padding: '1em', boxSizing: 'border-box' }}>
-            <Typography color='var(--primary-color)' variant='h4' className='carousel-title'>Resultados</Typography>
-            <Box sx={{ display: 'flex', flexGrow: 1, width: '100%' }}>
+
+
+          <Box sx={{padding:'1em', width: '40%', boxSizing: 'border-box', maxWidth: '40%', minWidth: '40%', height: '50%', minHeight: '50%', display: 'flex', flexDirection: 'column', justifyContent: 'start', alignItems: 'center' }}>
+            <Typography color='var(--primary-color)' variant='h4' sx={{paddingBottom:'0.75em', width: 'fit-content', color: '#020246', fontSize: 'calc(0.078125em + 2.5vw)', height: 'fit-content', marginTop: '0%' }}>Resultados</Typography>
               <CarouselComponent results={results} positions={positions} formulaMap={formulaMap} display={true} />
-            </Box>
           </Box>
         </>
       ) : (
