@@ -150,7 +150,8 @@ const ElectionInfo = () => {
             <Box display="flex" alignItems="center" gap={2} marginTop={2}>
         {/* Imagen circular */}
         <Box display="flex" alignItems="center" gap={1}>
-            <Box
+            {info.imageUrl &&
+                <Box
                 component="img"
                 src={info.imageUrl}
                 alt="Imágen de la elección"
@@ -161,7 +162,7 @@ const ElectionInfo = () => {
                     objectFit: 'cover',
                     marginBottom: '7px'
                 }}
-            />
+            />}
             {/* Título de la información */}
             <Typography variant="h5" color="textSecondary" sx = {{marginBottom: '7px'}}>
                 {info.title || 'Título no disponible'}
