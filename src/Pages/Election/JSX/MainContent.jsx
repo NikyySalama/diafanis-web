@@ -134,7 +134,7 @@ const MainContent = () => {
               newTotalVotes[positionId] = Object.values(positionResults).reduce((acc, votes) => acc + votes, 0);
             });
             setTotalVotes(newTotalVotes);
-            fetchVoters();
+          await fetchVoters();
 
           }
         } catch (error) {
