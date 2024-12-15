@@ -83,7 +83,7 @@ const MainContent = () => {
   }, [election]);
 
   useEffect(() => {
-    if (election && election.uuid) {
+    if (election && election.uuid && display) {
       const fetchData = async () => {
         try {
           const response = await fetch(`${process.env.REACT_APP_API_URL}/api/elections/${election.uuid}/results`, {
