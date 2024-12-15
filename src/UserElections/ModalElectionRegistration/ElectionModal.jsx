@@ -26,6 +26,7 @@ const ElectionModal = ({ show, onClose, onAddElection, handleAddPosition, initia
       console.log("initialData", initialData);
 
       if(initialData){
+        delete newElection.planLimit;
         sessionStorage.setItem('updatingElection', 'true');
       }
       else{
