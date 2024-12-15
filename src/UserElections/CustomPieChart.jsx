@@ -1,12 +1,7 @@
-import { useEffect } from 'react';
 import React from 'react';
 import { PieChart, Pie, Cell, Legend, ResponsiveContainer } from 'recharts';
 
 const CustomPieChart = ({pieData}) => {
-    useEffect(() => {
-        console.log('PieData actualizada:', pieData);
-    }, [pieData]);
-
     return(<ResponsiveContainer width="100%" height={400}>
         <PieChart>
             <Pie

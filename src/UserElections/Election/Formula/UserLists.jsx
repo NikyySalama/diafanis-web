@@ -302,7 +302,6 @@ const UserLists = () => {
     } catch (error) {
       console.error('Error en la solicitud:', error);
     }
-    console.log("formula subida: ", formulaDataToPatch);
   };
 
   const handleDeleteLists = async (formulas) => {

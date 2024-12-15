@@ -79,9 +79,10 @@ const ElectionRegistration = ({ handleAddElection, handleContinue, initialData }
     const handleChange = (e) => {
         const { name, value } = e.target;
         let valueSanitized = value;
-        if(name !== 'imagen' && name !== 'imageUrl' && name !== 'startsAt' && name !== 'endsAt'){
+        if(name !== 'imagen' && name !== 'imageUrl' && name !== 'startsAt' && name !== 'endsAt' && name != 'allowBlankVote'){
             valueSanitized = sanitizeInput(value)
         }
+        if(name === 'allowBlankVote') console.log('se cambio blank');
         setFormData({
             ...formData,
             [name]: valueSanitized,

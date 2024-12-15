@@ -42,7 +42,6 @@ export const postTable = async (table, electionId, setErrorModalData) => {
       });
       if (response.ok) {
         const savedTable = await response.json();
-        console.log('Mesa guardada:', savedTable);
         return true;
       } else {
         const errorBody = await response.json().catch(() => null);

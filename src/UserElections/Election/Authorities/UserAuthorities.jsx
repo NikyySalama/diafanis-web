@@ -127,7 +127,6 @@ const UserAuthorities = () => {
     };
 
     const handleDeleteAuthoritiesSelected = async (selectedAuthorities) => {
-        console.log('autoridades de mesa: ', selectedAuthorities);
         try {
             for (const [rowUuid, docNumbers] of Object.entries(selectedAuthorities)) {
                 for (const docNumber of docNumbers) {
