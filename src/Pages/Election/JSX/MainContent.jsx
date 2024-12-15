@@ -25,7 +25,10 @@ const CarouselComponent = ({ results, positions, formulaMap, display, totalVotes
               {position.title || 'Unknown Position'}
             </Typography>
             <Typography variant="body1" sx={{ textAlign: 'center', marginTop: '0.5em' }}>
-              Votos en blanco: {people - totalVotes[positionId] || 0}
+              Votos : {totalVotes[positionId] || 0}
+            </Typography>
+            <Typography variant="body1" sx={{ textAlign: 'center', marginTop: '0.5em' }}>
+              Votos en blanco: {people}
             </Typography>
             <Box sx={{ overflowY: 'auto', padding: '1em', display: 'flex', flexDirection: 'column', flexGrow: 1, width: '100%' }}>
               {display && results && results[positionId] ? (
