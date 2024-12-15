@@ -4,13 +4,48 @@ import { useState, useEffect } from 'react';
 import SearchField from './SearchField';
 import ItemMesa from './ItemMesa';
 
-import { Carousel } from '@mantine/carousel';
+import Box from '@mui/material/Box';
 import ItemFormulaResult from './ItemFormulaResult';
-import { MantineProvider } from '@mantine/core';
+
 import List from '@mui/material/List';
 import Typography from '@mui/material/Typography';
+import Carousel from 'react-material-ui-carousel';
 
-import '@mantine/carousel/styles.css';
+const CarouselComponent = ({ results, positions, formulaMap, display }) => {
+  return (
+    <Box sx={{ padding: '0.75em', margin: '1em', border: '1px solid #ddd', display: 'flex', flexDirection: 'column', borderRadius: '16px', background: 'var(--background-color)', flexGrow: 1, width: '100%' }}>
+      <Carousel
+        navButtonsAlwaysVisible
+        indicators={true}
+        animation="slide"
+        autoPlay={false}
+        cycleNavigation={false}
+        sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', width: '100%' }}
+      >
+        {positions && Object.entries(positions).map(([positionId, position], index) => (
+          <Box key={index} className="carouselSlide" sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: '40em', width: '100%' }}>
+            <Typography variant="h5" className="slideTitulo" sx={{ textAlign: 'center' }}>
+              {position.title || 'Unknown Position'}
+            </Typography>
+            <Box sx={{ overflowY: 'auto', padding: '1em', display: 'flex', flexGrow: 1, width: '100%' }}>
+              {display && results && results[positionId] ? (
+                Object.entries(results[positionId]).map(([formulaId, votes]) => (
+                  <ItemFormulaResult
+                    key={formulaId}
+                    votes={votes}
+                    imgUrl={formulaMap[formulaId]?.party?.logoUrl}
+                  />
+                ))
+              ) : (
+                <Typography variant="body1">La elección aun no ha terminado</Typography>
+              )}
+            </Box>
+          </Box>
+        ))}
+      </Carousel>
+    </Box>
+  );
+};
 
 const MainContent = () => {
   const [formulaMap, setFormulaMap] = useState({});
@@ -110,7 +145,8 @@ const MainContent = () => {
   }, [election]);
 
   const filteredTables = election.votingTables?.filter((table) => {
-    return table.uuid?.toLowerCase().includes(searchTerm.toLowerCase());
+    const locationString = `${table.location.country}, ${table.location.state}, ${table.location.city}, ${table.location.address}`;
+    return locationString.toLowerCase().includes(searchTerm.toLowerCase());
   });
 
   const handleSearchChange = (e) => {
@@ -118,67 +154,40 @@ const MainContent = () => {
   };
 
   return (
-    <MantineProvider withGlobalStyles withNormalizeCSS>
-      <div className='main-container'>
-        {election ? (
-          <>
-            <div className='left-container'>
+    <Box className='main-container' sx={{ display: 'flex', flexDirection: 'row', height: '100%' }}>
+      {election ? (
+        <>
+          <Box className='left-container' sx={{ width: '30%', padding: '1em', boxSizing: 'border-box' }}>
+            <Box sx={{ width: '70%', marginBottom: '10px' }}>
               <input
                 type="text"
                 placeholder="Buscar mesa..."
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)} 
+                onChange={handleSearchChange}
                 className="search-input"
-                style={{ 
-                  width: '70%',
-                  marginBottom: '10px',
-                  padding: '10px',
-                  boxSizing: 'border-box'
-                }}
               />
-              <List sx={{ overflowY: 'auto', width: '100%', backgroundColor: '#FFFFFF', padding: '0' }} className='list-tables'>
-                {filteredTables && filteredTables.length > 0 ? (
-                  filteredTables.map((table) => (
-                    <ItemMesa key={table.uuid} uuid={table.uuid} />
-                  ))
-                ) : (
-                  <Typography variant="body1">No se encontraron mesas</Typography>
-                )}
-              </List>
-            </div>
-            <div className='right-container'>
-              <Typography color='var(--primary-color)' variant='h4' className='carousel-title'>Resultados</Typography>
-              {results && Object.keys(results).length > 0 ? (
-                <Carousel slideSize="100%" slideGap="md" align="start" withControls withIndicators>
-                  {Object.entries(results).map(([positionId, formulas]) => (
-                    <Carousel.Slide key={positionId} className="carouselSlide">
-                      <Typography variant="h5" className="slideTitulo">
-                        {positions[positionId]?.title || 'Unknown Position'}
-                      </Typography>
-                      {display ? (
-                        Object.entries(formulas).map(([formulaId, votes]) => (
-                          <ItemFormulaResult
-                            key={formulaId}
-                            votes={votes}
-                            imgUrl={formulaMap[formulaId]?.party?.logoUrl}
-                          />
-                        ))
-                      ) : (
-                        <Typography sx={{ color: 'var(--primary-color)' }} variant="body1">Lo sentimos, la elección aún no ha terminado</Typography>
-                      )}
-                    </Carousel.Slide>
-                  ))}
-                </Carousel>
+            </Box>
+            <List sx={{ overflowY: 'auto', width: '100%', backgroundColor: '#FFFFFF', padding: '0' }} className='list-tables'>
+              {filteredTables && filteredTables.length > 0 ? (
+                filteredTables.map((table) => (
+                  <ItemMesa key={table.uuid} uuid={`${table.location.country}, ${table.location.state}, ${table.location.city}, ${table.location.address}`} />
+                ))
               ) : (
-                <></>
+                <Typography variant="body1">No se encontraron mesas</Typography>
               )}
-            </div>
-          </>
-        ) : (
-          <></>
-        )}
-      </div>
-    </MantineProvider>
+            </List>
+          </Box>
+          <Box className='right-container' sx={{ width: '70%', padding: '1em', boxSizing: 'border-box' }}>
+            <Typography color='var(--primary-color)' variant='h4' className='carousel-title'>Resultados</Typography>
+            <Box sx={{ display: 'flex', flexGrow: 1, width: '100%' }}>
+              <CarouselComponent results={results} positions={positions} formulaMap={formulaMap} display={true} />
+            </Box>
+          </Box>
+        </>
+      ) : (
+        <></>
+      )}
+    </Box>
   );
 };
 
