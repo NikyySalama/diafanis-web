@@ -7,7 +7,7 @@ import Box from '@mui/material/Box';
 
 const GridCard = ({ searchTerm }) => {
   const [cards, setCards] = useState([]);
-
+   sessionStorage.setItem('paymentDone', 'false')
   useEffect(() => {
     const fetchData = async () => {
       try {

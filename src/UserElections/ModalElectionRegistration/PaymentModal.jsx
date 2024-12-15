@@ -5,7 +5,7 @@ import Paper from '@mui/material/Paper';
 import { loadMercadoPago } from "@mercadopago/sdk-js";
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
-
+import {  useNavigate } from 'react-router-dom';
 const AmountModal = ({ open, onClose, onConfirm }) => {
   const [step, setStep] = useState(1);
   const [persons, setPersons] = useState([0, 10000]);
@@ -17,7 +17,8 @@ const AmountModal = ({ open, onClose, onConfirm }) => {
   const [preferenceId, setPreferenceId] = useState("");
   const [paymentLink, setPaymentLink] = useState("");
   const [loading, setLoading] = useState(false);
-
+  const [planLimit, setPlanLimit] = useState({});
+ const navigate = useNavigate();
   const handleConfirm = () => {
     onConfirm({
       persons,
@@ -36,6 +37,31 @@ const AmountModal = ({ open, onClose, onConfirm }) => {
     positions: 100,
     votingTables: 100000,
   };
+
+  useEffect(() => {
+      const fetchData = async () => {
+        try {
+          const response = await fetch(`${process.env.REACT_APP_API_URL}/api/freePlanLimits`, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
+  
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+  
+          const data = await response.json();
+          setPlanLimit(data);
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        }
+      };
+  
+      fetchData();
+      setStep(1); 
+    }, []);
 
   const handleInputChange = (setter, index, otherIndex) => (event) => {
   
@@ -85,10 +111,25 @@ const AmountModal = ({ open, onClose, onConfirm }) => {
 
   const handleNextStep = async () => {
     if (step === 2) {
+      if(planLimit && (persons[1] <= planLimit.persons && formulasByParty[1] <= planLimit.formulasByParty && parties[1] <= planLimit.parties && positions[1] <= planLimit.positions && votingTables[1] <= planLimit.votingTables)){
+        sessionStorage.setItem('paymentDone', 'true');
+        sessionStorage.setItem('planLimit', JSON.stringify({
+          persons: persons[1],
+          formulasByParty: formulasByParty[1],
+          parties: parties[1],
+          positions: positions[1],
+          votingTables: votingTables[1],
+        }));
+        setStep(step-1); 
+        navigate('/userElections');
+        onClose();
+      }
+      else{
       setLoading(true);
       setStep(step + 1);
       await fetchPaymentLink();
       setLoading(false);
+      }
 
     } else {
       setStep(step + 1);

@@ -25,9 +25,18 @@ const CustomTable = ({ title, columns = [], rows = [], onRowClick, handleAddSele
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
     const paymentId = queryParams.get('paymentId');
-    if (paymentId) {
+    if (sessionStorage.getItem('paymentDone') === 'true') {
+      sessionStorage.setItem('paymentDone', 'false');
+      sessionStorage.setItem('electionInProgress', 'true');
       handleAddSelected();
     }
+    if ((paymentId !== null && paymentId !== sessionStorage.getItem('paymentId'))) {
+       sessionStorage.setItem('electionInProgress', 'true')
+        handleAddClick(); 
+      }
+
+    if (!(paymentId === null)) { sessionStorage.setItem('paymentId', paymentId) }
+
   }, [location.search, handleAddSelected]);
 
   const handleSelectAllClick = (event) => {
@@ -79,7 +88,7 @@ const CustomTable = ({ title, columns = [], rows = [], onRowClick, handleAddSele
 
     if (!(paymentId === null)) { sessionStorage.setItem('paymentId', paymentId) }
 
-    if (sessionStorage.getItem('peeking an election') === 'false' && (!paymentId || (sessionStorage.getItem('electionInProgress') === 'false'))) {
+    if (sessionStorage.getItem('peeking an election') === 'false' && ((sessionStorage.getItem('electionInProgress') === 'false'))) {
       setIsModalOpen(true);
     } else {
       handleAddSelected();

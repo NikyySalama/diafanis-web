@@ -47,7 +47,7 @@ const ElectionInfo = () => {
                     startsAt: data.startsAt,
                     positions: data.electionPositions,
                     planLimit: data.planLimit,
-                    paymentId: 8789798797,
+                    paymentId: data.paymentId,
                     username : data.username,
                     allowBlankVote: data.allowBlankVote
                 }
