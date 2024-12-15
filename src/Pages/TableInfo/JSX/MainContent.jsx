@@ -101,67 +101,67 @@ const CarouselComponent = ({ table, positions, forms, display }) => {
   };
 
   return (
-    <Box sx={{padding: '0.75em', margin: '1em',border: '1px solid #ddd',  display: 'flex', flexDirection: 'column',borderRadius: '16px',background:'var(--background-color)', flexGrow: 1 }}>
-        <Carousel
-          navButtonsAlwaysVisible
-          indicators={true}
-          animation="slide"
-          autoPlay={false}
-          cycleNavigation={false}
-          sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}
-        >
-          {positions && Object.entries(positions).map(([positionId, position], index) => (
-            <Box key={index} className="carouselSlide" sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center',height:'40em' }}>
-              <Typography variant="h5" className="slideTitulo" sx={{ textAlign: 'center' }}>
-                {position.title || 'Unknown Position'}
-              </Typography>
-              <Box sx={{ overflowY: 'auto', padding: '1em',display:'flex', flexGrow: 1 }}>
-                {display && table.results && table.results[positionId] ? (
-                  Object.entries(table.results[positionId]).map(([formulaId, votes]) => (
-                    <ItemFormulaResult
-                      key={formulaId}
-                      votes={votes}
-                      imgUrl={forms[formulaId]?.party?.logoUrl}
-                    />
-                  ))
-                ) : (
-                  <Typography variant="body1">La elección aun no ha terminado</Typography>
-                )}
-              </Box>
+    <Box sx={{ padding: '0.75em', margin: '1em', border: '1px solid #ddd', display: 'flex', flexDirection: 'column', borderRadius: '16px', background: 'var(--background-color)', flexGrow: 1 }}>
+      <Carousel
+        navButtonsAlwaysVisible
+        indicators={true}
+        animation="slide"
+        autoPlay={false}
+        cycleNavigation={false}
+        sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}
+      >
+        {positions && Object.entries(positions).map(([positionId, position], index) => (
+          <Box key={index} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: '40em', width: '100%' }}>
+            <Typography variant="h5" sx={{ textAlign: 'center' }}>
+              {position.title || 'Unknown Position'}
+            </Typography>
+            <Box sx={{ overflowY: 'auto', padding: '1em', display: 'flex', flexDirection: 'column', flexGrow: 1, width: '100%' }}>
+              {display && table.results && table.results[positionId] ? (
+                Object.entries(table.results[positionId]).map(([formulaId, votes]) => (
+                  <ItemFormulaResult
+                    key={formulaId}
+                    votes={votes}
+                    imgUrl={forms[formulaId]?.party?.logoUrl}
+                  />
+                ))
+              ) : (
+                <Typography variant="body1">La elección aun no ha terminado</Typography>
+              )}
             </Box>
-          ))}
-        </Carousel>
-        {display && table.results && (
-          <Button
-            sx={{
-              color: 'var(--background-color)',
-              backgroundColor: 'var(--primary-color)',
-              height: '3em',
-              padding: '0.5em 1em',
-              marginTop: '1em',
-              cursor: 'pointer',
-              fontSize: '1em',
-              fontFamily: 'Inter',
-              fontWeight: 700,
-              border: '0.25px solid black',
-            }}
-            variant="contained"
-            onClick={() => copyToClipboard(JSON.stringify(table.results))}
-          >
-            Copiar resultados
-          </Button>
-        )}
-        <Snackbar
-          open={snackbarOpen}
-          autoHideDuration={1000}
-          onClose={handleSnackbarClose}
-          message={snackbarMessage}
-          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-        />
-    
+          </Box>
+        ))}
+      </Carousel>
+      {display && table.results && (
+        <Button
+          sx={{
+            color: 'var(--background-color)',
+            backgroundColor: 'var(--primary-color)',
+            height: '3em',
+            padding: '0.5em 1em',
+            marginTop: '1em',
+            cursor: 'pointer',
+            fontSize: '1em',
+            fontFamily: 'Inter',
+            fontWeight: 700,
+            border: '0.25px solid black',
+          }}
+          variant="contained"
+          onClick={() => copyToClipboard(JSON.stringify(table.results))}
+        >
+          Copiar resultados
+        </Button>
+      )}
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={1000}
+        onClose={handleSnackbarClose}
+        message={snackbarMessage}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      />
     </Box>
   );
 };
+
 
 const MainContent = () => {
   const navigate = useNavigate();
