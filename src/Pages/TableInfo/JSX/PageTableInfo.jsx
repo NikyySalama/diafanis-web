@@ -62,8 +62,9 @@ const PageTableInfo = () => {
 
   return (
     <div className="PageTableInfo">
-    <Box sx={{display:'flex',flexDirection:'column' ,flex: '1 0 auto' }}>
+    <Box sx={{display:'flex',flexDirection:'column' ,flex: '1 0 auto',paddingBottom:'1em' }}>
       <Menu/>
+      
       <Box sx={{paddingTop:'4em',paddingLeft:'0.5em',display:'flex',justifyContent:'flex-start',alignItems:'center'}}>
         <Button 
          onClick={goBack}
@@ -74,6 +75,7 @@ const PageTableInfo = () => {
       <Title content={`Mesa ${tableUuid}`} />
       <MainContent  /> {/* Pass formulas as a prop */}
       </Box>
+
       <Box sx={{ flexShrink: 0 }}>
       <Footer />
     </Box>
