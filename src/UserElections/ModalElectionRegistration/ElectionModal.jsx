@@ -22,9 +22,9 @@ const ElectionModal = ({ show, onClose, onAddElection, handleAddPosition, initia
         ? `${process.env.REACT_APP_API_URL}/api/elections/${initialData.uuid}`
         : `${process.env.REACT_APP_API_URL}/api/elections`;
      
-        console.log("initialData", initialData);
+      
+      console.log("initialData", initialData);
 
-      console.log("new election: ", newElection);
       if(initialData){
         delete newElection.planLimit;
         sessionStorage.setItem('updatingElection', 'true');
@@ -61,7 +61,6 @@ const ElectionModal = ({ show, onClose, onAddElection, handleAddPosition, initia
   };
 
   const handleAddPositionHere = async (position) => {
-    console.log(handleAddPosition);
     if (addedElection) {
       await handleAddPosition(position, addedElection.uuid);
     }

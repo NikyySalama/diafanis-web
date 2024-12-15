@@ -31,8 +31,6 @@ const PositionRegistration = ({ onClose, initialPositions, handleAddPosition }) 
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("handleAddPosition en PositionRegistration:", handleAddPosition);
-
     positions?.forEach((position) => handleAddPosition(position));
     sessionStorage.setItem('electionInProgress', 'false');
     onClose();

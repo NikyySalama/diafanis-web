@@ -132,7 +132,6 @@ const AmountModal = ({ open, onClose, onConfirm }) => {
         votingTables: votingTables[1],
       }));
 
-      console.log(data);
       try {
 
         const mp = await loadMercadoPago();

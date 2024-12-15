@@ -23,6 +23,7 @@ const ErrorLimitModal = ({ isOpen, message, maxAllowed, onClose }) => {
         >
             <div 
                 style={{
+                    position: "relative", // para posicionar la cruz
                     background: "#fff",
                     padding: "30px",
                     borderRadius: "12px",
@@ -32,6 +33,35 @@ const ErrorLimitModal = ({ isOpen, message, maxAllowed, onClose }) => {
                     boxShadow: "0 4px 15px rgba(0, 0, 0, 0.2)",
                 }}
             >
+                {/* Botón de cerrar */}
+                <button 
+                    onClick={onClose} 
+                    aria-label="Cerrar modal"
+                    style={{
+                        position: "absolute",
+                        top: "10px",
+                        right: "10px",
+                        backgroundColor: "transparent",
+                        border: "none",
+                        cursor: "pointer",
+                    }}
+                >
+                    <svg 
+                        xmlns="http://www.w3.org/2000/svg" 
+                        width="24" 
+                        height="24" 
+                        viewBox="0 0 24 24" 
+                        fill="none" 
+                        stroke="#888" 
+                        strokeWidth="2" 
+                        strokeLinecap="round" 
+                        strokeLinejoin="round"
+                    >
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                </button>
+
                 {/* Encabezado con ícono y texto */}
                 <div style={{
                     display: "flex",
@@ -72,27 +102,9 @@ const ErrorLimitModal = ({ isOpen, message, maxAllowed, onClose }) => {
                     <p style={{
                         fontSize: "0.9rem",
                         color: "#888",
-                        marginBottom: "20px",
+                        marginBottom: "0px",
                     }}>Límite permitido: {maxAllowed}</p>
                 )}
-
-                <div>
-                    <button 
-                        style={{
-                            margin: "5px 10px",
-                            padding: "10px 20px",
-                            border: "none",
-                            borderRadius: "7px",
-                            cursor: "pointer",
-                            backgroundColor: "#ccc",
-                            color: "#333",
-                            fontWeight: "bold",
-                        }} 
-                        onClick={onClose}
-                    >
-                        Cerrar
-                    </button>
-                </div>
             </div>
         </div>
     );
@@ -103,7 +115,6 @@ ErrorLimitModal.propTypes = {
     message: PropTypes.string.isRequired,
     maxAllowed: PropTypes.number,
     onClose: PropTypes.func.isRequired,
-    onAction: PropTypes.func.isRequired,
 };
 
 export default ErrorLimitModal;

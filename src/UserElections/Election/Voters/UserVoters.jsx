@@ -83,7 +83,6 @@ const UserVoters = () => {
             imageUrl: row.logoUrl || '',
             uuid: row.uuid || ''
         });
-        console.log("data clicked: ", row);
         setShowViewModal(true); // Modal de visualización
     };
 
@@ -174,9 +173,6 @@ const UserVoters = () => {
                 electorTableUuid: selectedTable,
                 electionUuid: electionId
             }));
-
-            console.log('voters: ', updatedVotersData);
-
             const response = await fetch(`${process.env.REACT_APP_API_URL}/api/tables/${selectedTable}/electors`, {
                 method: 'POST',
                 headers: {
