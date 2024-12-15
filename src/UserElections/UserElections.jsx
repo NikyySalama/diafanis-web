@@ -73,7 +73,6 @@ const UserElections = () => {
               'Authorization' : `Bearer ${sessionStorage.getItem('jwt')}`,
              },
           });
-          console.log("papa");console.log(sessionStorage.getItem('jwt'));console.log("papa");
           if (!response.ok) {
             throw new Error(`Error en la respuesta del servidor: ${response.status}`);
           }
@@ -95,7 +94,6 @@ const UserElections = () => {
     try {
       let response;
       if (position.uuid) {
-        console.log("uuid: ", position.uuid);
         // Si la posición ya tiene un uuid, hacemos un PUT
         response = await fetch(`${process.env.REACT_APP_API_URL}/api/electionPositions/${position.uuid}`, {
           method: 'PUT',
@@ -135,7 +133,7 @@ const UserElections = () => {
     }
   };
 
-  const openModal = () => {setIsModalOpen(true); console.log("handleAddPosition en UserElections:", handleAddPosition); }
+  const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
   const columns = [
