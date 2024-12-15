@@ -8,7 +8,7 @@ import List from '@mui/material/List';
 import Typography from '@mui/material/Typography';
 import Carousel from 'react-material-ui-carousel';
 
-const CarouselComponent = ({ results, positions, formulaMap, display, totalVotes }) => {
+const CarouselComponent = ({ results, positions, formulaMap, display, totalVotes,people }) => {
   return (
     <Box sx={{ padding: '0.75em', margin: '1em', marginTop: 0, border: '1px solid #ddd', display: 'flex', flexDirection: 'column', borderRadius: '16px', background: 'var(--background-color)', flexGrow: 1, width: '100%' }}>
       <Carousel
@@ -25,7 +25,7 @@ const CarouselComponent = ({ results, positions, formulaMap, display, totalVotes
               {position.title || 'Unknown Position'}
             </Typography>
             <Typography variant="body1" sx={{ textAlign: 'center', marginTop: '0.5em' }}>
-              Total Votes: {totalVotes[positionId] || 0}
+              Total Votes: {people - totalVotes[positionId] || 0}
             </Typography>
             <Box sx={{ overflowY: 'auto', padding: '1em', display: 'flex', flexDirection: 'column', flexGrow: 1, width: '100%' }}>
               {display && results && results[positionId] ? (
@@ -54,7 +54,7 @@ const MainContent = () => {
   const [results, setResults] = useState({});
   const [totalVotes, setTotalVotes] = useState({});
   const [searchTerm, setSearchTerm] = useState(''); // Estado para el término de búsqueda
-
+  const [peopleVoted, setPeopleVoted] = useState(0);
   const savedElection = sessionStorage.getItem('election');
   const election = savedElection ? JSON.parse(savedElection) : null;
 
@@ -82,6 +82,32 @@ const MainContent = () => {
       sessionStorage.setItem('display', JSON.stringify(display));
     }
   }, [election]);
+
+
+  const fetchData = async () => {
+    try {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/elections/${election.uuid}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      data.people.forEach((person) => {
+        if(person.hasVoted !== null) {
+          setPeopleVoted(peopleVoted + 1);
+        }
+      }
+      );
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
 
   useEffect(() => {
     if (election && election.uuid && display) {
@@ -194,7 +220,7 @@ const MainContent = () => {
           <Box sx={{ width: '50%', padding: '1em', boxSizing: 'border-box', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', height: '100%' }}>
             <Typography color='var(--primary-color)' variant='h4' sx={{ paddingBottom: '0.5em', width: 'fit-content', color: '#020246', fontSize: 'calc(0.078125em + 2.5vw)', height: 'fit-content', marginTop: '0%' }}>Resultados</Typography>
             <Box sx={{ width: '70%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
-              <CarouselComponent results={results} positions={positions} formulaMap={formulaMap} display={true} totalVotes={totalVotes} />
+              <CarouselComponent results={results} positions={positions} formulaMap={formulaMap} display={true} totalVotes={totalVotes} people={peopleVoted}/>
             </Box>
           </Box>
         </>
