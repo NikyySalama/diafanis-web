@@ -84,7 +84,7 @@ const MainContent = () => {
   }, [election]);
 
 
-  const fetchData = async () => {
+  const fetchVoters = async () => {
     try {
       const response = await fetch(`${process.env.REACT_APP_API_URL}/api/elections/${election.uuid}`, {
         method: 'GET',
@@ -134,6 +134,8 @@ const MainContent = () => {
               newTotalVotes[positionId] = Object.values(positionResults).reduce((acc, votes) => acc + votes, 0);
             });
             setTotalVotes(newTotalVotes);
+            fetchVoters();
+
           }
         } catch (error) {
           console.error('Error fetching data:', error);
