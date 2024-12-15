@@ -108,10 +108,10 @@ const CarouselComponent = ({ table, positions, forms, display }) => {
         animation="slide"
         autoPlay={false}
         cycleNavigation={false}
-        sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}
+        sx={{overflowY: 'auto', flexGrow: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}
       >
         {positions && Object.entries(positions).map(([positionId, position], index) => (
-          <Box key={index} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: '40em', width: '100%' }}>
+          <Box key={index} sx={{ overflowY: 'auto',display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
             <Typography variant="h5" sx={{ textAlign: 'center' }}>
               {position.title || 'Unknown Position'}
             </Typography>
