@@ -57,7 +57,7 @@ const PageTableInfo = () => {
   }, [tableUuid]); // Run when tableUuid changes
 
   if (loading) {
-    return <p>Loading...</p>; // Show a loading message while data is being fetched
+    return <p>Cargando...</p>; // Show a loading message while data is being fetched
   }
 
   return (

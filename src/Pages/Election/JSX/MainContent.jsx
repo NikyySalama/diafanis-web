@@ -20,10 +20,10 @@ const CarouselComponent = ({ results, positions, formulaMap, display }) => {
         animation="slide"
         autoPlay={false}
         cycleNavigation={false}
-        sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', width: '100%' }}
+        sx={{overflowY: 'auto', flexGrow: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', width: '100%' }}
       >
         {positions && Object.entries(positions).map(([positionId, position], index) => (
-          <Box key={index} className="carouselSlide" sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
+          <Box key={index} className="carouselSlide" sx={{overflowY: 'auto', display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
             <Typography variant="h5" className="slideTitulo" sx={{ textAlign: 'center' }}>
               {position.title || 'Unknown Position'}
             </Typography>
