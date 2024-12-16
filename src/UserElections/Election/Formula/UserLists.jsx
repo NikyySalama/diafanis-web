@@ -235,7 +235,7 @@ const UserLists = () => {
         const candidates = positionsData[index].map((candidate, candidateIndex) => ({
           role: sanitizeInput(candidate.role),
           imageUrl: checkIMGByURL(candidate.image) ? candidate.image : '',
-          zindex: sanitizeInput(candidateIndex),
+          zindex: candidateIndex,
           data: {
             docNumber: sanitizeInput(candidate.docNumber),
             docType: sanitizeInput(candidate.docType),
@@ -245,6 +245,8 @@ const UserLists = () => {
             formulaUuid: uuid,
           },
         }));
+
+        console.log('candidates: ', candidates);
   
         return fetch(`${process.env.REACT_APP_API_URL}/api/electiveFormulas/${uuid}/candidates`, {
           method: 'POST',
